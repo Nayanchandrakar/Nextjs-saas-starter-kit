@@ -1,3 +1,4 @@
+import { envServer } from "@/lib/utilities/env-server"
 import { Resend } from "resend"
 
 type ResendConfig = {
@@ -30,7 +31,7 @@ class EmailService {
 }
 
 const emailService = EmailService.init({
-  connectionString: process.env.RESEND_API_KEY!,
+  connectionString: envServer.RESEND_API_KEY!,
 })
 
 export const resend = emailService.service()

@@ -1,3 +1,4 @@
+import { envServer } from "@/lib/utilities/env-server"
 import { Pool, type PoolConfig, neon } from "@neondatabase/serverless"
 import {
   type NeonHttpDatabase,
@@ -62,7 +63,7 @@ class Database {
 }
 
 const database = Database.getInstance({
-  connectionString: process.env.DATABASE_URL!,
+  connectionString: envServer.DATABASE_URL!,
 })
 
 export const dbHttp = database.getHttpConnection()

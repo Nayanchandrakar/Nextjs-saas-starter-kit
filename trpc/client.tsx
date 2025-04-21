@@ -1,5 +1,6 @@
 "use client"
 
+import { envClient } from "@/lib/utilities/env-client"
 import { makeQueryClient } from "@/lib/utilities/query-client"
 import type { AppRouter } from "@/trpc/routers/_app"
 import { QueryClientProvider } from "@tanstack/react-query"
@@ -22,15 +23,6 @@ function getQueryClient() {
   return browserQueryClient
 }
 
-function getUrl() {
-  const base = (() => {
-    if (typeof window !== "undefined") return ""
-    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-    return "http://localhost:3000"
-  })()
-  return `${base}/api/trpc`
-}
-
 type TrpcNextProviderType = {
   children: React.ReactNode
 }
@@ -42,7 +34,7 @@ export const TrpcNextProvider = ({ children }: TrpcNextProviderType) => {
       links: [
         httpBatchLink({
           transformer: SuperJSON,
-          url: getUrl(),
+          url: `${envClient.NEXT_PUBLIC_APP_URL}/api/trpc`,
         }),
       ],
     }),
