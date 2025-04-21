@@ -82,7 +82,9 @@
 	},
 	"javascript": {
 		"formatter": {
-			"quoteStyle": "double"
+			"quoteStyle": "double",
+			"semicolons": "asNeeded",
+			"bracketSpacing": true
 		},
 		"globals": [
 			"ononline",
