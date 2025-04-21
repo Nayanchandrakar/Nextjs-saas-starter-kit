@@ -14,45 +14,45 @@ export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>()
 let browserQueryClient: QueryClient
 
 function getQueryClient() {
-	if (typeof window === "undefined") {
-		return makeQueryClient()
-	}
+  if (typeof window === "undefined") {
+    return makeQueryClient()
+  }
 
-	if (!browserQueryClient) browserQueryClient = makeQueryClient()
-	return browserQueryClient
+  if (!browserQueryClient) browserQueryClient = makeQueryClient()
+  return browserQueryClient
 }
 
 function getUrl() {
-	const base = (() => {
-		if (typeof window !== "undefined") return ""
-		if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-		return "http://localhost:3000"
-	})()
-	return `${base}/api/trpc`
+  const base = (() => {
+    if (typeof window !== "undefined") return ""
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+    return "http://localhost:3000"
+  })()
+  return `${base}/api/trpc`
 }
 
 type TrpcNextProviderType = {
-	children: React.ReactNode
+  children: React.ReactNode
 }
 
 export const TrpcNextProvider = ({ children }: TrpcNextProviderType) => {
-	const queryClient = getQueryClient()
-	const [trpcClient] = useState(() =>
-		createTRPCClient<AppRouter>({
-			links: [
-				httpBatchLink({
-					transformer: SuperJSON,
-					url: getUrl(),
-				}),
-			],
-		}),
-	)
+  const queryClient = getQueryClient()
+  const [trpcClient] = useState(() =>
+    createTRPCClient<AppRouter>({
+      links: [
+        httpBatchLink({
+          transformer: SuperJSON,
+          url: getUrl(),
+        }),
+      ],
+    }),
+  )
 
-	return (
-		<QueryClientProvider client={queryClient}>
-			<TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-				{children}
-			</TRPCProvider>
-		</QueryClientProvider>
-	)
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
+        {children}
+      </TRPCProvider>
+    </QueryClientProvider>
+  )
 }

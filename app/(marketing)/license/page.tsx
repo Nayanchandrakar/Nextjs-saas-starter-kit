@@ -1,3 +1,3 @@
 export default function LicencePage() {
-	return <div>License Page</div>
+  return <div>License Page</div>
 }
