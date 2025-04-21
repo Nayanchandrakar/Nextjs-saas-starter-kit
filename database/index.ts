@@ -13,7 +13,7 @@ type DatabaseConfig = {
   poolOptions?: Partial<PoolConfig>
 }
 
-export class Database {
+class Database {
   private static instance: Database
   private httpConnection: NeonHttpDatabase | null = null
   private wsConnection: NeonDatabase | null = null
@@ -28,7 +28,7 @@ export class Database {
     if (!Database.instance) {
       if (!config?.connectionString)
         throw new Error("Database connection string is not defined or empty")
-      return new Database(config)
+      this.instance = new Database(config)
     }
     return Database.instance
   }
@@ -67,4 +67,5 @@ const database = Database.getInstance({
 
 export const dbHttp = database.getHttpConnection()
 export const dbServerless = database.getWsConnection()
-export const closeDatabaseConnections = () => database.closeConnections()
+export const closeDatabaseConnections = async () =>
+  await database.closeConnections()
