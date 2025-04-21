@@ -1,6 +1,6 @@
 "use client"
 
-import { makeQueryClient } from "@/lib/query-client"
+import { makeQueryClient } from "@/lib/utilities/query-client"
 import type { AppRouter } from "@/trpc/routers/_app"
 import { QueryClientProvider } from "@tanstack/react-query"
 import type { QueryClient } from "@tanstack/react-query"

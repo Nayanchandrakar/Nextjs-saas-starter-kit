@@ -1,5 +1,5 @@
 import "server-only"
-import { makeQueryClient } from "@/lib/query-client"
+import { makeQueryClient } from "@/lib/utilities/query-client"
 import { createTRPCContext } from "@/trpc/init"
 import { appRouter } from "@/trpc/routers/_app"
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
