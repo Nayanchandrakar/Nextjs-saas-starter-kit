@@ -1,13 +1,14 @@
 import { dbHttp } from "@/database"
 import { account, sessions, users, verification } from "@/database/schema"
+import { configuration } from "@/lib/config"
+import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
 import { magicLink } from "better-auth/plugins"
 
 export const auth = betterAuth({
-  appName: "Nextjs Saas Starter kit",
-
+  appName: configuration.site.name,
   database: drizzleAdapter(dbHttp, {
     provider: "pg",
     schema: {
@@ -18,14 +19,10 @@ export const auth = betterAuth({
     },
   }),
 
-  emailAndPassword: {
-    enabled: true,
-  },
-
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
     },
   },
 
@@ -41,5 +38,12 @@ export const auth = betterAuth({
     modelName: "ratelimit",
   },
 
-  plugins: [nextCookies()],
+  plugins: [
+    // magicLink({
+    //   async sendMagicLink({ email, url }) {
+
+    //   },
+    // }),
+    nextCookies(),
+  ],
 })
