@@ -12,16 +12,18 @@ type EmailProviderConfig = {
   apiKey: string
 }
 
-type EmailOptions = CreateEmailOptions & {
-  from?: string
+type EmailOptions = Omit<CreateEmailOptions, "from"> & {
+  sender?: string
+  prefix: string
+  react: React.ReactNode
 }
 
 const logger = Logger.createLogger({
-  prefix: "EmailService",
+  prefix: "MailService",
 })
 
-class EmailService {
-  private static instance: EmailService | null = null
+class MailService {
+  private static instance: MailService | null = null
   private readonly config: EmailProviderConfig
   private providerClient: Resend | null = null
 
@@ -33,23 +35,23 @@ class EmailService {
   }
 
   /**
-   * Initializes the EmailService singleton instance
+   * Initializes the MailService singleton instance
    * @param config Email provider configuration
    * @throws ApiError if configuration is invalid
-   * @returns EmailService instance
+   * @returns MailService instance
    */
-  static initialize(config: EmailProviderConfig): EmailService {
-    if (EmailService.instance) {
-      return EmailService.instance
+  static initialize(config: EmailProviderConfig): MailService {
+    if (MailService.instance) {
+      return MailService.instance
     }
 
     if (!config?.apiKey) {
       throw ApiError.badRequest("Email provider API key is missing or invalid")
     }
 
-    EmailService.instance = new EmailService(config)
-    logger.info("EmailService initialized successfully")
-    return EmailService.instance
+    MailService.instance = new MailService(config)
+    logger.info("MailService initialized successfully")
+    return MailService.instance
   }
 
   /**
@@ -69,27 +71,32 @@ class EmailService {
    * @returns Promise resolving to email sending response
    * @throws ApiError if email sending fails
    */
-  async sendEmail(options: EmailOptions): Promise<CreateEmailResponse> {
-    const { from, ...restOptions } = options
-    const sender =
-      from || (isProd ? serverEnv.RESEND_EMAIL : "onboarding@resend.dev")
+  async send(options: EmailOptions): Promise<CreateEmailResponse> {
+    const { sender, prefix, ...restOptions } = options
+    const from =
+      sender || (isProd ? serverEnv.RESEND_EMAIL : "onboarding@resend.dev")
 
     try {
       const response = await this.getProviderClient().emails.send({
-        from: sender,
-        ...restOptions,
+        from,
+        ...(restOptions as EmailOptions & { text: string }),
       })
 
-      logger.info(`Email sent successfully to ${options.to}`)
+      logger.info(
+        `Email sent successfully to ${options.to} from ${prefix} service`,
+      )
       return response
     } catch (error) {
       const apiError = ApiError.fromError(error)
-      logger.error(`Failed to send email to ${options.to}:`, apiError)
+      logger.error(
+        `Failed to send email from ${prefix} service to ${options.to}:`,
+        apiError,
+      )
       throw apiError
     }
   }
 }
 
-export const emailService = EmailService.initialize({
+export const mail = MailService.initialize({
   apiKey: serverEnv.RESEND_API_KEY,
 })

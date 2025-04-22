@@ -1,5 +1,5 @@
 export const configuration = {
   site: {
-    name: "Next js Sass Starter kit",
+    name: "Nextjs Saas Starter kit",
   },
 }

@@ -1,5 +1,6 @@
 import { dbHttp } from "@/database"
 import { account, sessions, users, verification } from "@/database/schema"
+import { configuration } from "@/lib/config"
 import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
@@ -7,8 +8,7 @@ import { nextCookies } from "better-auth/next-js"
 import { magicLink } from "better-auth/plugins"
 
 export const auth = betterAuth({
-  appName: "Nextjs Saas Starter kit",
-
+  appName: configuration.site.name,
   database: drizzleAdapter(dbHttp, {
     provider: "pg",
     schema: {
