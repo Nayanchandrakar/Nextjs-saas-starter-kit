@@ -1,6 +1,6 @@
 import "@/style/globals.css"
-import { Provider } from "@/providers/provider"
-import { ThemeProvider } from "@/providers/theme-provider"
+import { Provider } from "@/components/providers/provider"
+import { ThemeProvider } from "@/components/providers/theme-provider"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
