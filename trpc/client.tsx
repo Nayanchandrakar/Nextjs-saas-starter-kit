@@ -1,6 +1,6 @@
 "use client"
 
-import { envClient } from "@/lib/utilities/env-client"
+import { clientEnv } from "@/lib/utilities/client-env"
 import { makeQueryClient } from "@/lib/utilities/query-client"
 import type { AppRouter } from "@/trpc/routers/_app"
 import { QueryClientProvider } from "@tanstack/react-query"
@@ -34,7 +34,7 @@ export const TrpcNextProvider = ({ children }: TrpcNextProviderType) => {
       links: [
         httpBatchLink({
           transformer: SuperJSON,
-          url: `${envClient.NEXT_PUBLIC_APP_URL}/api/trpc`,
+          url: `${clientEnv.NEXT_PUBLIC_APP_URL}/api/trpc`,
         }),
       ],
     }),

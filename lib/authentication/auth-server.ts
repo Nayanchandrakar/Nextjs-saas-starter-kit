@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
 import { account, sessions, users, verification } from "@/database/schema"
-import { envServer } from "@/lib/utilities/env-server"
+import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
@@ -21,8 +21,8 @@ export const auth = betterAuth({
 
   socialProviders: {
     google: {
-      clientId: envServer.GOOGLE_CLIENT_ID,
-      clientSecret: envServer.GOOGLE_CLIENT_SECRET,
+      clientId: serverEnv.GOOGLE_CLIENT_ID,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
     },
   },
 
@@ -38,5 +38,12 @@ export const auth = betterAuth({
     modelName: "ratelimit",
   },
 
-  plugins: [nextCookies()],
+  plugins: [
+    // magicLink({
+    //   async sendMagicLink({ email, url }) {
+
+    //   },
+    // }),
+    nextCookies(),
+  ],
 })

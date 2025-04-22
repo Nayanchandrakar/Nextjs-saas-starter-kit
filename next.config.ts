@@ -1,5 +1,5 @@
-import { envClient } from "@/lib/utilities/env-client"
-import { envServer } from "@/lib/utilities/env-server"
+import { clientEnv } from "@/lib/utilities/client-env"
+import { serverEnv } from "@/lib/utilities/server-env"
 
 import type { NextConfig } from "next"
 
