@@ -1,6 +1,7 @@
 import { dbHttp } from "@/database"
 import { account, sessions, users, verification } from "@/database/schema"
 import { configuration } from "@/lib/config"
+import { magicLinkService } from "@/lib/strategies/email-strategy"
 import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
@@ -39,11 +40,11 @@ export const auth = betterAuth({
   },
 
   plugins: [
-    // magicLink({
-    //   async sendMagicLink({ email, url }) {
-
-    //   },
-    // }),
+    magicLink({
+      async sendMagicLink({ email, url }) {
+        await magicLinkService.send({ email, url })
+      },
+    }),
     nextCookies(),
   ],
 })
