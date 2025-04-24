@@ -12,10 +12,10 @@ import {
 } from "@react-email/components"
 
 type MagicLinkMailProps = {
-  magicLinkMail: string
+  link: string
 }
 
-export function MagicLinkMail({ magicLinkMail }: MagicLinkMailProps) {
+export function MagicLinkMail({ link }: MagicLinkMailProps) {
   return (
     <Html>
       <Head />
@@ -28,14 +28,14 @@ export function MagicLinkMail({ magicLinkMail }: MagicLinkMailProps) {
             </Heading>
             <Text className="text-[14px] leading-[24px]">
               <Link
-                href={magicLinkMail}
+                href={link}
                 className="rounded-md bg-black px-4 py-2 text-white"
               >
                 👉 Click here to sign in 👈
               </Link>
             </Text>
             <Section className="rounded-md bg-[#d2d2d2] px-6 py-4">
-              <Text className="text-[14px]">{magicLinkMail}</Text>
+              <Text className="text-[14px]">{link}</Text>
             </Section>
           </Container>
         </Body>

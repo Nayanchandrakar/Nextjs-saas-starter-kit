@@ -1,6 +1,7 @@
 import "@/style/globals.css"
 import { Provider } from "@/components/providers/provider"
 import { ThemeProvider } from "@/components/providers/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
@@ -24,6 +25,7 @@ export default function RootLayout({
         <body className={`${font.className} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             {children}
+            <Toaster />
           </ThemeProvider>
         </body>
       </Provider>

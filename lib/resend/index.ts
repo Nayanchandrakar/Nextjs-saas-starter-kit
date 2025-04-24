@@ -22,7 +22,7 @@ const logger = Logger.createLogger({
   prefix: "MailService",
 })
 
-class MailService {
+export class MailService {
   private static instance: MailService | null = null
   private readonly config: EmailProviderConfig
   private providerClient: Resend | null = null
@@ -73,19 +73,28 @@ class MailService {
    */
   async send(options: EmailOptions): Promise<CreateEmailResponse> {
     const { sender, prefix, ...restOptions } = options
-    const from =
-      sender || (isProd ? serverEnv.RESEND_EMAIL : "onboarding@resend.dev")
+    let from = sender || serverEnv.RESEND_EMAIL
+
+    if (!isProd) {
+      from = "onboarding@resend.dev"
+      restOptions.to = serverEnv.RESEND_EMAIL
+    }
 
     try {
-      const response = await this.getProviderClient().emails.send({
+      const { data, error } = await this.getProviderClient().emails.send({
         from,
         ...(restOptions as EmailOptions & { text: string }),
       })
 
-      logger.info(
-        `Email sent successfully to ${options.to} from ${prefix} service`,
-      )
-      return response
+      if (error) {
+        logger.error(error.message, error)
+      } else {
+        logger.info(
+          `Email sent successfully to ${options.to} from ${prefix} service`,
+        )
+      }
+
+      return { data, error }
     } catch (error) {
       const apiError = ApiError.fromError(error)
       logger.error(
@@ -96,7 +105,3 @@ class MailService {
     }
   }
 }
-
-export const mail = MailService.initialize({
-  apiKey: serverEnv.RESEND_API_KEY,
-})

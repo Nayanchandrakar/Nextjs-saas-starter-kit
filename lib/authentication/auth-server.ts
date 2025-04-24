@@ -1,10 +1,13 @@
 import { dbHttp } from "@/database"
-import { account, sessions, users, verification } from "@/database/schema"
+import { account, users, verification } from "@/database/schema"
+import { RedisStorage } from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
+import { magicLinkService } from "@/lib/strategies/email-strategy"
 import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
+import { multiSession } from "better-auth/plugins"
 import { magicLink } from "better-auth/plugins"
 
 export const auth = betterAuth({
@@ -14,7 +17,6 @@ export const auth = betterAuth({
     schema: {
       user: users,
       account: account,
-      session: sessions,
       verification: verification,
     },
   }),
@@ -34,16 +36,38 @@ export const auth = betterAuth({
   },
 
   rateLimit: {
-    storage: "database",
-    modelName: "ratelimit",
+    storage: "secondary-storage",
+  },
+
+  secondaryStorage: RedisStorage,
+
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+  },
+
+  advanced: {
+    cookiePrefix: configuration.site.cookiePrefix,
+    database: {
+      generateId: false,
+    },
+  },
+
+  session: {
+    cookieCache: {
+      enabled: true,
+    },
   },
 
   plugins: [
-    // magicLink({
-    //   async sendMagicLink({ email, url }) {
-
-    //   },
-    // }),
+    magicLink({
+      async sendMagicLink({ email, url }) {
+        await magicLinkService.send({ email, url })
+      },
+    }),
+    multiSession(),
+    // make sure this is the last plugin in the array
     nextCookies(),
   ],
 })

@@ -8,6 +8,13 @@
       "when": 1745330796632,
       "tag": "0000_lonely_photon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1745488801238,
+      "tag": "0001_open_shiver_man",
+      "breakpoints": true
     }
   ]
 }
