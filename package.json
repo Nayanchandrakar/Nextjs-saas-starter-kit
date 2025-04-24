@@ -55,7 +55,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-error-boundary": "^5.0.0",
-    "react-hook-form": "^7.56.0",
+    "react-hook-form": "^7.56.1",
     "resend": "^4.3.0",
     "server-only": "^0.0.1",
     "sonner": "^2.0.3",

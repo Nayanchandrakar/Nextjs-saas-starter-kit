@@ -25,8 +25,8 @@ import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/authentication/auth-client"
 import { messages } from "@/lib/constants/message"
 import {
-  sigInFormScheamaType,
-  sigInFormSchema,
+  signInFormSchema,
+  signInFormSchemaType,
 } from "@/lib/schema/authentication/sigin-form-schema"
 import { createRoute } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -39,15 +39,15 @@ export const SignInForm = () => {
   const [isPending, startTransition] = useTransition()
   const [alertState, setAlertState] = useState<FormAlertProps | null>(null)
 
-  const form = useForm<sigInFormScheamaType>({
-    resolver: zodResolver(sigInFormSchema),
+  const form = useForm<signInFormSchemaType>({
+    resolver: zodResolver(signInFormSchema),
     shouldFocusError: true,
     shouldUseNativeValidation: true,
     mode: "onSubmit",
     defaultValues: { email: "" },
   })
 
-  async function onSubmit(values: sigInFormScheamaType) {
+  async function onSubmit(values: signInFormSchemaType) {
     await authClient.signIn.magicLink({
       email: values.email,
       callbackURL: createRoute("callback"),
@@ -62,13 +62,15 @@ export const SignInForm = () => {
     startTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
+        callbackURL: createRoute("callback"),
       })
     })
   }
 
   const onError = useCallback((error: ErrorContext) => {
-    toast.error(error?.error?.statusText)
-    setAlertState({ variant: "error", message: error?.error?.statusText })
+    const message = error.error.message ?? messages.global.error
+    toast.error(message)
+    setAlertState({ variant: "error", message })
   }, [])
 
   const onSuccess = useCallback(() => {
@@ -82,7 +84,7 @@ export const SignInForm = () => {
     <Card className="w-full md:w-[400px]">
       <CardHeader>
         <NavbarLogo />
-        <CardTitle className="font-bold text-lg">Sign in or sign up</CardTitle>
+        <CardTitle className="font-bold text-xl">Sign in or sign up</CardTitle>
         <CardDescription>
           Build your SaaS in minutes, not months.
         </CardDescription>
@@ -94,12 +96,15 @@ export const SignInForm = () => {
             <FormField
               control={form.control}
               name="email"
-              disabled={isSubmitting}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="Enter your email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -128,7 +133,7 @@ export const SignInForm = () => {
           disabled={isSubmitting}
           type="button"
           variant="outline"
-          className="w-full"
+          className="w-full bg-black text-zinc-200 hover:text-white hover:bg-black border border-input"
           onClick={googleSignIn}
         >
           <Icons.google className="mr-2 h-4 w-4" />
