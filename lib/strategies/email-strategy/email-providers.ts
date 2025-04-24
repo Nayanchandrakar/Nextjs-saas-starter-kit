@@ -1,5 +1,5 @@
 import { MagicLinkMail } from "@/components/emails/magic-link-email"
-import { mail } from "@/lib/resend"
+import { mail } from "@/lib/resend/mail-service-instance"
 import {
   EmailStrategy,
   MagicLinkParams,

@@ -1,5 +1,5 @@
 import { dbHttp } from "@/database"
-import { account, sessions, users, verification } from "@/database/schema"
+import { account, users, verification } from "@/database/schema"
 import { RedisStorage } from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
 import { magicLinkService } from "@/lib/strategies/email-strategy"
@@ -17,7 +17,6 @@ export const auth = betterAuth({
     schema: {
       user: users,
       account: account,
-      session: sessions,
       verification: verification,
     },
   }),

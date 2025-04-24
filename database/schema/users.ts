@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2"
-import { boolean, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core"
+import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
 export const users = pgTable("user", {
   id: text("id")
@@ -11,21 +11,6 @@ export const users = pgTable("user", {
   image: text("image"),
   createdAt: timestamp("created_at").notNull(),
   updatedAt: timestamp("updated_at").notNull(),
-})
-
-export const sessions = pgTable("session", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => createId()),
-  expiresAt: timestamp("expires_at").notNull(),
-  token: text("token").notNull().unique(),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
-  ipAddress: text("ip_address"),
-  userAgent: text("user_agent"),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
 })
 
 export const account = pgTable("account", {

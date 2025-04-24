@@ -1,1 +1,1 @@
-export * from "@/database/schema/user"
+export * from "@/database/schema/users"

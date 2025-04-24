@@ -31,10 +31,12 @@ import {
 import { createRoute } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ErrorContext } from "better-auth/react"
-import { useState } from "react"
+import { useCallback, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const SignInForm = () => {
+  const [isPending, startTransition] = useTransition()
   const [alertState, setAlertState] = useState<FormAlertProps | null>(null)
 
   const form = useForm<sigInFormScheamaType>({
@@ -56,15 +58,25 @@ export const SignInForm = () => {
     })
   }
 
-  const onError = (error: ErrorContext) => {
-    setAlertState({ variant: "error", message: error?.error?.message })
+  const googleSignIn = () => {
+    startTransition(async () => {
+      await authClient.signIn.social({
+        provider: "google",
+      })
+    })
   }
 
-  const onSuccess = () => {
+  const onError = useCallback((error: ErrorContext) => {
+    toast.error(error?.error?.statusText)
+    setAlertState({ variant: "error", message: error?.error?.statusText })
+  }, [])
+
+  const onSuccess = useCallback(() => {
+    toast.success(messages.success.sigin)
     setAlertState({ message: messages.success.sigin, variant: "success" })
-  }
+  }, [])
 
-  const isSubmitting = form.formState.isSubmitting
+  const isSubmitting = !!(form.formState.isSubmitting || isPending)
 
   return (
     <Card className="w-full md:w-[400px]">
@@ -92,13 +104,18 @@ export const SignInForm = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={isSubmitting} type="submit" className="w-full">
+            <Button
+              disabled={isSubmitting}
+              type="submit"
+              className="w-full"
+              loading={form.formState.isSubmitting}
+            >
               Sign in
             </Button>
           </form>
         </Form>
 
-        {alertState && <FormAlert {...alertState} />}
+        {alertState && <FormAlert {...alertState} className="mt-5" />}
 
         <div className="flex items-center gap-3 my-5 before:flex-1 before:h-px before:bg-border after:flex-1 after:h-px after:bg-border">
           <span className="text-xs text-muted-foreground">
@@ -106,7 +123,13 @@ export const SignInForm = () => {
           </span>
         </div>
 
-        <Button disabled={isSubmitting} variant="outline" className="w-full">
+        <Button
+          disabled={isSubmitting}
+          type="button"
+          variant="outline"
+          className="w-full"
+          onClick={googleSignIn}
+        >
           <Icons.google className="mr-2 h-4 w-4" />
           Google
         </Button>
