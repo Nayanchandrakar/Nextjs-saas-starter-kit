@@ -1,7 +1,12 @@
+import {
+  dateCreation,
+  onboardingStatusEnum,
+  onboardingStepEnum,
+} from "@/database/utils"
 import { createId } from "@paralleldrive/cuid2"
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-export const users = pgTable("user", {
+export const user = pgTable("user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
@@ -9,8 +14,7 @@ export const users = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull(),
   image: text("image"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  ...dateCreation,
 })
 
 export const account = pgTable("account", {
@@ -21,7 +25,7 @@ export const account = pgTable("account", {
   providerId: text("provider_id").notNull(),
   userId: text("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
@@ -29,8 +33,7 @@ export const account = pgTable("account", {
   refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
   scope: text("scope"),
   password: text("password"),
-  createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").notNull(),
+  ...dateCreation,
 })
 
 export const verification = pgTable("verification", {
@@ -40,6 +43,23 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at"),
-  updatedAt: timestamp("updated_at"),
+  ...dateCreation,
 })
+
+export const userOnboarding = pgTable("user_onboarding", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  onboardingStatus: onboardingStatusEnum("onboarding_status")
+    .default("pending")
+    .notNull(),
+  onboardingStep: onboardingStepEnum("onboarding_step")
+    .default("profile")
+    .notNull(),
+  ...dateCreation,
+})
+
+export { onboardingStatusEnum, onboardingStepEnum }

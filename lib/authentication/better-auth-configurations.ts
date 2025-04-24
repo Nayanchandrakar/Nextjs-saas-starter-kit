@@ -4,7 +4,7 @@ import type { SecondaryStorage } from "better-auth"
 export const RedisStorage: SecondaryStorage = {
   get: async (key) => {
     const value = await redis.get<string>(key)
-    return value ? value : null
+    return value ? JSON.stringify(value) : null
   },
   set: async (key, value, ttl) => {
     if (ttl) await redis.set(key, value, { ex: ttl })
