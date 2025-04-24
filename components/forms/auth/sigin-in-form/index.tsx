@@ -94,6 +94,7 @@ export const SignInForm = () => {
             <FormField
               control={form.control}
               name="email"
+              disabled={isSubmitting}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>

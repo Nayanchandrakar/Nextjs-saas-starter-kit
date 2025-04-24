@@ -1,4 +1,6 @@
+import { ArrowLeft } from "lucide-react"
 import type { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Sign in | Nextjs Saas Starter kit",
@@ -11,7 +13,15 @@ export default function AuthLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className="flex items-center justify-center h-full min-h-screen">
+    <div className=" flex items-center justify-center h-full min-h-screen p-6 relative">
+      <Link
+        className="hover:underline underline-offset-4 inline-flex items-center text-sm absolute top-6 left-6 font-semibold"
+        href="/"
+      >
+        <ArrowLeft className="size-4 mr-1" />
+        Back to home
+      </Link>
+
       {children}
     </div>
   )
