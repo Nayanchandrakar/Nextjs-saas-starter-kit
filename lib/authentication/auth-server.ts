@@ -1,5 +1,5 @@
 import { dbHttp } from "@/database"
-import { account, users, verification } from "@/database/schema"
+import { account, user, verification } from "@/database/schema"
 import { RedisStorage } from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
 import { magicLinkService } from "@/lib/strategies/email-strategy"
@@ -10,14 +10,14 @@ import { nextCookies } from "better-auth/next-js"
 import { multiSession } from "better-auth/plugins"
 import { magicLink } from "better-auth/plugins"
 
-export const auth = betterAuth({
+export const authServer = betterAuth({
   appName: configuration.site.name,
   database: drizzleAdapter(dbHttp, {
     provider: "pg",
     schema: {
-      user: users,
-      account: account,
-      verification: verification,
+      user,
+      account,
+      verification,
     },
   }),
 
