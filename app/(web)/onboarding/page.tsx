@@ -1,13 +1,7 @@
-import { getOnboardingData } from "@/database/helpers/onboarding"
-import { auth } from "@/lib/authentication/utils"
-import { createRoute } from "@/lib/utils"
-import { redirect } from "next/navigation"
+import { onboardUser } from "@/app/actions/pages/onboarding/onboard-user"
+import { Loader } from "lucide-react"
 
 export default async function MainOnboardPage() {
-  const session = await auth()
-  if (!session) redirect(createRoute("sign-in"))
-
-  const onboarding = await getOnboardingData(session.user.id)
-
-  return <div>Main Onboarding page: {JSON.stringify(onboarding)}</div>
+  await onboardUser()
+  return <Loader className="animate-spin size-4 text-muted-foreground" />
 }

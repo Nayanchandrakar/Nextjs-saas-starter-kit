@@ -67,7 +67,6 @@ export const authServer = betterAuth({
       },
     }),
     multiSession(),
-    // make sure this is the last plugin in the array
     nextCookies(),
   ],
 })

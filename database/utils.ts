@@ -7,12 +7,11 @@ export const dateCreation = {
     .$onUpdate(() => new Date()),
 }
 
-export const onboardingStatusEnum = pgEnum("onboarding_status", [
-  "pending",
-  "completed",
-])
-export const onboardingStepEnum = pgEnum("onboarding_step", [
-  "profile",
-  "workspace",
-  "collaborate",
-])
+export const onboardingStatus = ["pending", "completed"] as const
+export const onboardingSteps = ["profile", "workspace", "collaborate"] as const
+
+export const onboardingStatusEnum = pgEnum(
+  "onboarding_status",
+  onboardingStatus,
+)
+export const onboardingStepEnum = pgEnum("onboarding_step", onboardingSteps)
