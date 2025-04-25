@@ -103,6 +103,7 @@ export const SignInForm = () => {
                     <Input
                       disabled={isSubmitting}
                       placeholder="Enter your email"
+                      autoComplete="off"
                       {...field}
                     />
                   </FormControl>
@@ -133,7 +134,7 @@ export const SignInForm = () => {
           disabled={isSubmitting}
           type="button"
           variant="outline"
-          className="w-full bg-black text-zinc-200 hover:text-white hover:bg-black border border-input"
+          className="w-full"
           onClick={googleSignIn}
         >
           <Icons.google className="mr-2 h-4 w-4" />
