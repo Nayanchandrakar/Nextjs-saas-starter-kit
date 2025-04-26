@@ -4,5 +4,6 @@ export const messages = {
   },
   global: {
     error: "Something went wrong",
+    validation: "Input parameters are missing",
   },
 }
