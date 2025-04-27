@@ -6,7 +6,7 @@ import {
 import { createId } from "@paralleldrive/cuid2"
 import { boolean, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
-export const user = pgTable("user", {
+export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
@@ -25,7 +25,7 @@ export const account = pgTable("account", {
   providerId: text("provider_id").notNull(),
   userId: text("user_id")
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
@@ -52,7 +52,7 @@ export const userOnboarding = pgTable("user_onboarding", {
     .$defaultFn(() => createId()),
   userId: text("user_id")
     .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }),
   onboardingStatus: onboardingStatusEnum("onboarding_status")
     .default("pending")
     .notNull(),

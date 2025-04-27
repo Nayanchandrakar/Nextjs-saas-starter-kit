@@ -18,13 +18,14 @@ import {
 } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 
 export const ProfileOnboardingForm = () => {
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {
-      profileImage: "",
+      id: "",
+      isFromInvitation: false,
+      image: "",
       firstName: "",
       lastName: "",
       email: "example@gmail.com",
@@ -44,10 +45,10 @@ export const ProfileOnboardingForm = () => {
           maxSize={2 * 1024 * 1024}
           title="Profile Image"
           accept="image/png,image/jpeg,image/jpg"
-          imageUrl={form.getValues("profileImage")!}
-          onRemove={() => form.reset({ profileImage: "" })}
+          imageUrl={form.getValues("image")!}
+          onRemove={() => form.reset({ image: "" })}
           onSucess={(imageUrl: string) => {
-            form.setValue("profileImage", imageUrl, {
+            form.setValue("image", imageUrl, {
               shouldDirty: true,
               shouldTouch: true,
               shouldValidate: true,
@@ -105,6 +106,18 @@ export const ProfileOnboardingForm = () => {
                     <Input disabled={true} {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input disabled={true} type="hidden" {...field} />
+                  </FormControl>
                 </FormItem>
               )}
             />

@@ -1,5 +1,5 @@
 import { dbHttp } from "@/database"
-import { account, user, verification } from "@/database/schema"
+import { account, users, verification } from "@/database/schema"
 import { RedisStorage } from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
 import { magicLinkService } from "@/lib/strategies/email-strategy"
@@ -15,7 +15,7 @@ export const authServer = betterAuth({
   database: drizzleAdapter(dbHttp, {
     provider: "pg",
     schema: {
-      user,
+      user: users,
       account,
       verification,
     },

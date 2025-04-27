@@ -8,7 +8,7 @@ import {
   type FileWithPreview,
   formatBytes,
   useFileUpload,
-} from "@/hooks/use-file-upload"
+} from "@/hooks/client/use-file-upload"
 import { messages } from "@/lib/constants/message"
 import axios from "axios"
 import { Loader, Upload } from "lucide-react"
