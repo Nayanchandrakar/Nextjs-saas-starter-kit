@@ -18,13 +18,20 @@ import { toast } from "sonner"
 interface ProfilePicComponentProps {
   maxSize: number
   accept: string
+  imageUrl: string
+  title: string
+  onSucess?: (imageUrl: string) => void
+  onRemove?: () => void
 }
 
 export const ProfilePicComponent = ({
   accept,
   maxSize,
+  onSucess,
+  onRemove,
+  imageUrl,
+  title,
 }: ProfilePicComponentProps) => {
-  const [imageUrl, setImageUrl] = useState("")
   const [isPending, startTransition] = useTransition()
   const maxFileSize = useMemo(() => formatBytes(maxSize), [maxSize])
 
@@ -39,7 +46,7 @@ export const ProfilePicComponent = ({
           fileType: file.type,
         })
 
-        setImageUrl(imageUrl)
+        onSucess?.(imageUrl)
         await axios.put(url, file, { headers: { "Content-Type": file.type } })
       } catch (error) {
         toast.error(
@@ -72,7 +79,7 @@ export const ProfilePicComponent = ({
 
   const handleFileRemove = () => {
     removeFile(files[0]?.id)
-    setImageUrl("")
+    onRemove?.()
   }
 
   const fileName = useMemo(() => files[0]?.file.name ?? null, [files])
@@ -114,7 +121,7 @@ export const ProfilePicComponent = ({
       </div>
 
       <div className="flex items-start gap-2.5 flex-col">
-        <span className="text-xs">Image</span>
+        <span className="text-xs">{title}</span>
         <div className="flex items-center gap-3">
           <Button
             variant="outline"

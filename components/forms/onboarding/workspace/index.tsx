@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-export const ProfileOnboardingForm = () => {
+export const WorkSpaceOnboardingForm = () => {
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {

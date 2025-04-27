@@ -11,7 +11,7 @@ export default function OnboardingLayout({
   children: React.ReactNode
 }>) {
   return (
-    <div className=" flex items-center justify-center h-full min-h-screen">
+    <div className=" flex items-center justify-center size-full min-h-screen">
       {children}
     </div>
   )
