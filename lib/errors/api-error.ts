@@ -5,6 +5,7 @@ export enum ErrorCode {
   NOT_FOUND = "NOT_FOUND",
   VALIDATION_ERROR = "VALIDATION_ERROR",
   INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR",
+  TOO_MANY_REQUESTS = "TOO_MANY_REQUESTS",
 }
 
 export class ApiError extends Error {
@@ -30,8 +31,12 @@ export class ApiError extends Error {
     return new ApiError(ErrorCode.FORBIDDEN, message, details, 403)
   }
 
-  static notFound(message: string, details?: unknown): ApiError {
+  static tooManyRequests(message: string, details?: unknown): ApiError {
     return new ApiError(ErrorCode.NOT_FOUND, message, details, 404)
+  }
+
+  static notFound(message: string, details?: unknown): ApiError {
+    return new ApiError(ErrorCode.NOT_FOUND, message, details, 429)
   }
 
   static validationError(message: string, details?: unknown): ApiError {
