@@ -1,6 +1,6 @@
 import { restrictOnboardingStep } from "@/app/actions/pages/onboarding/utils"
 import { LazyProfileOnboadingForm } from "@/components/dynamic"
-import { ProfilePicUpload } from "@/components/shared/file/profile-pic-upload"
+import { ProfilePicComponent } from "@/components/shared/file/profile-pic-component"
 
 export default async function ProfileOnboardingPage() {
   // await restrictOnboardingStep("profile")
@@ -9,7 +9,11 @@ export default async function ProfileOnboardingPage() {
     <div className="flex gap-2 flex-col">
       {/* <p className="text-xl font-semibold">Create Your profile</p> */}
       {/* <LazyProfileOnboadingForm /> */}
-      <ProfilePicUpload />
+
+      <ProfilePicComponent
+        maxSize={4 * 1024 * 1024}
+        accept="image/jpeg,image/png,image/jpg"
+      />
     </div>
   )
 }

@@ -1,5 +1,10 @@
 import { serverEnv } from "@/lib/utilities/server-env"
-import { S3Client as AwsS3Client } from "@aws-sdk/client-s3"
+import {
+  S3Client as AwsS3Client,
+  PutObjectCommand,
+  type PutObjectCommandInput,
+} from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 class S3Service {
   private static instance: S3Service
@@ -24,6 +29,12 @@ class S3Service {
 
   getClient(): AwsS3Client {
     return this.client
+  }
+
+  async getPreSignedUrl(params: PutObjectCommandInput) {
+    return await getSignedUrl(this.client, new PutObjectCommand(params), {
+      expiresIn: 60 * 60,
+    })
   }
 }
 

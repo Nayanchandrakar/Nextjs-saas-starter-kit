@@ -4,6 +4,8 @@ export const messages = {
   },
   global: {
     error: "Something went wrong",
+    unauthorized: "unauthorized user",
     validation: "Input parameters are missing",
+    tooManyRequest: "Too many requests",
   },
 }

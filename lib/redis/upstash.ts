@@ -1,17 +1,17 @@
 import { redis } from "@/lib/redis"
 import { Ratelimit } from "@upstash/ratelimit"
 
-class RatelimitService {
-  private static instance: RatelimitService
+class UpstashRateLimit {
+  private static instance: UpstashRateLimit
   private globalRateLimiter: Ratelimit | null = null
 
   constructor() {}
 
   static getInstance() {
-    if (!RatelimitService.instance) {
-      RatelimitService.instance = new RatelimitService()
+    if (!UpstashRateLimit.instance) {
+      UpstashRateLimit.instance = new UpstashRateLimit()
     }
-    return RatelimitService.instance
+    return UpstashRateLimit.instance
   }
 
   /**
@@ -28,4 +28,4 @@ class RatelimitService {
   }
 }
 
-export const ratelimitService = RatelimitService.getInstance()
+export const upstashRateLimit = UpstashRateLimit.getInstance()

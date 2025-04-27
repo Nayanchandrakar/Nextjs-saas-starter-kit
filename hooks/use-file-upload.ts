@@ -166,6 +166,7 @@ export const useFileUpload = (
     })
   }, [onFilesChange])
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:
   const addFiles = useCallback(
     (newFiles: FileList | File[]) => {
       if (!newFiles || newFiles.length === 0) return
