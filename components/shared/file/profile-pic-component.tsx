@@ -18,20 +18,23 @@ import { toast } from "sonner"
 interface ProfilePicComponentProps {
   maxSize: number
   accept: string
-  imageUrl: string
+  fileSrc: string
   title: string
-  onSucess?: (imageUrl: string) => void
+  disabled: boolean
+  onSuccess?: (imageSrc: string) => void
   onRemove?: () => void
 }
 
 export const ProfilePicComponent = ({
   accept,
   maxSize,
-  onSucess,
+  onSuccess,
   onRemove,
-  imageUrl,
+  fileSrc,
   title,
+  disabled,
 }: ProfilePicComponentProps) => {
+  const [imageSrc, setImageSrc] = useState(fileSrc)
   const [isPending, startTransition] = useTransition()
   const maxFileSize = useMemo(() => formatBytes(maxSize), [maxSize])
 
@@ -46,7 +49,8 @@ export const ProfilePicComponent = ({
           fileType: file.type,
         })
 
-        onSucess?.(imageUrl)
+        setImageSrc(imageUrl)
+        onSuccess?.(imageUrl)
         await axios.put(url, file, { headers: { "Content-Type": file.type } })
       } catch (error) {
         toast.error(
@@ -79,9 +83,11 @@ export const ProfilePicComponent = ({
 
   const handleFileRemove = () => {
     removeFile(files[0]?.id)
+    setImageSrc("")
     onRemove?.()
   }
 
+  const isLoading = useMemo(() => isPending || disabled, [isPending, disabled])
   const fileName = useMemo(() => files[0]?.file.name ?? null, [files])
 
   return (
@@ -100,12 +106,12 @@ export const ProfilePicComponent = ({
           <div aria-hidden="true">
             <Loader className="size-5 animate-spin" />
           </div>
-        ) : imageUrl ? (
+        ) : imageSrc ? (
           <Avatar className="size-full rounded-none">
             <AvatarImage
               width={64}
               height={64}
-              src={imageUrl!}
+              src={imageSrc!}
               alt="profile-image"
               className="size-full object-cover"
             />
@@ -127,7 +133,7 @@ export const ProfilePicComponent = ({
             variant="outline"
             size="sm"
             aria-haspopup="dialog"
-            disabled={isPending}
+            disabled={isLoading}
             onClick={openFileDialog}
           >
             <Upload className="size-4" />
@@ -136,7 +142,7 @@ export const ProfilePicComponent = ({
 
           <input
             {...getInputProps()}
-            disabled={isPending}
+            disabled={isLoading}
             className="sr-only"
           />
 
@@ -144,7 +150,7 @@ export const ProfilePicComponent = ({
             size="sm"
             variant="destructive"
             onClick={handleFileRemove}
-            disabled={!fileName || isPending}
+            disabled={(!fileName && !imageSrc) || isLoading}
           >
             Remove
           </Button>

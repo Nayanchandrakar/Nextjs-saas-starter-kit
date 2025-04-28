@@ -12,6 +12,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useUpdateUserHook } from "@/hooks/trpc/users"
+import { formSetting } from "@/lib/constants/form-settings"
 import {
   profileOnboardingSchema,
   profileOnboardingSchemaType,
@@ -19,24 +21,33 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
-export const ProfileOnboardingForm = () => {
+interface ProfileOnboardingFormProps {
+  email: string
+  firstName: string
+  lastName: string
+  image: string
+}
+
+export const ProfileOnboardingForm = ({
+  email,
+  firstName,
+  lastName,
+  image,
+}: ProfileOnboardingFormProps) => {
+  const { mutateAsync, isPending } = useUpdateUserHook()
+
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {
-      id: "",
       isFromInvitation: false,
-      image: "",
-      firstName: "",
-      lastName: "",
-      email: "example@gmail.com",
+      image: image,
+      firstName,
+      lastName,
+      email,
     },
+    shouldFocusError: true,
+    shouldUseNativeValidation: true,
   })
-
-  async function onSubmit(values: profileOnboardingSchemaType) {
-    console.log(values)
-  }
-
-  const isSubmitting = !!form.formState.isSubmitting
 
   return (
     <Card className="w-full max-w-lg">
@@ -44,22 +55,22 @@ export const ProfileOnboardingForm = () => {
         <ProfilePicComponent
           maxSize={2 * 1024 * 1024}
           title="Profile Image"
+          fileSrc={form.getValues("image")!}
           accept="image/png,image/jpeg,image/jpg"
-          imageUrl={form.getValues("image")!}
-          onRemove={() => form.reset({ image: "" })}
-          onSucess={(imageUrl: string) => {
-            form.setValue("image", imageUrl, {
-              shouldDirty: true,
-              shouldTouch: true,
-              shouldValidate: true,
-            })
+          disabled={isPending}
+          onRemove={() => form.setValue("image", "", formSetting)}
+          onSuccess={(imageSrc: string) => {
+            form.setValue("image", imageSrc, formSetting)
           }}
         />
       </CardHeader>
 
       <CardContent className="mt-3">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit((values) => mutateAsync(values))}
+            className="space-y-6"
+          >
             <FormField
               control={form.control}
               name="firstName"
@@ -67,11 +78,7 @@ export const ProfileOnboardingForm = () => {
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="John"
-                      {...field}
-                    />
+                    <Input disabled={isPending} placeholder="John" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -85,11 +92,7 @@ export const ProfileOnboardingForm = () => {
                 <FormItem>
                   <FormLabel>Last Name (optional)</FormLabel>
                   <FormControl>
-                    <Input
-                      disabled={isSubmitting}
-                      placeholder="Doe"
-                      {...field}
-                    />
+                    <Input disabled={isPending} placeholder="Doe" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,23 +113,11 @@ export const ProfileOnboardingForm = () => {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input disabled={true} type="hidden" {...field} />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-
             <Button
-              disabled={isSubmitting}
+              disabled={isPending || !form.formState.isDirty}
               type="submit"
               className="w-full"
-              loading={isSubmitting}
+              loading={isPending}
             >
               Continue
             </Button>

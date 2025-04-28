@@ -1,5 +1,8 @@
 import { authServer } from "@/lib/authentication/auth-server"
-import { getSessionContext } from "@/types/authentication/server-types"
+import {
+  getSessionContext,
+  updateUserRequestBody,
+} from "@/types/authentication/server-types"
 import { headers } from "next/headers"
 
 export async function auth({ asResponse, query }: getSessionContext = {}) {
@@ -7,5 +10,12 @@ export async function auth({ asResponse, query }: getSessionContext = {}) {
     headers: await headers(),
     asResponse: !!asResponse,
     ...(query && { query }),
+  })
+}
+
+export async function updateUser({ body }: updateUserRequestBody) {
+  return await authServer.api.updateUser({
+    headers: await headers(),
+    body,
   })
 }
