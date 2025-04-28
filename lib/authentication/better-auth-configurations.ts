@@ -1,5 +1,6 @@
+import { createOnboardingData } from "@/database/helpers/onboarding"
 import { redis } from "@/lib/redis"
-import type { SecondaryStorage } from "better-auth"
+import type { SecondaryStorage, User } from "better-auth"
 
 export const RedisStorage: SecondaryStorage = {
   get: async (key) => {
@@ -12,5 +13,20 @@ export const RedisStorage: SecondaryStorage = {
   },
   delete: async (key) => {
     await redis.del(key)
+  },
+}
+
+/**
+ * allows you to define custom hooks that can be
+ * executed during lifecycle of core database
+ * operations.
+ */
+export const databaseHooks = {
+  user: {
+    create: {
+      after: async (user: User) => {
+        await createOnboardingData(user.id)
+      },
+    },
   },
 }

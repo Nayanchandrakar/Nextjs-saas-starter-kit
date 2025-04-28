@@ -5,3 +5,10 @@ export type getSessionContext = {
   }
   asResponse?: boolean
 }
+
+export type updateUserRequestBody = {
+  body: Partial<{
+    name: string
+    image: string | null
+  }>
+}

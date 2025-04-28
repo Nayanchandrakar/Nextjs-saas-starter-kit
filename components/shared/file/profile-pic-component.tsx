@@ -8,7 +8,7 @@ import {
   type FileWithPreview,
   formatBytes,
   useFileUpload,
-} from "@/hooks/use-file-upload"
+} from "@/hooks/client/use-file-upload"
 import { messages } from "@/lib/constants/message"
 import axios from "axios"
 import { Loader, Upload } from "lucide-react"
@@ -18,13 +18,23 @@ import { toast } from "sonner"
 interface ProfilePicComponentProps {
   maxSize: number
   accept: string
+  fileSrc: string
+  title: string
+  disabled: boolean
+  onSuccess?: (imageSrc: string) => void
+  onRemove?: () => void
 }
 
 export const ProfilePicComponent = ({
   accept,
   maxSize,
+  onSuccess,
+  onRemove,
+  fileSrc,
+  title,
+  disabled,
 }: ProfilePicComponentProps) => {
-  const [imageUrl, setImageUrl] = useState("")
+  const [imageSrc, setImageSrc] = useState(fileSrc)
   const [isPending, startTransition] = useTransition()
   const maxFileSize = useMemo(() => formatBytes(maxSize), [maxSize])
 
@@ -39,7 +49,8 @@ export const ProfilePicComponent = ({
           fileType: file.type,
         })
 
-        setImageUrl(imageUrl)
+        setImageSrc(imageUrl)
+        onSuccess?.(imageUrl)
         await axios.put(url, file, { headers: { "Content-Type": file.type } })
       } catch (error) {
         toast.error(
@@ -72,9 +83,11 @@ export const ProfilePicComponent = ({
 
   const handleFileRemove = () => {
     removeFile(files[0]?.id)
-    setImageUrl("")
+    setImageSrc("")
+    onRemove?.()
   }
 
+  const isLoading = useMemo(() => isPending || disabled, [isPending, disabled])
   const fileName = useMemo(() => files[0]?.file.name ?? null, [files])
 
   return (
@@ -93,12 +106,12 @@ export const ProfilePicComponent = ({
           <div aria-hidden="true">
             <Loader className="size-5 animate-spin" />
           </div>
-        ) : imageUrl ? (
+        ) : imageSrc ? (
           <Avatar className="size-full rounded-none">
             <AvatarImage
               width={64}
               height={64}
-              src={imageUrl!}
+              src={imageSrc!}
               alt="profile-image"
               className="size-full object-cover"
             />
@@ -114,13 +127,13 @@ export const ProfilePicComponent = ({
       </div>
 
       <div className="flex items-start gap-2.5 flex-col">
-        <span className="text-xs">Image</span>
+        <span className="text-xs">{title}</span>
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
             size="sm"
             aria-haspopup="dialog"
-            disabled={isPending}
+            disabled={isLoading}
             onClick={openFileDialog}
           >
             <Upload className="size-4" />
@@ -129,7 +142,7 @@ export const ProfilePicComponent = ({
 
           <input
             {...getInputProps()}
-            disabled={isPending}
+            disabled={isLoading}
             className="sr-only"
           />
 
@@ -137,7 +150,7 @@ export const ProfilePicComponent = ({
             size="sm"
             variant="destructive"
             onClick={handleFileRemove}
-            disabled={!fileName || isPending}
+            disabled={(!fileName && !imageSrc) || isLoading}
           >
             Remove
           </Button>

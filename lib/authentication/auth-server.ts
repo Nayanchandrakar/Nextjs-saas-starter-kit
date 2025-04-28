@@ -1,6 +1,9 @@
 import { dbHttp } from "@/database"
-import { account, user, verification } from "@/database/schema"
-import { RedisStorage } from "@/lib/authentication/better-auth-configurations"
+import { account, users, verification } from "@/database/schema"
+import {
+  RedisStorage,
+  databaseHooks,
+} from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
 import { magicLinkService } from "@/lib/strategies/email-strategy"
 import { serverEnv } from "@/lib/utilities/server-env"
@@ -15,11 +18,13 @@ export const authServer = betterAuth({
   database: drizzleAdapter(dbHttp, {
     provider: "pg",
     schema: {
-      user,
+      user: users,
       account,
       verification,
     },
   }),
+
+  databaseHooks,
 
   socialProviders: {
     google: {
@@ -35,10 +40,7 @@ export const authServer = betterAuth({
     },
   },
 
-  rateLimit: {
-    storage: "secondary-storage",
-  },
-
+  rateLimit: { storage: "secondary-storage" },
   secondaryStorage: RedisStorage,
 
   user: {

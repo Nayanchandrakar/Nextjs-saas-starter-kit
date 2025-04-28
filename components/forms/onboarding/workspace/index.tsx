@@ -12,42 +12,30 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useUpdateUserHook } from "@/hooks/trpc/users"
-import { formSetting } from "@/lib/constants/form-settings"
 import {
   profileOnboardingSchema,
   profileOnboardingSchemaType,
 } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-interface ProfileOnboardingFormProps {
-  email: string
-  firstName: string
-  lastName: string
-  image: string
-}
-
-export const ProfileOnboardingForm = ({
-  email,
-  firstName,
-  lastName,
-  image,
-}: ProfileOnboardingFormProps) => {
-  const { mutateAsync, isPending } = useUpdateUserHook()
-
+export const WorkSpaceOnboardingForm = () => {
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {
-      isFromInvitation: false,
-      image: image,
-      firstName,
-      lastName,
-      email,
+      profileImage: "",
+      firstName: "",
+      lastName: "",
+      email: "example@gmail.com",
     },
-    shouldFocusError: true,
-    shouldUseNativeValidation: true,
   })
+
+  async function onSubmit(values: profileOnboardingSchemaType) {
+    console.log(values)
+  }
+
+  const isSubmitting = !!form.formState.isSubmitting
 
   return (
     <Card className="w-full max-w-lg">
@@ -55,22 +43,22 @@ export const ProfileOnboardingForm = ({
         <ProfilePicComponent
           maxSize={2 * 1024 * 1024}
           title="Profile Image"
-          fileSrc={form.getValues("image")!}
           accept="image/png,image/jpeg,image/jpg"
-          disabled={isPending}
-          onRemove={() => form.setValue("image", "", formSetting)}
-          onSuccess={(imageSrc: string) => {
-            form.setValue("image", imageSrc, formSetting)
+          imageUrl={form.getValues("profileImage")!}
+          onRemove={() => form.reset({ profileImage: "" })}
+          onSucess={(imageUrl: string) => {
+            form.setValue("profileImage", imageUrl, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            })
           }}
         />
       </CardHeader>
 
       <CardContent className="mt-3">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((values) => mutateAsync(values))}
-            className="space-y-6"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
               name="firstName"
@@ -78,7 +66,11 @@ export const ProfileOnboardingForm = ({
                 <FormItem>
                   <FormLabel>First Name</FormLabel>
                   <FormControl>
-                    <Input disabled={isPending} placeholder="John" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="John"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -92,7 +84,11 @@ export const ProfileOnboardingForm = ({
                 <FormItem>
                   <FormLabel>Last Name (optional)</FormLabel>
                   <FormControl>
-                    <Input disabled={isPending} placeholder="Doe" {...field} />
+                    <Input
+                      disabled={isSubmitting}
+                      placeholder="Doe"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -114,10 +110,10 @@ export const ProfileOnboardingForm = ({
             />
 
             <Button
-              disabled={isPending || !form.formState.isDirty}
+              disabled={isSubmitting}
               type="submit"
               className="w-full"
-              loading={isPending}
+              loading={isSubmitting}
             >
               Continue
             </Button>

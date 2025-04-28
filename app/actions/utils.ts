@@ -4,9 +4,9 @@ import { ApiError } from "@/lib/errors/api-error"
 import { redirectToRoute } from "@/lib/utils"
 import { z } from "zod"
 
-export async function handleAuthRequest() {
+export async function handleAuthRequest(path?: string) {
   const session = await auth()
-  if (!session) redirectToRoute("sign-in")
+  if (!session) redirectToRoute(path ?? "sign-in")
   return session!
 }
 
