@@ -1,15 +1,19 @@
-import { ClientComponet } from "@/app/_components/client-component"
-import { Await } from "@/components/shared/await"
-import { trpc } from "@/trpc/server"
+import { getUser } from "@/database/helpers/users"
+import { handleAuthRequest } from "./actions/utils"
 
 export default async function Home() {
+  const session = await handleAuthRequest()
+
+  const start = performance.now()
+  const user = await getUser(session?.user.id)
+  const end = performance.now()
+
+  const timeTaken = end - start
+
   return (
-    <Await
-      prefetch={[trpc.hello.queryOptions()]}
-      fallback={<div>Loading page</div>}
-      errorComponent={<div>Error page</div>}
-    >
-      <ClientComponet />
-    </Await>
+    <div>
+      User from database: {JSON.stringify(user)} took{" "}
+      <span className="text-green-500">{timeTaken.toFixed(2)}ms</span>
+    </div>
   )
 }
