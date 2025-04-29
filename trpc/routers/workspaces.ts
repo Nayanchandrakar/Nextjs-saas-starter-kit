@@ -1,3 +1,6 @@
-import { createTRPCRouter, publicProcedure } from "@/trpc/init"
+import { createTRPCRouter } from "@/trpc/init"
+import { create } from "@/trpc/procedures/workspace"
 
-export const workSpacesRouter = createTRPCRouter({})
+export const workSpacesRouter = createTRPCRouter({
+  create,
+})

@@ -9,9 +9,6 @@ export async function restrictOnboardingStep(requiredStep: OnboardingStep) {
   const session = await handleAuthRequest()
 
   const onboarding = await getOnboardingData(session.user.id)
-  if (!onboarding) {
-    redirectToRoute("onboarding")
-  }
 
   const { onboardingStatus, onboardingStep } = onboarding
   if (onboardingStatus === "completed") {
