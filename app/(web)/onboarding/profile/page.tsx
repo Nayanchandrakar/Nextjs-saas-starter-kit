@@ -1,5 +1,5 @@
 import { restrictOnboardingStep } from "@/app/actions/pages/onboarding/utils"
-import { LoadProfileOnboaringForm } from "@/components/dynamic"
+import { ProfileOnboardingForm } from "@/components/forms/onboarding/profile"
 
 export default async function ProfileOnboardingPage() {
   const { session } = await restrictOnboardingStep("profile")
@@ -13,7 +13,7 @@ export default async function ProfileOnboardingPage() {
         <p className="text-xl font-semibold">Your main profile</p>
       </div>
 
-      <LoadProfileOnboaringForm
+      <ProfileOnboardingForm
         email={session.user.email}
         firstName={firstName}
         lastName={lastName}
