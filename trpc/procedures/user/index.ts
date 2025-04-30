@@ -1,6 +1,7 @@
 import { updateOnboardingData } from "@/database/helpers/onboarding"
 import { updateUser } from "@/lib/authentication/utils"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
+import { getCloudfrontKey, isCloudfrontSource } from "@/lib/utilities/s3-utils"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
 import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
@@ -12,7 +13,7 @@ export const update = protectedProcedure
     const { user } = ctx
 
     const fullName = buildFullName(firstName, lastName)
-    const imageSrc = image ?? null
+    const imageSrc = image ? getCloudfrontKey(image) : null
 
     const updateData = {
       name: fullName,

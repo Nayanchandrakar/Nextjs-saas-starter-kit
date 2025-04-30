@@ -1,5 +1,5 @@
 import { s3Service } from "@/lib/aws/s3-service"
-import { isCloudfrontSource } from "@/lib/utilities/s3-utils"
+import { isCloudfrontFile } from "@/lib/utilities/s3-utils"
 
 export async function deleteOldProfileImage(
   currentImage?: string | null,
@@ -9,7 +9,7 @@ export async function deleteOldProfileImage(
   if (
     currentImage &&
     image &&
-    isCloudfrontSource(currentImage) &&
+    isCloudfrontFile(currentImage) &&
     currentImage !== image
   ) {
     await s3Service.deleteObjectFromBucket(currentImage)

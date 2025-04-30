@@ -1,6 +1,6 @@
 import { restrictOnboardingStep } from "@/app/actions/pages/onboarding/utils"
 import { ProfileOnboardingForm } from "@/components/forms/onboarding/profile"
-import { getS3FileSource, isProviderUrl } from "@/lib/utilities/url-utilities"
+import { getCloudfrontFile, isCloudfrontFile } from "@/lib/utilities/s3-utils"
 
 export default async function ProfileOnboardingPage() {
   const { session } = await restrictOnboardingStep("profile")
@@ -10,9 +10,8 @@ export default async function ProfileOnboardingPage() {
 
   let imageSrc = session.user.image ?? ""
 
-  // Extra handling because of lh3.google.com
-  if (imageSrc && isProviderUrl(imageSrc, "s3")) {
-    imageSrc = getS3FileSource(imageSrc)
+  if (imageSrc && isCloudfrontFile(imageSrc)) {
+    imageSrc = getCloudfrontFile(imageSrc)
   }
 
   return (
