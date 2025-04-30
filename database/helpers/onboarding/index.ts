@@ -1,3 +1,7 @@
+import {
+  OnboardingStatus,
+  OnboardingStep,
+} from "@/app/actions/pages/onboarding/utils"
 import { dbHttp } from "@/database"
 import { userOnboarding } from "@/database/schema"
 import { eq } from "drizzle-orm"
@@ -25,4 +29,15 @@ export async function createOnboardingData(userId: string) {
     })
 
   return data
+}
+
+export async function updateOnboardingData(
+  onboardingStatus: OnboardingStatus,
+  onboardingStep: OnboardingStep,
+  userId: string,
+) {
+  await dbHttp
+    .update(userOnboarding)
+    .set({ onboardingStep, onboardingStatus })
+    .where(eq(userOnboarding.userId, userId))
 }

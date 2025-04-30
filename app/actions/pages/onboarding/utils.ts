@@ -1,9 +1,13 @@
 import { handleAuthRequest } from "@/app/actions/utils"
 import { getOnboardingData } from "@/database/helpers/onboarding"
-import { onboardingSteps as stepOrder } from "@/database/utils"
+import {
+  onboardingStatus,
+  onboardingSteps as stepOrder,
+} from "@/database/utils"
 import { redirectToRoute } from "@/lib/utils"
 
 export type OnboardingStep = (typeof stepOrder)[number]
+export type OnboardingStatus = (typeof onboardingStatus)[number]
 
 export async function restrictOnboardingStep(requiredStep: OnboardingStep) {
   const session = await handleAuthRequest()

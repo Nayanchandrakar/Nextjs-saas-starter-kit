@@ -11,6 +11,7 @@ import {
 import { getFilename } from "@/app/actions/lib/aws/utils"
 import { validateRequest, validateSessionRequest } from "@/app/actions/utils"
 import { s3Service } from "@/lib/aws/s3-service"
+import { getCloudfrontFile } from "@/lib/utilities/s3-utils"
 import { serverEnv } from "@/lib/utilities/server-env"
 
 export const getPreSignedUrl = async (request: preSignedSchemaType) => {
@@ -34,7 +35,7 @@ export const getPreSignedUrl = async (request: preSignedSchemaType) => {
       CacheControl: "max-age=63072000",
     })
 
-    const imageUrl = `https://${serverEnv.S3_UPLOAD_BUCKET}.s3.amazonaws.com/${generatedFilename}`
+    const imageUrl = getCloudfrontFile(generatedFilename)
 
     return { url: endpoint, imageUrl }
   } catch (error) {

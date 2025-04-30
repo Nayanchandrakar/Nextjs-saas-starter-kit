@@ -1,7 +1,10 @@
 import { dbHttp } from "@/database"
-import { getOnboardingData } from "@/database/helpers/onboarding"
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "@/database/helpers/onboarding"
 import { getWorkSpacesByUserIdAndSlug } from "@/database/helpers/workspaces"
-import { userOnboarding, workspaces } from "@/database/schema"
+import { workspaces } from "@/database/schema"
 import { workSpaceOnboardingSchema } from "@/lib/schema/pages/onboarding/workspace/workspace-onboarding-schema"
 import { protectedProcedure } from "@/trpc/procedures/root"
 import { TRPCError } from "@trpc/server"
@@ -38,10 +41,7 @@ export const create = protectedProcedure
         logo: input.logo ?? null,
       }),
 
-      dbHttp.update(userOnboarding).set({
-        onboardingStep: "collaborate",
-        onboardingStatus: "pending",
-      }),
+      updateOnboardingData("pending", "collaborate", ctx.user.id),
     ])
 
     return { success: true, message: "Workspace created successfully" }

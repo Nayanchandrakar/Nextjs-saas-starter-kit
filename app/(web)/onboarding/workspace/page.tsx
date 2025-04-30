@@ -10,7 +10,7 @@ export default async function WorkSpaceOnboardingPage() {
     <div className="w-full mx-auto max-w-lg flex items-center justify-center flex-col gap-y-3">
       <div className="w-full flex gap-2 items-center">
         <Link
-          href="/login"
+          href="/onboarding/profile"
           className={buttonVariants({
             variant: "outline",
             size: "icon",

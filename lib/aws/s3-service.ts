@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   type PutObjectCommandInput,
 } from "@aws-sdk/client-s3"
+import { DeleteObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 
 class S3Service {
@@ -35,6 +36,15 @@ class S3Service {
     return await getSignedUrl(this.client, new PutObjectCommand(params), {
       expiresIn: 60 * 60,
     })
+  }
+
+  async deleteObjectFromBucket(key: string) {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: serverEnv.S3_UPLOAD_BUCKET,
+        Key: key,
+      }),
+    )
   }
 }
 

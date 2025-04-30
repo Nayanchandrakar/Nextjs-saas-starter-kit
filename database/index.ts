@@ -83,6 +83,9 @@ const database = Database.getInstance({
     token: serverEnv.UPSTASH_REDIS_REST_TOKEN,
     url: serverEnv.UPSTASH_REDIS_REST_URL,
     global: true,
+    config: {
+      ex: 60 * 5,
+    },
   },
 })
 

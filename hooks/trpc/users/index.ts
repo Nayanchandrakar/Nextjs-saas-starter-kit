@@ -14,7 +14,7 @@ export const useUpdateUserHook = () => {
     trpc.users.update.mutationOptions({
       onSuccess: () => {
         toast.success("Your profile has been created!", {
-          description: "Hang tight — redirecting you shortly...",
+          description: "Hang tight redirecting you shortly...",
         })
         router.push("/onboarding/workspace")
       },
