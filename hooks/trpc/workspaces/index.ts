@@ -14,7 +14,7 @@ export const useCreateWorkspaceHook = () => {
     trpc.workSpaces.create.mutationOptions({
       onSuccess: () => {
         toast.success("Your workspace has been created!", {
-          description: "Hang tight — redirecting you shortly...",
+          description: "Hang tight redirecting you shortly...",
         })
         router.push("/onboarding/collaborate")
       },
