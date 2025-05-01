@@ -5,7 +5,7 @@ import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 
 export default async function CollaborationOnboardingPage() {
-  // await restrictOnboardingStep("collaborate")
+  await restrictOnboardingStep("collaborate")
   return (
     <div className="w-full mx-auto max-w-lg flex items-center justify-center flex-col gap-y-3">
       <div className="w-full flex gap-2 items-center">
