@@ -23,7 +23,7 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/authentication/auth-client"
-import { messages } from "@/lib/constants/message"
+import messageJson from "@/lib/constants/message.json"
 import {
   signInFormSchema,
   signInFormSchemaType,
@@ -68,14 +68,14 @@ export const SignInForm = () => {
   }
 
   const onError = useCallback((error: ErrorContext) => {
-    const message = error.error.message ?? messages.global.error
+    const message = error.error.message ?? messageJson.generalError
     toast.error(message)
     setAlertState({ variant: "error", message })
   }, [])
 
   const onSuccess = useCallback(() => {
-    toast.success(messages.success.sigin)
-    setAlertState({ message: messages.success.sigin, variant: "success" })
+    toast.success(messageJson.signInSuccess)
+    setAlertState({ message: messageJson.signInSuccess, variant: "success" })
   }, [])
 
   const isSubmitting = !!(form.formState.isSubmitting || isPending)

@@ -1,7 +1,10 @@
-import { updateOnboardingData } from "@/database/helpers/onboarding"
+import {
+  getOnboardingData,
+  updateOnboardingData,
+} from "@/database/helpers/onboarding"
 import { updateUser } from "@/lib/authentication/utils"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
-import { getCloudfrontKey, isCloudfrontSource } from "@/lib/utilities/s3-utils"
+import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
 import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
@@ -20,11 +23,20 @@ export const update = protectedProcedure
       image: imageSrc,
     }
 
-    await Promise.all([
+    const { onboardingStep } = await getOnboardingData(user.id)
+
+    const asyncOperations = [
       deleteOldProfileImage(user.image, image),
       updateUser({ body: updateData }),
-      updateOnboardingData("pending", "workspace", ctx.user.id),
-    ])
+    ]
+
+    if (onboardingStep === "profile") {
+      asyncOperations.push(
+        updateOnboardingData("pending", "workspace", user.id),
+      )
+    }
+
+    await Promise.all(asyncOperations)
 
     return { success: true, message: "Profile updated succefully" }
   })

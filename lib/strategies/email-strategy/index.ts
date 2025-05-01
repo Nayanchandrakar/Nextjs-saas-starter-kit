@@ -1,4 +1,7 @@
-import { MagicLinkStrategy } from "@/lib/strategies/email-strategy/email-providers"
+import {
+  InvitationEmailStrategy,
+  MagicLinkStrategy,
+} from "@/lib/strategies/email-strategy/email-providers"
 import {
   EmailStrategy,
   EmailStrategyConfig,
@@ -16,6 +19,7 @@ class EmailStrategyContext<T> {
 class EmailStrategyFactory {
   private static strategies: StrategyFactory = {
     magicLink: () => new MagicLinkStrategy(),
+    invitationEmail: () => new InvitationEmailStrategy(),
   }
 
   static createStrategy<K extends keyof EmailStrategyConfig>(
@@ -26,3 +30,5 @@ class EmailStrategyFactory {
 }
 
 export const magicLinkService = EmailStrategyFactory.createStrategy("magicLink")
+export const invitationLinkService =
+  EmailStrategyFactory.createStrategy("invitationEmail")
