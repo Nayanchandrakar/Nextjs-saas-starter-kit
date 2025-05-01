@@ -9,7 +9,7 @@ import {
   formatBytes,
   useFileUpload,
 } from "@/hooks/client/use-file-upload"
-import { messages } from "@/lib/constants/message"
+import messageJson from "@/lib/constants/message.json"
 import axios from "axios"
 import { Loader, Upload } from "lucide-react"
 import { useEffect, useMemo, useState, useTransition } from "react"
@@ -54,7 +54,7 @@ export const ProfilePicComponent = ({
         await axios.put(url, file, { headers: { "Content-Type": file.type } })
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : messages.global.error,
+          error instanceof Error ? error.message : messageJson.generalError,
         )
       }
     })

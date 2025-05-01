@@ -1,4 +1,5 @@
 import { restrictOnboardingStep } from "@/app/actions/pages/onboarding/utils"
+import { CollabrationOnboardingForm } from "@/components/forms/onboarding/collaborate"
 import { buttonVariants } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
@@ -20,8 +21,7 @@ export default async function CollaborationOnboardingPage() {
         </Link>
         <p className="text-xl font-semibold">Create your workspace</p>
       </div>
-      {/* <WorkSpaceOnboardingForm /> */}
-      form
+      <CollabrationOnboardingForm />
     </div>
   )
 }

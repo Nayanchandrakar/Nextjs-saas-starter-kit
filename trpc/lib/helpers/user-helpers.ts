@@ -5,7 +5,6 @@ export async function deleteOldProfileImage(
   currentImage?: string | null,
   image?: string | null,
 ): Promise<void> {
-  // Only delete the files when current file and new image is not equal meaning they are different and the provider is s3
   if (
     currentImage &&
     image &&

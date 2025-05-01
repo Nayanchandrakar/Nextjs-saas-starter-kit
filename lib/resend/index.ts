@@ -75,7 +75,7 @@ export class MailService {
     const { sender, prefix, ...restOptions } = options
     let from = sender || serverEnv.RESEND_EMAIL
 
-    if (!isProd) {
+    if (!isProd || isProd) {
       from = "onboarding@resend.dev"
       restOptions.to = serverEnv.RESEND_EMAIL
     }

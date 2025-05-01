@@ -6,17 +6,15 @@ import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
-export const useCreateWorkspaceHook = () => {
+export const useInviteMembersHook = () => {
   const trpc = useTRPC()
   const router = useRouter()
 
   return useMutation(
-    trpc.workSpaces.create.mutationOptions({
-      onSuccess: () => {
-        toast.success("Your workspace has been created!", {
-          description: "Hang tight redirecting you shortly...",
-        })
-        router.push("/onboarding/collaborate")
+    trpc.invitations.createBulk.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(data.message)
+        router.push(data.redirect)
       },
       onError: (error) =>
         toast.error(error.message ?? messageJson.generalError),

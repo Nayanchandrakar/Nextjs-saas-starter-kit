@@ -1,6 +1,6 @@
 "use server"
 
-import { messages } from "@/lib/constants/message"
+import messageJson from "@/lib/constants/message.json"
 import { ApiError } from "@/lib/errors/api-error"
 import { upstashRateLimit } from "@/lib/redis/upstash"
 import {
@@ -23,7 +23,7 @@ export const getPreSignedUrl = async (request: preSignedSchemaType) => {
     const response = await upstashRateLimit.globalRateLimit().limit(identifier)
 
     if (!response.success) {
-      throw ApiError.tooManyRequests(messages.global.tooManyRequest)
+      throw ApiError.tooManyRequests(messageJson.tooManyRequests)
     }
 
     const generatedFilename = `${session.user.id}/${getFilename(formData.fileName)}`
@@ -43,6 +43,6 @@ export const getPreSignedUrl = async (request: preSignedSchemaType) => {
       throw error
     }
 
-    throw ApiError.internalServerError(messages.global.error, error)
+    throw ApiError.internalServerError(messageJson.generalError, error)
   }
 }

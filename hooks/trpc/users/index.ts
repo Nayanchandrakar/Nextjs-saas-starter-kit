@@ -1,6 +1,6 @@
 "use client"
 
-import { messages } from "@/lib/constants/message"
+import messageJson from "@/lib/constants/message.json"
 import { useTRPC } from "@/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -18,7 +18,8 @@ export const useUpdateUserHook = () => {
         })
         router.push("/onboarding/workspace")
       },
-      onError: (error) => toast.error(error.message ?? messages.global.error),
+      onError: (error) =>
+        toast.error(error.message ?? messageJson.generalError),
     }),
   )
 }

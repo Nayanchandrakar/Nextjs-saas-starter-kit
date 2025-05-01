@@ -1,0 +1,11 @@
+{
+  "signInSuccess": "We sent you a login link. Be sure to check your spam too.",
+  "workspaceNotFound": "The requested workspace could not be found.",
+  "generalError": "Something went wrong. Please try again later.",
+  "unauthorized": "Unauthorized user. Please sign in.",
+  "validationError": "Missing or invalid input parameters.",
+  "tooManyRequests": "Too many requests. Please wait and try again.",
+  "invitationCreate": "Invitations sent successfully",
+  "invitationSkipMessage": "Your onbaording is successfull",
+  "pendingInvitations": "Some emails already have pending invitations"
+}
