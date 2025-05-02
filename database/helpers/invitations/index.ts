@@ -20,3 +20,12 @@ export async function getExistingInvitations(
 
   return existingInvites
 }
+
+export async function getInvitationById(invitationId: string) {
+  const [invitation] = await dbHttp
+    .select()
+    .from(invitations)
+    .where(eq(invitations.id, invitationId))
+    .limit(1)
+  return invitation
+}

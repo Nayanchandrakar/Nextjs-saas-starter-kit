@@ -7,5 +7,5 @@
   "tooManyRequests": "Too many requests. Please wait and try again.",
   "invitationCreate": "Invitations sent successfully",
   "invitationSkipMessage": "Your onbaording is successfull",
-  "pendingInvitations": "Some emails already have pending invitations"
+  "pendingInvitations": "Invitation already exists and is pending"
 }
