@@ -1,3 +1,5 @@
 export * from "@/database/schema/users"
 export * from "@/database/schema/workspace"
 export * from "@/database/schema/invitations"
+export * from "@/database/schema/members"
+export * from "@/database/schema/permissions"

@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
-import { updateOnboardingData } from "@/database/helpers/onboarding"
 import { invitations } from "@/database/schema"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import messageJson from "@/lib/constants/message.json"
 import { inviteBulkMembersSchema } from "@/lib/schema/pages/invitation"
 import { invitationLinkService } from "@/lib/strategies/email-strategy"
@@ -39,7 +39,11 @@ export const createBulkInvitation = protectedProcedure
 
       await Promise.all([
         invitationLinkService.send({ data: formattedResponse }),
-        updateOnboardingData("completed", "collaborate", user.id),
+        OnboardingDatabaseService.updateOnboardingData(
+          "completed",
+          "collaborate",
+          user.id,
+        ),
       ])
     })
 

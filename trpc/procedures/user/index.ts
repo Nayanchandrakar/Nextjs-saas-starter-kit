@@ -1,7 +1,4 @@
-import {
-  getOnboardingData,
-  updateOnboardingData,
-} from "@/database/helpers/onboarding"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { updateUser } from "@/lib/authentication/utils"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
 import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
@@ -23,7 +20,8 @@ export const update = protectedProcedure
       image: imageSrc,
     }
 
-    const { onboardingStep } = await getOnboardingData(user.id)
+    const { onboardingStep } =
+      await OnboardingDatabaseService.getOnboardingData(user.id)
 
     const asyncOperations = [
       deleteOldProfileImage(user.image, image),
@@ -32,7 +30,11 @@ export const update = protectedProcedure
 
     if (onboardingStep === "profile") {
       asyncOperations.push(
-        updateOnboardingData("pending", "workspace", user.id),
+        OnboardingDatabaseService.updateOnboardingData(
+          "pending",
+          "workspace",
+          user.id,
+        ),
       )
     }
 

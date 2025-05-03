@@ -1,6 +1,6 @@
-import { getExistingInvitations } from "@/database/helpers/invitations"
-import { updateOnboardingData } from "@/database/helpers/onboarding"
-import { getLastWorkspaceCreated } from "@/database/helpers/workspaces"
+import { InvitationDatabaseService } from "@/database/services/invitation-service"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { INVITATION_EXPIRY_DATE } from "@/lib/constants/app-config"
 import messageJson from "@/lib/constants/message.json"
 import { clientEnv } from "@/lib/utilities/client-env"
@@ -9,8 +9,11 @@ import { TRPCError } from "@trpc/server"
 
 export class InvitationService {
   static async handleEmptyInput(userId: string) {
-    await updateOnboardingData("completed", "collaborate", userId)
-
+    await OnboardingDatabaseService.updateOnboardingData(
+      "completed",
+      "collaborate",
+      userId,
+    )
     return {
       success: true,
       message: messageJson.invitationCreate,
@@ -31,7 +34,8 @@ export class InvitationService {
   }
 
   static async getWorkspace(userId: string) {
-    const workspace = await getLastWorkspaceCreated(userId)
+    const workspace =
+      await WorkSpaceDatabaseService.getLastWorkspaceCreated(userId)
     if (!workspace) {
       throw new TRPCError({
         code: "NOT_FOUND",
@@ -45,7 +49,11 @@ export class InvitationService {
     workspaceId: string,
     emails: string[],
   ): Promise<void> {
-    const existingInvites = await getExistingInvitations(workspaceId, emails)
+    const existingInvites =
+      await InvitationDatabaseService.getExistingInvitations(
+        workspaceId,
+        emails,
+      )
     if (existingInvites.length > 0) {
       throw new TRPCError({
         code: "CONFLICT",
