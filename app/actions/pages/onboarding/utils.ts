@@ -1,5 +1,5 @@
 import { handleAuthRequest } from "@/app/actions/utils"
-import { getOnboardingData } from "@/database/helpers/onboarding"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import {
   onboardingStatus,
   onboardingSteps as stepOrder,
@@ -12,7 +12,9 @@ export type OnboardingStatus = (typeof onboardingStatus)[number]
 export async function restrictOnboardingStep(requiredStep: OnboardingStep) {
   const session = await handleAuthRequest()
 
-  const onboarding = await getOnboardingData(session.user.id)
+  const onboarding = await OnboardingDatabaseService.getOnboardingData(
+    session.user.id,
+  )
 
   const { onboardingStatus, onboardingStep } = onboarding
   if (onboardingStatus === "completed") {

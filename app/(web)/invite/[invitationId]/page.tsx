@@ -2,9 +2,9 @@ import NotFound from "@/app/not-found"
 import { InvitationLoginForm } from "@/components/forms/invitation/invitation-login-form"
 import { InvitationNotForYou } from "@/components/pages/invitation/invitation-not-for-you"
 import { NoInvitationFound } from "@/components/pages/invitation/no-invitation-found"
-import { getInvitationById } from "@/database/helpers/invitations"
-import { getOnboardingData } from "@/database/helpers/onboarding"
-import { getWorkspaceById } from "@/database/helpers/workspaces"
+import { InvitationDatabaseService } from "@/database/services/invitation-service"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { auth } from "@/lib/authentication/utils"
 import {
   loadInvitationParams,
@@ -31,7 +31,7 @@ export default async function InvitationPage({
 
   const [session, invitation] = await Promise.all([
     auth(),
-    getInvitationById(invitationParams.invitationId),
+    InvitationDatabaseService.getInvitationById(invitationParams.invitationId),
   ])
 
   if (!invitation) {
@@ -45,14 +45,18 @@ export default async function InvitationPage({
   // TODO: check for invitation expiry here
 
   if (session) {
-    onboarding = await getOnboardingData(session.user.id)
+    onboarding = await OnboardingDatabaseService.getOnboardingData(
+      session.user.id,
+    )
 
     if (onboarding?.onboardingStatus === "pending") {
       redirectToRoute("callback")
     }
   }
 
-  const workspace = await getWorkspaceById(invitation.workspaceId)
+  const workspace = await WorkSpaceDatabaseService.getWorkspaceById(
+    invitation.workspaceId,
+  )
 
   if (!workspace) {
     return <NotFound />
