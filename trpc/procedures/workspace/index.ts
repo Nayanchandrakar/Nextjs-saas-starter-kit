@@ -37,7 +37,7 @@ export const create = protectedProcedure
       dbHttp.insert(workspaces).values({
         name: input.name,
         ownerId: ctx.user.id,
-        slug: slug,
+        slug,
         logo: input.logo ?? null,
       }),
 

@@ -38,3 +38,12 @@ export async function getLastWorkspaceCreated(ownerId: string) {
 
   return workspace
 }
+
+export async function getWorkspaceById(workspaceId: string) {
+  const [data] = await dbHttp
+    .select({ id: workspaces.id, name: workspaces.name })
+    .from(workspaces)
+    .where(eq(workspaces.id, workspaceId))
+    .limit(1)
+  return data
+}
