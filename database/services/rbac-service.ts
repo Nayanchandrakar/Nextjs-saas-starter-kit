@@ -3,9 +3,13 @@ import {
   permissions as permissionTable,
   rolePermissions,
   roles as roleTable,
+  roles,
+  workspaceMembers,
 } from "@/database/schema"
+import { PermissionType } from "@/lib/constants/rbac/permissions"
 import { DEFAULT_ROLES } from "@/lib/constants/rbac/roles"
 import { MapService } from "@/lib/services/map-service"
+import { and, eq, inArray } from "drizzle-orm"
 
 export class RBACService {
   constructor() {}
@@ -39,5 +43,65 @@ export class RBACService {
         await tx.insert(rolePermissions).values(rolePermissionValues)
       }
     })
+  }
+
+  static async hasPermission(
+    userId: string,
+    workspaceId: string,
+    permission: PermissionType,
+  ) {
+    const result = await dbHttp
+      .select({
+        id: permissionTable.id,
+      })
+      .from(workspaceMembers)
+      .innerJoin(roles, eq(workspaceMembers.roleId, roles.id))
+      .innerJoin(permissionTable, eq(roles.id, rolePermissions.roleId))
+      .innerJoin(
+        permissionTable,
+        eq(rolePermissions.permissionId, permissionTable.id),
+      )
+      .where(
+        and(
+          eq(workspaceMembers.userId, userId),
+          eq(workspaceMembers.workspaceId, workspaceId),
+          eq(permissionTable.name, permission),
+        ),
+      )
+      .limit(1)
+      .$withCache({
+        config: { ex: 12 * 60 * 60 * 1000 },
+      })
+
+    return result.length > 0
+  }
+
+  static async hasPermissions(
+    userId: string,
+    workspaceId: string,
+    permissions: PermissionType[],
+  ) {
+    const results = await dbHttp
+      .select({ name: permissionTable.name })
+      .from(workspaceMembers)
+      .innerJoin(roles, eq(workspaceMembers.roleId, roles.id))
+      .innerJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
+      .innerJoin(
+        permissionTable,
+        eq(rolePermissions.permissionId, permissionTable.id),
+      )
+      .where(
+        and(
+          eq(workspaceMembers.userId, userId),
+          eq(workspaceMembers.workspaceId, workspaceId),
+          inArray(permissionTable.name, permissions),
+        ),
+      )
+      .$withCache({
+        config: { ex: 12 * 60 * 60 * 1000 },
+      })
+
+    const granted = new Set(results.map((r) => r.name))
+    return permissions.every((perm) => granted.has(perm))
   }
 }
