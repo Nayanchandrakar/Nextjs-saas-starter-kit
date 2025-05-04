@@ -8,23 +8,21 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core"
 
-// Roles Table
 export const roles = pgTable(
   "roles",
   {
     id: text("id")
       .primaryKey()
       .$defaultFn(() => createId()),
-    name: text("name").notNull(),
+    name: text("name").notNull().unique(),
     description: text("description"),
     ...dateCreation,
   },
   (t) => ({
-    nameIndex: index("roles_name_index").on(t.name),
+    nameUniqueIndex: uniqueIndex("roles_name_unique_index").on(t.name),
   }),
 )
 
-// Permissions Table
 export const permissions = pgTable(
   "permissions",
   {
@@ -40,7 +38,6 @@ export const permissions = pgTable(
   }),
 )
 
-// Role_Permissions Table (Many-to-Many)
 export const rolePermissions = pgTable(
   "role_permissions",
   {
