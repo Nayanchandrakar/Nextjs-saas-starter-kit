@@ -6,7 +6,7 @@ import { inviteBulkMembersSchema } from "@/lib/schema/pages/invitation"
 import { invitationLinkService } from "@/lib/strategies/email-strategy"
 import { createRoute } from "@/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
-import { InvitationService } from "@/trpc/services/invitations/invitation-service"
+import { InvitationService } from "@/trpc/services/invitation-service"
 import { after } from "next/server"
 
 export const createBulkInvitation = protectedProcedure

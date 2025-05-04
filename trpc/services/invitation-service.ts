@@ -1,8 +1,8 @@
 import { InvitationDatabaseService } from "@/database/services/invitation-service"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
-import { INVITATION_EXPIRY_DATE } from "@/lib/constants/app-config"
 import messageJson from "@/lib/constants/message.json"
+import { DateService } from "@/lib/services/date-service"
 import { clientEnv } from "@/lib/utilities/client-env"
 import { createRoute } from "@/lib/utils"
 import { TRPCError } from "@trpc/server"
@@ -69,7 +69,7 @@ export class InvitationService {
   ) {
     return emails.map((email) => ({
       email,
-      expiresAt: INVITATION_EXPIRY_DATE,
+      expiresAt: DateService.getInvitationExpiry(),
       invitedBy: userId,
       workspaceId,
     }))
