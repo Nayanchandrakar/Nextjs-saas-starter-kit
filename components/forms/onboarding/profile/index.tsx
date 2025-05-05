@@ -27,6 +27,7 @@ interface ProfileOnboardingFormProps {
   firstName: string
   lastName: string
   image: string
+  fromInvite: boolean
 }
 
 export const ProfileOnboardingForm = ({
@@ -34,13 +35,14 @@ export const ProfileOnboardingForm = ({
   firstName,
   lastName,
   image,
+  fromInvite,
 }: ProfileOnboardingFormProps) => {
   const { mutateAsync, isPending } = useUpdateUserHook()
 
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {
-      isFromInvitation: false,
+      fromInvite,
       image: image,
       firstName,
       lastName,

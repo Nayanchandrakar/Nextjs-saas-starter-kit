@@ -1,7 +1,7 @@
 CREATE TYPE "public"."onboarding_status" AS ENUM('pending', 'completed');--> statement-breakpoint
 CREATE TYPE "public"."onboarding_step" AS ENUM('profile', 'workspace', 'collaborate');--> statement-breakpoint
 CREATE TYPE "public"."invitation_status" AS ENUM('pending', 'expired', 'accepted');--> statement-breakpoint
-CREATE TYPE "public"."role" AS ENUM('admin', 'member');--> statement-breakpoint
+CREATE TYPE "public"."role" AS ENUM('admin', 'member', 'owner');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,

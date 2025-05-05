@@ -1,3 +1,4 @@
+import { handleInvitationRequest } from "@/app/actions/pages/invitation/handle-invitation-request"
 import NotFound from "@/app/not-found"
 import { InvitationLoginForm } from "@/components/forms/invitation/invitation-login-form"
 import { InvitationNotForYou } from "@/components/pages/invitation/invitation-not-for-you"
@@ -10,6 +11,7 @@ import {
   loadInvitationParams,
   loadInvitationSearchParams,
 } from "@/lib/nuqs/search-params"
+import { DateService } from "@/lib/services/date-service"
 import { createRoute, redirectToRoute } from "@/lib/utils"
 import type { SearchParams } from "nuqs/server"
 
@@ -22,8 +24,6 @@ export default async function InvitationPage({
   searchParams,
   params,
 }: InvitationPageProps) {
-  let onboarding = null
-
   const [invitationSearchParams, invitationParams] = await Promise.all([
     loadInvitationSearchParams(searchParams),
     loadInvitationParams(params),
@@ -34,24 +34,12 @@ export default async function InvitationPage({
     InvitationDatabaseService.getInvitationById(invitationParams.invitationId),
   ])
 
-  if (!invitation) {
+  if (!invitation || DateService.checkInvitationExpiry(invitation.expiresAt)) {
     return <NoInvitationFound />
   }
 
   if (session?.user.id === invitation.invitedBy) {
     return <InvitationNotForYou email={session.user.email} />
-  }
-
-  // TODO: check for invitation expiry here
-
-  if (session) {
-    onboarding = await OnboardingDatabaseService.getOnboardingData(
-      session.user.id,
-    )
-
-    if (onboarding?.onboardingStatus === "pending") {
-      redirectToRoute("callback")
-    }
   }
 
   const workspace = await WorkSpaceDatabaseService.getWorkspaceById(
@@ -62,15 +50,38 @@ export default async function InvitationPage({
     return <NotFound />
   }
 
-  const callbackString = createRoute(`invite/${invitation.id}`, {
-    ...(invitationSearchParams && invitationSearchParams),
-  })
+  if (session) {
+    const onboarding = await OnboardingDatabaseService.getOnboardingData(
+      session.user.id,
+    )
 
-  return (
-    <InvitationLoginForm
-      email={invitation.email}
-      workspace={workspace}
-      callbackString={callbackString}
-    />
-  )
+    await handleInvitationRequest(
+      session.user.id,
+      workspace.id,
+      invitation.role,
+      invitation.id,
+    )
+
+    if (onboarding?.onboardingStatus === "pending") {
+      redirectToRoute("callback", {
+        ...(invitationSearchParams && {
+          fromInvite: invitationSearchParams.from === "invitation",
+        }),
+      })
+    }
+
+    redirectToRoute(`${workspace.id}/dashboard`)
+  } else {
+    const callbackString = createRoute(`invite/${invitation.id}`, {
+      ...(invitationSearchParams && invitationSearchParams),
+    })
+
+    return (
+      <InvitationLoginForm
+        email={invitation.email}
+        workspace={workspace}
+        callbackString={callbackString}
+      />
+    )
+  }
 }

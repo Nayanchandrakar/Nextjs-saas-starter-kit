@@ -6,7 +6,7 @@ export class DateService {
     return new Date(Date.now() + DateService.INVITATION_EXPIRY_TIME)
   }
 
-  static checkInvitationExpiry() {
-    return new Date()
+  static checkInvitationExpiry(expiryDate: Date) {
+    return new Date() > expiryDate
   }
 }

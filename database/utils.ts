@@ -18,7 +18,7 @@ export const onboardingStatusEnum = pgEnum(
 export const onboardingStepEnum = pgEnum("onboarding_step", onboardingSteps)
 
 // Invitation utils
-export const role = ["admin", "member"] as const
+export const role = ["admin", "member", "owner"] as const
 export const invitationStatus = ["pending", "expired", "accepted"] as const
 export const roleEnum = pgEnum("role", role)
 export const invitationStatusEnum = pgEnum(

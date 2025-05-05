@@ -9,7 +9,7 @@ import { protectedProcedure } from "@/trpc/procedures/root"
 export const update = protectedProcedure
   .input(profileOnboardingSchema)
   .mutation(async ({ input, ctx }) => {
-    const { firstName, lastName, image } = input
+    const { firstName, lastName, image, fromInvite } = input
     const { user } = ctx
 
     const fullName = buildFullName(firstName, lastName)
@@ -31,14 +31,13 @@ export const update = protectedProcedure
     if (onboardingStep === "profile") {
       asyncOperations.push(
         OnboardingDatabaseService.updateOnboardingData(
-          "pending",
-          "workspace",
+          fromInvite ? "completed" : "pending",
+          fromInvite ? "collaborate" : "workspace",
           user.id,
         ),
       )
     }
 
     await Promise.all(asyncOperations)
-
     return { success: true, message: "Profile updated succefully" }
   })

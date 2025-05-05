@@ -1,3 +1,4 @@
+import { RoleType } from "@/app/actions/pages/invitation/handle-invitation-request"
 import { dbHttp, dbServerless } from "@/database"
 import {
   permissions as permissionTable,
@@ -103,5 +104,13 @@ export class RBACService {
 
     const granted = new Set(results.map((r) => r.name))
     return permissions.every((perm) => granted.has(perm))
+  }
+
+  static async getRoleByName(role: RoleType) {
+    const [data] = await dbHttp
+      .select({ id: roleTable.id })
+      .from(roleTable)
+      .where(eq(roleTable.name, role))
+    return data
   }
 }

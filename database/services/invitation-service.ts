@@ -27,4 +27,8 @@ export class InvitationDatabaseService {
       .limit(1)
     return invitation
   }
+
+  static async deleteInvitation(invitationId: string) {
+    await dbHttp.delete(invitations).where(eq(invitations.id, invitationId))
+  }
 }

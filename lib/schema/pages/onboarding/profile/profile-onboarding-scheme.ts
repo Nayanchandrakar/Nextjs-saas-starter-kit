@@ -5,7 +5,7 @@ export const profileOnboardingSchema = z.object({
   firstName: z.string().min(3).max(20),
   lastName: z.string().min(3).max(30).optional().or(z.literal("")),
   email: z.string().email(),
-  isFromInvitation: z.boolean(),
+  fromInvite: z.boolean(),
 })
 
 export type profileOnboardingSchemaType = z.infer<
