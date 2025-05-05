@@ -10,7 +10,7 @@ export async function onboardUser() {
   )
 
   if (!StringService.isOnboardingPending(onboarding.onboardingStatus)) {
-    redirectToRoute("dashboard")
+    redirectToRoute("callback")
   } else if (StringService.isOnboardingPending(onboarding.onboardingStatus)) {
     redirectToRoute(`onboarding/${onboarding.onboardingStep}`)
   }

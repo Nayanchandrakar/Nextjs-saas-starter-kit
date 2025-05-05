@@ -8,7 +8,7 @@ import { createRoute } from "@/lib/utils"
 import { TRPCError } from "@trpc/server"
 
 export class InvitationService {
-  static async handleEmptyInput(userId: string) {
+  static async handleEmptyInput(userId: string, workspaceId: string) {
     await OnboardingDatabaseService.updateOnboardingData(
       "completed",
       "collaborate",
@@ -17,7 +17,7 @@ export class InvitationService {
     return {
       success: true,
       message: messageJson.invitationCreate,
-      redirect: createRoute("dashboard"),
+      redirect: createRoute(`${workspaceId}/dashboard`),
     }
   }
 
