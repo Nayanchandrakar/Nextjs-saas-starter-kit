@@ -8,8 +8,8 @@ interface PageProps {
 }
 
 export default async function CallBackPage({ searchParams }: PageProps) {
-  const { fromInvite } = await loadCallbackSearchParams(searchParams)
-  await handleCallbackRequest(fromInvite)
+  const callbackSearchParam = await loadCallbackSearchParams(searchParams)
+  await handleCallbackRequest(callbackSearchParam.fromInvite)
 
   return (
     <div className="flex items-center justify-center min-h-screen">

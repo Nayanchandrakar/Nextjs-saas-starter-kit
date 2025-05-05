@@ -1,6 +1,7 @@
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { updateUser } from "@/lib/authentication/utils"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
+import { StringService } from "@/lib/services/string-service"
 import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
 import { buildFullName } from "@/trpc/lib/utils"
@@ -28,7 +29,7 @@ export const update = protectedProcedure
       updateUser({ body: updateData }),
     ]
 
-    if (onboardingStep === "profile") {
+    if (StringService.isProfileOnboardingStep(onboardingStep)) {
       asyncOperations.push(
         OnboardingDatabaseService.updateOnboardingData(
           fromInvite ? "completed" : "pending",

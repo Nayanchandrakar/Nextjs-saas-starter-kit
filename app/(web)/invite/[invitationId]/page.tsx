@@ -12,6 +12,7 @@ import {
   loadInvitationSearchParams,
 } from "@/lib/nuqs/search-params"
 import { DateService } from "@/lib/services/date-service"
+import { StringService } from "@/lib/services/string-service"
 import { createRoute, redirectToRoute } from "@/lib/utils"
 import type { SearchParams } from "nuqs/server"
 
@@ -62,10 +63,10 @@ export default async function InvitationPage({
       invitation.id,
     )
 
-    if (onboarding?.onboardingStatus === "pending") {
+    if (StringService.isOnboardingPending(onboarding?.onboardingStatus)) {
       redirectToRoute("callback", {
         ...(invitationSearchParams && {
-          fromInvite: invitationSearchParams.from === "invitation",
+          fromInvite: StringService.isFromInvite(invitationSearchParams.from),
         }),
       })
     }

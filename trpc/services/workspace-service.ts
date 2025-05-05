@@ -1,7 +1,10 @@
 import { dbHttp } from "@/database"
 import { workspaces } from "@/database/schema"
+import { MemeberDatabaseService } from "@/database/services/member-service"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { RBACService } from "@/database/services/rbac-service"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
+import { StringService } from "@/lib/services/string-service"
 import { OnboardingType } from "@/types/database"
 import { TRPCError } from "@trpc/server"
 
@@ -12,7 +15,10 @@ export class WorkspaceService {
     onboardingStatus,
     onboardingStep,
   }: Pick<OnboardingType, "onboardingStatus" | "onboardingStep">) {
-    if (onboardingStatus === "pending" && onboardingStep === "profile") {
+    if (
+      StringService.isOnboardingPending(onboardingStatus) &&
+      StringService.isProfileOnboardingStep(onboardingStep)
+    ) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Complete profile onboarding first",
@@ -40,13 +46,16 @@ export class WorkspaceService {
     slug: string,
     logo: string | null | undefined,
   ) {
-    await Promise.all([
-      dbHttp.insert(workspaces).values({
-        name,
-        ownerId,
-        slug,
-        logo: logo ?? null,
-      }),
+    const [[workspace]] = await Promise.all([
+      dbHttp
+        .insert(workspaces)
+        .values({
+          name,
+          ownerId,
+          slug,
+          logo: logo ?? null,
+        })
+        .returning({ id: workspaces.id }),
 
       OnboardingDatabaseService.updateOnboardingData(
         "pending",
@@ -54,5 +63,13 @@ export class WorkspaceService {
         ownerId,
       ),
     ])
+
+    await MemeberDatabaseService.createMember(
+      (await RBACService.getRoleByName("owner")).id,
+      ownerId,
+      workspace.id,
+    )
+
+    return workspace
   }
 }
