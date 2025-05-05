@@ -1,7 +1,7 @@
 "use client"
 
+import { Logo } from "@/components/navbar/logo"
 import { Icons } from "@/components/shared/icons"
-import { NavbarLogo } from "@/components/shared/navbar/logo"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -91,7 +91,7 @@ export const SignInForm = ({ fromInvite }: SignInFormProps) => {
   return (
     <Card className="w-full md:w-[400px]">
       <CardHeader>
-        <NavbarLogo />
+        <Logo />
         <CardTitle className="font-bold text-xl">Sign in or sign up</CardTitle>
         <CardDescription>
           Build your SaaS in minutes, not months.

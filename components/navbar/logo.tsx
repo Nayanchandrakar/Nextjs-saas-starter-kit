@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 
-export const NavbarLogo = ({
+export const Logo = ({
   className,
   linkClassName,
 }: {
@@ -12,8 +12,8 @@ export const NavbarLogo = ({
   return (
     <Link aria-hidden="true" href="/" className={cn(linkClassName)}>
       <Image
-        width={35}
-        height={35}
+        width={40}
+        height={40}
         alt="logo"
         src="/logo.png"
         className={cn(className)}

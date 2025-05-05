@@ -1,12 +1,19 @@
-import "@/style/globals.css"
 import { Provider } from "@/components/providers/provider"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
+import "@/style/globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import font from "next/font/local"
 
-const font = Inter({
+const inter = Inter({
   subsets: ["latin"],
+})
+
+const acorn = font({
+  src: "../public/fonts/acorn.woff",
+  variable: "--font-acorn",
+  weight: "600",
 })
 
 export const metadata: Metadata = {
@@ -22,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <Provider>
-        <body className={`${font.className} antialiased`}>
+        <body className={`${inter.className} ${acorn.variable} antialiased`}>
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
             <Toaster />

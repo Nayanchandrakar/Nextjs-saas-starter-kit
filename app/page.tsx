@@ -1,3 +1,13 @@
+import { Navbar } from "@/components/navbar"
+import { DashboardPreview } from "@/components/pages/home/dashboard-preview"
+import { HeroSection } from "@/components/pages/home/hero-section"
+
 export default async function Home() {
-  return <div>Home page</div>
+  return (
+    <>
+      <Navbar />
+      <HeroSection />
+      <DashboardPreview />
+    </>
+  )
 }
