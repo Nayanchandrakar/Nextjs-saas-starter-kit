@@ -6,7 +6,7 @@ import { inviteBulkMembersSchema } from "@/lib/schema/pages/invitation"
 import { invitationLinkService } from "@/lib/strategies/email-strategy"
 import { createRoute } from "@/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
-import { InvitationService } from "@/trpc/services/invitations/invitation-service"
+import { InvitationService } from "@/trpc/services/invitation-service"
 import { after } from "next/server"
 
 export const createBulkInvitation = protectedProcedure
@@ -15,12 +15,12 @@ export const createBulkInvitation = protectedProcedure
     const { emails } = input
     const { user } = ctx
 
+    const workspace = await InvitationService.getWorkspace(user.id)
     if (emails.length === 0) {
-      await InvitationService.handleEmptyInput(ctx.user.id)
+      await InvitationService.handleEmptyInput(user.id, workspace.id)
     }
 
     await InvitationService.validateInput(input, user.email)
-    const workspace = await InvitationService.getWorkspace(user.id)
     await InvitationService.checkExistingInvitations(workspace.id, emails)
     const invitationValues = InvitationService.createInvitationValues(
       emails,
@@ -50,6 +50,6 @@ export const createBulkInvitation = protectedProcedure
     return {
       success: true,
       message: messageJson.invitationCreate,
-      redirect: createRoute("dashboard"),
+      redirect: createRoute(`${workspace.id}/dashboard`),
     }
   })

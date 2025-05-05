@@ -1,8 +1,15 @@
 import { handleCallbackRequest } from "@/app/actions/pages/callback/handle-callback-request"
+import { loadCallbackSearchParams } from "@/lib/nuqs/search-params"
 import { Loader } from "lucide-react"
+import { SearchParams } from "nuqs/server"
 
-export default async function CallBackPage() {
-  await handleCallbackRequest()
+interface PageProps {
+  searchParams: Promise<SearchParams>
+}
+
+export default async function CallBackPage({ searchParams }: PageProps) {
+  const callbackSearchParam = await loadCallbackSearchParams(searchParams)
+  await handleCallbackRequest(callbackSearchParam.fromInvite)
 
   return (
     <div className="flex items-center justify-center min-h-screen">

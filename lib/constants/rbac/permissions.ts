@@ -17,3 +17,4 @@ export const PERMISSIONS = {
 } as const
 
 export type Permissions = keyof typeof PERMISSIONS
+export type PermissionType = (typeof PERMISSIONS)[Permissions]

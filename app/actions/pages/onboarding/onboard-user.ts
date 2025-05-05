@@ -1,5 +1,6 @@
 import { handleAuthRequest } from "@/app/actions/utils"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { StringService } from "@/lib/services/string-service"
 import { redirectToRoute } from "@/lib/utils"
 
 export async function onboardUser() {
@@ -8,9 +9,9 @@ export async function onboardUser() {
     session.user.id,
   )
 
-  if (onboarding.onboardingStatus === "completed") {
-    redirectToRoute("dashboard")
-  } else if (onboarding.onboardingStatus === "pending") {
+  if (!StringService.isOnboardingPending(onboarding.onboardingStatus)) {
+    redirectToRoute("callback")
+  } else if (StringService.isOnboardingPending(onboarding.onboardingStatus)) {
     redirectToRoute(`onboarding/${onboarding.onboardingStep}`)
   }
 }

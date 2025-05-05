@@ -1,8 +1,17 @@
 import { restrictOnboardingStep } from "@/app/actions/pages/onboarding/utils"
 import { ProfileOnboardingForm } from "@/components/forms/onboarding/profile"
+import { loadCallbackSearchParams } from "@/lib/nuqs/search-params"
 import { getCloudfrontFile, isCloudfrontFile } from "@/lib/utilities/s3-utils"
+import { SearchParams } from "nuqs/server"
 
-export default async function ProfileOnboardingPage() {
+interface PageProps {
+  searchParams: Promise<SearchParams>
+}
+
+export default async function ProfileOnboardingPage({
+  searchParams,
+}: PageProps) {
+  const { fromInvite } = await loadCallbackSearchParams(searchParams)
   const { session } = await restrictOnboardingStep("profile")
   const [firstName, lastName] = (session.user.name ?? "")
     .split(" ")
@@ -25,6 +34,7 @@ export default async function ProfileOnboardingPage() {
         firstName={firstName}
         lastName={lastName}
         image={imageSrc}
+        fromInvite={fromInvite}
       />
     </div>
   )

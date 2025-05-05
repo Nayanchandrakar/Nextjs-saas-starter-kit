@@ -35,9 +35,17 @@ import { useCallback, useState, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-export const SignInForm = () => {
+interface SignInFormProps {
+  fromInvite: boolean
+}
+
+export const SignInForm = ({ fromInvite }: SignInFormProps) => {
   const [isPending, startTransition] = useTransition()
   const [alertState, setAlertState] = useState<FormAlertProps | null>(null)
+
+  const callbackString = createRoute("callback", {
+    ...(fromInvite && { fromInvite }),
+  })
 
   const form = useForm<signInFormSchemaType>({
     resolver: zodResolver(signInFormSchema),
@@ -50,7 +58,7 @@ export const SignInForm = () => {
   async function onSubmit(values: signInFormSchemaType) {
     await authClient.signIn.magicLink({
       email: values.email,
-      callbackURL: createRoute("callback"),
+      callbackURL: callbackString,
       fetchOptions: {
         onError,
         onSuccess,
@@ -62,7 +70,7 @@ export const SignInForm = () => {
     startTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: createRoute("callback"),
+        callbackURL: callbackString,
       })
     })
   }

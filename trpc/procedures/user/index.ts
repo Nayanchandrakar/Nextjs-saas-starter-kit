@@ -1,6 +1,7 @@
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { updateUser } from "@/lib/authentication/utils"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
+import { StringService } from "@/lib/services/string-service"
 import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
 import { buildFullName } from "@/trpc/lib/utils"
@@ -9,7 +10,7 @@ import { protectedProcedure } from "@/trpc/procedures/root"
 export const update = protectedProcedure
   .input(profileOnboardingSchema)
   .mutation(async ({ input, ctx }) => {
-    const { firstName, lastName, image } = input
+    const { firstName, lastName, image, fromInvite } = input
     const { user } = ctx
 
     const fullName = buildFullName(firstName, lastName)
@@ -28,17 +29,16 @@ export const update = protectedProcedure
       updateUser({ body: updateData }),
     ]
 
-    if (onboardingStep === "profile") {
+    if (StringService.isProfileOnboardingStep(onboardingStep)) {
       asyncOperations.push(
         OnboardingDatabaseService.updateOnboardingData(
-          "pending",
-          "workspace",
+          fromInvite ? "completed" : "pending",
+          fromInvite ? "collaborate" : "workspace",
           user.id,
         ),
       )
     }
 
     await Promise.all(asyncOperations)
-
     return { success: true, message: "Profile updated succefully" }
   })

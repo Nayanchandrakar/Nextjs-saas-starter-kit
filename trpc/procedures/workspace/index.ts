@@ -1,51 +1,27 @@
-import { dbHttp } from "@/database"
-import { workspaces } from "@/database/schema"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
-import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { workSpaceOnboardingSchema } from "@/lib/schema/pages/onboarding/workspace/workspace-onboarding-schema"
 import { protectedProcedure } from "@/trpc/procedures/root"
-import { TRPCError } from "@trpc/server"
+import { WorkspaceService } from "@/trpc/services/workspace-service"
+import { after } from "next/server"
 
 export const create = protectedProcedure
   .input(workSpaceOnboardingSchema)
   .mutation(async ({ input, ctx }) => {
-    const { onboardingStatus, onboardingStep } =
-      await OnboardingDatabaseService.getOnboardingData(ctx.user.id)
-
-    if (onboardingStatus === "pending" && onboardingStep === "profile") {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Complete profile onboarding first",
-      })
-    }
+    const userId = ctx.user.id
+    const onboarding = await OnboardingDatabaseService.getOnboardingData(userId)
+    await WorkspaceService.handleOnboarding(onboarding)
 
     const slug = input.slug.toLowerCase()
-    const isExist = await WorkSpaceDatabaseService.getWorkSpacesByUserIdAndSlug(
-      ctx.user.id,
-      slug,
-    )
+    await WorkspaceService.isSlugExist(userId, slug)
 
-    if (isExist) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "Workspace with this slug already exists",
-      })
-    }
-
-    await Promise.all([
-      dbHttp.insert(workspaces).values({
-        name: input.name,
-        ownerId: ctx.user.id,
+    after(async () => {
+      await WorkspaceService.createWorkspace(
+        userId,
+        input.name,
         slug,
-        logo: input.logo ?? null,
-      }),
-
-      OnboardingDatabaseService.updateOnboardingData(
-        "pending",
-        "collaborate",
-        ctx.user.id,
-      ),
-    ])
+        input.logo,
+      )
+    })
 
     return { success: true, message: "Workspace created successfully" }
   })

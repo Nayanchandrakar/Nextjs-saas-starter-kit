@@ -18,7 +18,7 @@ export async function restrictOnboardingStep(requiredStep: OnboardingStep) {
 
   const { onboardingStatus, onboardingStep } = onboarding
   if (onboardingStatus === "completed") {
-    redirectToRoute("dashboard")
+    redirectToRoute("callback")
   }
 
   const currentStepIndex = stepOrder.indexOf(onboardingStep)
