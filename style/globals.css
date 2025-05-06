@@ -160,32 +160,10 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 
-  --animate-aurora: aurora 8s ease-in-out infinite alternate;
   --animate-background-position-spin: background-position-spin 3000ms infinite
     alternate;
-
-  @keyframes aurora {
-    0% {
-      background-position: 0% 50%;
-      transform: rotate(-5deg) scale(0.9);
-    }
-    25% {
-      background-position: 50% 100%;
-      transform: rotate(5deg) scale(1.1);
-    }
-    50% {
-      background-position: 100% 50%;
-      transform: rotate(-3deg) scale(0.95);
-    }
-    75% {
-      background-position: 50% 0%;
-      transform: rotate(3deg) scale(1.05);
-    }
-    100% {
-      background-position: 0% 50%;
-      transform: rotate(-5deg) scale(0.9);
-    }
-  }
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 
   @keyframes background-position-spin {
     0% {
@@ -193,6 +171,23 @@
     }
     100% {
       background-position: bottom center;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(calc(-100% - var(--gap)));
     }
   }
 }
@@ -203,5 +198,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
   }
 }
