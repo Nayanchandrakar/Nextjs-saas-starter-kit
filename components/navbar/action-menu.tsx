@@ -12,6 +12,7 @@ export const ActionMenu = () => {
       {/* X.com profile  */}
       <Link
         href={configuration.social.x}
+        target="_blank"
         className={buttonVariants({ variant: "outline", size: "icon" })}
       >
         <Icons.X className="size-4 fill-current" aria-hidden="true" />
@@ -19,6 +20,7 @@ export const ActionMenu = () => {
 
       {/* Github profile */}
       <Link
+        target="_blank"
         className={buttonVariants({ variant: "outline", size: "icon" })}
         href={configuration.social.github}
       >
