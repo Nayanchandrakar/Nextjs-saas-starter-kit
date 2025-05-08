@@ -30,6 +30,15 @@ export const serverEnv = createEnv({
         "GOOGLE_CLIENT_SECRET is required in environment variables",
     }),
 
+    GITHUB_CLIENT_ID: z.string({
+      required_error: "GITHUB_CLIENT_ID is required in environment variables",
+    }),
+
+    GITHUB_CLIENT_SECRET: z.string({
+      required_error:
+        "GITHUB_CLIENT_SECRET is required in environment variables",
+    }),
+
     BETTER_AUTH_URL: z.string().default("http://localhost:3000"),
 
     BETTER_AUTH_SECRET: z.string({

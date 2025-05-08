@@ -15,4 +15,8 @@ export class StringService {
   static isProfileOnboardingStep(step: OnboardingStep) {
     return step === "profile"
   }
+
+  static capitalizeFirstLetter(str: string) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+  }
 }

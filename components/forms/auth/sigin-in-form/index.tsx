@@ -1,7 +1,6 @@
 "use client"
 
 import { Logo } from "@/components/navbar/logo"
-import { Icons } from "@/components/shared/icons"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -21,7 +20,9 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
+import { OauthProvider } from "@/components/providers/oauth-providers"
 import { Input } from "@/components/ui/input"
+import { MotionCard } from "@/components/ui/motion-card"
 import { authClient } from "@/lib/authentication/auth-client"
 import messageJson from "@/lib/constants/message.json"
 import {
@@ -29,6 +30,7 @@ import {
   signInFormSchemaType,
 } from "@/lib/schema/authentication/sigin-form-schema"
 import { createRoute } from "@/lib/utils"
+import { OauthProviderType } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ErrorContext } from "better-auth/react"
 import { useCallback, useState, useTransition } from "react"
@@ -66,10 +68,10 @@ export const SignInForm = ({ fromInvite }: SignInFormProps) => {
     })
   }
 
-  const googleSignIn = () => {
+  const oauthSignIn = (type: OauthProviderType) => {
     startTransition(async () => {
       await authClient.signIn.social({
-        provider: "google",
+        provider: type,
         callbackURL: callbackString,
       })
     })
@@ -89,7 +91,7 @@ export const SignInForm = ({ fromInvite }: SignInFormProps) => {
   const isSubmitting = !!(form.formState.isSubmitting || isPending)
 
   return (
-    <Card className="w-full md:w-[400px]">
+    <MotionCard className="w-full md:w-[400px]">
       <CardHeader>
         <Logo />
         <CardTitle className="font-bold text-xl">Sign in or sign up</CardTitle>
@@ -138,17 +140,8 @@ export const SignInForm = ({ fromInvite }: SignInFormProps) => {
           </span>
         </div>
 
-        <Button
-          disabled={isSubmitting}
-          type="button"
-          variant="outline"
-          className="w-full"
-          onClick={googleSignIn}
-        >
-          <Icons.google className="mr-2 h-4 w-4" />
-          Google
-        </Button>
+        <OauthProvider isSubmitting={isSubmitting} onClick={oauthSignIn} />
       </CardContent>
-    </Card>
+    </MotionCard>
   )
 }

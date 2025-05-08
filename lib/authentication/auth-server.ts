@@ -10,8 +10,7 @@ import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
-import { multiSession } from "better-auth/plugins"
-import { magicLink } from "better-auth/plugins"
+import { magicLink, multiSession } from "better-auth/plugins"
 
 export const authServer = betterAuth({
   appName: configuration.site.name,
@@ -30,6 +29,10 @@ export const authServer = betterAuth({
     google: {
       clientId: serverEnv.GOOGLE_CLIENT_ID,
       clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+    },
+    github: {
+      clientId: serverEnv.GITHUB_CLIENT_ID,
+      clientSecret: serverEnv.GITHUB_CLIENT_SECRET,
     },
   },
 
