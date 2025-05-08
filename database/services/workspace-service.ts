@@ -39,7 +39,11 @@ export class WorkSpaceDatabaseService {
 
   static async getWorkspaceById(workspaceId: string) {
     const [data] = await dbHttp
-      .select({ id: workspaces.id, name: workspaces.name })
+      .select({
+        id: workspaces.id,
+        name: workspaces.name,
+        slug: workspaces.slug,
+      })
       .from(workspaces)
       .where(eq(workspaces.id, workspaceId))
       .limit(1)

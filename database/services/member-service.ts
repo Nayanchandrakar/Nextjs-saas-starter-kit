@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
-import { workspaceMembers } from "@/database/schema"
-import { desc, eq } from "drizzle-orm"
+import { workspaceMembers, workspaces } from "@/database/schema"
+import { and, desc, eq } from "drizzle-orm"
 
 export class MemeberDatabaseService {
   constructor() {}
@@ -18,14 +18,21 @@ export class MemeberDatabaseService {
   }
 
   static async isMemberOfWorkspace(userId: string) {
-    const [member] = await dbHttp
+    const [workspace] = await dbHttp
       .select({
-        workspaceId: workspaceMembers.workspaceId,
+        id: workspaces.id,
+        slug: workspaces.slug,
       })
-      .from(workspaceMembers)
-      .where(eq(workspaceMembers.userId, userId))
+      .from(workspaces)
+      .innerJoin(
+        workspaceMembers,
+        and(
+          eq(workspaces.id, workspaceMembers.workspaceId),
+          eq(workspaceMembers.userId, userId),
+        ),
+      )
       .orderBy(desc(workspaceMembers.createdAt))
       .limit(1)
-    return member
+    return workspace
   }
 }

@@ -15,6 +15,6 @@ export const handleInvitationRequest = async (
 
   await Promise.all([
     MemeberDatabaseService.createMember(id, userId, workspaceId),
-    InvitationDatabaseService.deleteInvitation(invitationId),
+    InvitationDatabaseService.updateInvitation(invitationId),
   ])
 }

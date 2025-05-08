@@ -40,6 +40,7 @@ interface InvitationLoginFormProps {
   callbackString: string
   workspace: {
     id: string
+    slug: string
     name: string
   }
 }
