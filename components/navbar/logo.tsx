@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils"
-import Image from "next/image"
+import { SquareChartGantt } from "lucide-react"
 import Link from "next/link"
 
 export const Logo = ({
@@ -11,13 +11,7 @@ export const Logo = ({
 }) => {
   return (
     <Link aria-hidden="true" href="/" className={cn(linkClassName)}>
-      <Image
-        width={40}
-        height={40}
-        alt="logo"
-        src="/logo.png"
-        className={cn(className)}
-      />
+      <SquareChartGantt className={cn("size-7 rotate-90", className)} />
     </Link>
   )
 }
