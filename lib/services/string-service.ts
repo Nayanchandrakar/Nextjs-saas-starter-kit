@@ -2,6 +2,7 @@ import {
   OnboardingStatus,
   OnboardingStep,
 } from "@/app/actions/pages/onboarding/utils"
+import { getCloudfrontFile } from "@/lib/utilities/s3-utils"
 
 export class StringService {
   static isFromInvite(from: string) {
@@ -18,5 +19,10 @@ export class StringService {
 
   static capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
+  }
+
+  static getPlaceholderImage(src: string | null, name: string) {
+    if (src) return getCloudfrontFile(src)
+    return `https://avatar.vercel.sh/${name}.svg`
   }
 }

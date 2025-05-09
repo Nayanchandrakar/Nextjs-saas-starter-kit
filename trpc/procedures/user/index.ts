@@ -6,6 +6,7 @@ import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
 import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
+import { after } from "next/server"
 
 export const update = protectedProcedure
   .input(profileOnboardingSchema)
@@ -14,11 +15,10 @@ export const update = protectedProcedure
     const { user } = ctx
 
     const fullName = buildFullName(firstName, lastName)
-    const imageSrc = image ? getCloudfrontKey(image) : null
 
     const updateData = {
       name: fullName,
-      image: imageSrc,
+      image: getCloudfrontKey(image),
     }
 
     const { onboardingStep } =
@@ -39,6 +39,9 @@ export const update = protectedProcedure
       )
     }
 
-    await Promise.all(asyncOperations)
+    after(async () => {
+      await Promise.all(asyncOperations)
+    })
+
     return { success: true, message: "Profile updated succefully" }
   })

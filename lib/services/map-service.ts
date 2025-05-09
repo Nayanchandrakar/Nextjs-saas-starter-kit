@@ -1,4 +1,7 @@
 import { PERMISSIONS } from "@/lib/constants/rbac/permissions"
+import { StringService } from "@/lib/services/string-service"
+import { FormattedWorkspace } from "@/types"
+import { WorkspaceType } from "@/types/database"
 
 export class MapService {
   static formattedPermissions() {
@@ -8,5 +11,21 @@ export class MapService {
     }))
 
     return formattedValues
+  }
+
+  static formatWorkspaces(data: WorkspaceType[], userId: string) {
+    const group: FormattedWorkspace[] = [
+      { label: "Personal workspaces", workspaces: [] },
+      { label: "Workspaces", workspaces: [] },
+    ]
+
+    data?.forEach(({ logo, ...props }) => {
+      group[props.ownerId === userId ? 0 : 1]?.workspaces.push({
+        logo: StringService.getPlaceholderImage(logo, props.name),
+        ...props,
+      })
+    })
+
+    return group
   }
 }

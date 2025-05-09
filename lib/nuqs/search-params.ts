@@ -12,6 +12,11 @@ export const callbackSearchParams = {
   fromInvite: parseAsBoolean.withDefault(false),
 }
 
+export const dashboardParams = {
+  slug: parseAsString.withDefault(""),
+}
+
 export const loadInvitationSearchParams = createLoader(invitationSearchParams)
 export const loadInvitationParams = createLoader(invitationParams)
 export const loadCallbackSearchParams = createLoader(callbackSearchParams)
+export const loadDashboardParams = createLoader(dashboardParams)

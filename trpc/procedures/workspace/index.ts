@@ -1,5 +1,6 @@
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { workSpaceOnboardingSchema } from "@/lib/schema/pages/onboarding/workspace/workspace-onboarding-schema"
+import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
 import { WorkspaceService } from "@/trpc/services/workspace-service"
 import { after } from "next/server"
@@ -19,7 +20,7 @@ export const create = protectedProcedure
         userId,
         input.name,
         slug,
-        input.logo,
+        getCloudfrontKey(input.logo),
       )
     })
 

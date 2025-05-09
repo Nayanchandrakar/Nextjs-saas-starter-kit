@@ -35,4 +35,24 @@ export class MemeberDatabaseService {
       .limit(1)
     return workspace
   }
+
+  static async hasUserWorkspaceAccess(userId: string, slug: string) {
+    const [workspace] = await dbHttp
+      .select({
+        id: workspaces.id,
+      })
+      .from(workspaces)
+      .innerJoin(
+        workspaceMembers,
+        and(
+          eq(workspaces.id, workspaceMembers.workspaceId),
+          eq(workspaces.slug, slug),
+          eq(workspaceMembers.userId, userId),
+        ),
+      )
+      .orderBy(desc(workspaceMembers.createdAt))
+      .limit(1)
+
+    return workspace
+  }
 }
