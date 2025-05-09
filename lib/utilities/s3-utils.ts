@@ -24,7 +24,9 @@ export function getCloudfrontFile(key: string): string {
  * @param url - The full URL string pointing to a CloudFront resource.
  * @returns The relative key/path of the resource within the CloudFront distribution.
  */
-export function getCloudfrontKey(url: string): string {
+export function getCloudfrontKey(url: string | undefined): string | null {
+  if (!url) return null
+
   return isCloudfrontSource(url)
     ? url.slice(clientEnv.NEXT_PUBLIC_CLOUDFRONT_URL.length + 1)
     : url

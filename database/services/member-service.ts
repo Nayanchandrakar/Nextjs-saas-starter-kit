@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
-import { workspaceMembers } from "@/database/schema"
-import { desc, eq } from "drizzle-orm"
+import { workspaceMembers, workspaces } from "@/database/schema"
+import { and, desc, eq, or } from "drizzle-orm"
 
 export class MemeberDatabaseService {
   constructor() {}
@@ -18,14 +18,45 @@ export class MemeberDatabaseService {
   }
 
   static async isMemberOfWorkspace(userId: string) {
-    const [member] = await dbHttp
+    const [workspace] = await dbHttp
       .select({
-        workspaceId: workspaceMembers.workspaceId,
+        id: workspaces.id,
+        slug: workspaces.slug,
       })
-      .from(workspaceMembers)
-      .where(eq(workspaceMembers.userId, userId))
+      .from(workspaces)
+      .innerJoin(
+        workspaceMembers,
+        eq(workspaces.id, workspaceMembers.workspaceId),
+      )
+      .where(
+        or(eq(workspaces.ownerId, userId), eq(workspaceMembers.userId, userId)),
+      )
       .orderBy(desc(workspaceMembers.createdAt))
       .limit(1)
-    return member
+    return workspace
+  }
+
+  static async hasUserWorkspaceAccess(userId: string, slug: string) {
+    const [workspace] = await dbHttp
+      .select({
+        id: workspaces.id,
+      })
+      .from(workspaces)
+      .innerJoin(
+        workspaceMembers,
+        eq(workspaces.id, workspaceMembers.workspaceId),
+      )
+      .where(
+        and(
+          eq(workspaces.slug, slug),
+          or(
+            eq(workspaces.ownerId, userId),
+            eq(workspaceMembers.userId, userId),
+          ),
+        ),
+      )
+      .limit(1)
+
+    return workspace
   }
 }

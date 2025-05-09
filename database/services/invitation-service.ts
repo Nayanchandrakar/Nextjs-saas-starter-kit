@@ -31,4 +31,13 @@ export class InvitationDatabaseService {
   static async deleteInvitation(invitationId: string) {
     await dbHttp.delete(invitations).where(eq(invitations.id, invitationId))
   }
+
+  static async updateInvitation(invitationId: string) {
+    await dbHttp
+      .update(invitations)
+      .set({
+        invitationStatus: "accepted",
+      })
+      .where(eq(invitations.id, invitationId))
+  }
 }

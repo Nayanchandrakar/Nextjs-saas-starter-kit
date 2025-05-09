@@ -71,7 +71,7 @@ export default async function InvitationPage({
       })
     }
 
-    redirectToRoute(`${workspace.id}/dashboard`)
+    redirectToRoute(`${workspace.slug}/dashboard`)
   } else {
     const callbackString = createRoute(`invite/${invitation.id}`, {
       ...(invitationSearchParams && invitationSearchParams),

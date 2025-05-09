@@ -15,7 +15,7 @@ export async function handleCallbackRequest(fromInvite: boolean) {
   const { onboardingStatus, onboardingStep } = onboarding
 
   if (hasWorkSpace && onboardingStatus === "completed") {
-    redirectToRoute(`${hasWorkSpace.workspaceId}/dashboard`)
+    redirectToRoute(`${hasWorkSpace.slug}/dashboard`)
   }
 
   if (
