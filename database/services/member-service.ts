@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
 import { workspaceMembers, workspaces } from "@/database/schema"
-import { and, desc, eq } from "drizzle-orm"
+import { and, desc, eq, or } from "drizzle-orm"
 
 export class MemeberDatabaseService {
   constructor() {}
@@ -26,10 +26,10 @@ export class MemeberDatabaseService {
       .from(workspaces)
       .innerJoin(
         workspaceMembers,
-        and(
-          eq(workspaces.id, workspaceMembers.workspaceId),
-          eq(workspaceMembers.userId, userId),
-        ),
+        eq(workspaces.id, workspaceMembers.workspaceId),
+      )
+      .where(
+        or(eq(workspaces.ownerId, userId), eq(workspaceMembers.userId, userId)),
       )
       .orderBy(desc(workspaceMembers.createdAt))
       .limit(1)
@@ -44,13 +44,17 @@ export class MemeberDatabaseService {
       .from(workspaces)
       .innerJoin(
         workspaceMembers,
+        eq(workspaces.id, workspaceMembers.workspaceId),
+      )
+      .where(
         and(
-          eq(workspaces.id, workspaceMembers.workspaceId),
           eq(workspaces.slug, slug),
-          eq(workspaceMembers.userId, userId),
+          or(
+            eq(workspaces.ownerId, userId),
+            eq(workspaceMembers.userId, userId),
+          ),
         ),
       )
-      .orderBy(desc(workspaceMembers.createdAt))
       .limit(1)
 
     return workspace

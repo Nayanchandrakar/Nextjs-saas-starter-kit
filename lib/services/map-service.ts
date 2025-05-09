@@ -28,4 +28,14 @@ export class MapService {
 
     return group
   }
+
+  static findWorkspaceBySlug(groups: FormattedWorkspace[], slug: string) {
+    for (const group of groups) {
+      const workspace = group.workspaces.find(
+        (workspace) => workspace.slug === slug,
+      )
+      if (workspace) return workspace
+    }
+    return undefined
+  }
 }

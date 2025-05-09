@@ -39,7 +39,7 @@ export function DashboardSidebar({
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <WorkspaceSwitcher workspaces={workspaces} />
+        <WorkspaceSwitcher workspaces={workspaces} slug={slug} />
       </SidebarHeader>
       <SidebarContent>
         <DashboardNav data={DASHBOARD_NAV_MAIN} slug={slug} />

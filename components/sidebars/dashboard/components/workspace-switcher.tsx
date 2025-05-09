@@ -26,25 +26,39 @@ import {
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { WORKSPACE_SWITCH_OPTIONS } from "@/lib/constants/navigation/dashboard-navigation"
+import { MapService } from "@/lib/services/map-service"
 import { StringService } from "@/lib/services/string-service"
 import { cn, createRoute } from "@/lib/utils"
 import { FormattedWorkspace } from "@/types"
+import { WorkspaceType } from "@/types/database"
 import dynamic from "next/dynamic"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 type SwitcherProps = {
   workspaces: FormattedWorkspace[]
+  slug: string
 }
 
-export function Switcher({ workspaces }: SwitcherProps) {
+export function Switcher({ workspaces, slug }: SwitcherProps) {
+  const router = useRouter()
   const { isMobile } = useSidebar()
   const [open, setOpen] = useState(false)
-  const [activeWorkspace, setActiveWorkspace] = useState(
-    workspaces[0].workspaces[0],
-  )
 
+  const defaultWorkspace = (MapService.findWorkspaceBySlug(workspaces, slug) ??
+    workspaces[0].workspaces[0]) as WorkspaceType
+
+  const [activeWorkspace, setActiveWorkspace] = useState(defaultWorkspace)
   if (!activeWorkspace) return null
+
+  const onSelect = (workspace: WorkspaceType) => {
+    if (workspace.slug === slug) return
+
+    setActiveWorkspace(workspace)
+    setOpen(false)
+    router.push(createRoute(`${workspace.slug}/dashboard`))
+  }
 
   return (
     <SidebarMenu className="z-[100]">
@@ -55,8 +69,9 @@ export function Switcher({ workspaces }: SwitcherProps) {
               variant="outline"
               role="combobox"
               aria-expanded={open}
+              size="lg"
               aria-label="Select a workspace"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer h-9"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <WorkspaceLogoRenderer logoSrc={activeWorkspace.logo!} />
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -85,13 +100,13 @@ export function Switcher({ workspaces }: SwitcherProps) {
                         {group.workspaces.map((workspace) => (
                           <CommandItem
                             key={workspace.id}
-                            onSelect={() => {
-                              setActiveWorkspace(workspace)
-                              setOpen(false)
-                            }}
+                            onSelect={() => onSelect(workspace)}
                             className="text-sm"
                           >
-                            <WorkspaceLogoRenderer logoSrc={workspace.logo!} />
+                            <WorkspaceLogoRenderer
+                              logoSrc={workspace.logo!}
+                              className="size-5"
+                            />
                             {StringService.capitalizeFirstLetter(
                               workspace.name,
                             )}
@@ -132,7 +147,7 @@ export function Switcher({ workspaces }: SwitcherProps) {
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => {
-                      toast.success("Complete this...")
+                      toast.success("To be implemented...")
                       setOpen(false)
                     }}
                   >
@@ -149,8 +164,11 @@ export function Switcher({ workspaces }: SwitcherProps) {
   )
 }
 
-const WorkspaceLogoRenderer = ({ logoSrc }: { logoSrc: string }) => (
-  <Avatar className="rounded-sm size-6">
+const WorkspaceLogoRenderer = ({
+  logoSrc,
+  className,
+}: { logoSrc: string; className?: string }) => (
+  <Avatar className={cn("rounded-sm", className)}>
     <AvatarImage src={logoSrc} />
     <AvatarFallback className="rounded-none">
       <Skeleton className="size-full" />
