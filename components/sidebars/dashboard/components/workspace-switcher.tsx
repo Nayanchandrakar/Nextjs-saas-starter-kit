@@ -47,7 +47,7 @@ export function Switcher({ workspaces }: SwitcherProps) {
   if (!activeWorkspace) return null
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="z-[100]">
       <SidebarMenuItem>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
