@@ -49,7 +49,7 @@ export function HeroSection() {
           className="mx-auto mt-7 max-w-2xl text-balance text-lg "
         >
           Launch your next saas product with Next.js 15, Drizzle, Neon
-          Serverless, Better auth, Resend, AWS, Shadcn/ui, Stripe.
+          Serverless, Better auth, Nodemailer, AWS, Shadcn/ui, Stripe.
         </TextEffect>
 
         <AnimatedGroup
