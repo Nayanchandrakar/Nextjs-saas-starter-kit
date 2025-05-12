@@ -13,12 +13,12 @@ export const serverEnv = createEnv({
       required_error: "DATABASE_URL is required in environment variables",
     }),
 
-    RESEND_API_KEY: z.string({
-      required_error: "RESEND_API_KEY is required in environment variables",
+    NODEMAILER_PASS: z.string({
+      required_error: "NODEMAILER_PASS is required in environment variables",
     }),
 
-    RESEND_EMAIL: z.string().email({
-      message: "RESEND_EMAIL is required and must be a valid email",
+    NODEMAILER_USER: z.string().email({
+      message: "NODEMAILER_USER is required and must be a valid email",
     }),
 
     GOOGLE_CLIENT_ID: z.string({

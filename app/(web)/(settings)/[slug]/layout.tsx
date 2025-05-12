@@ -18,7 +18,7 @@ export default async function SettingsLayout({
 
   return (
     <SidebarProvider>
-      <DashboardSidebar slug={slug} />
+      {/* <DashboardSidebar slug={slug} /> */}
       <SidebarInset>
         <TopNavigation slug={slug} />
         {children}
