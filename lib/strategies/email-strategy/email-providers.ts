@@ -1,6 +1,6 @@
 import { InvitationMail } from "@/components/emails/invitation-email"
 import { MagicLinkMail } from "@/components/emails/magic-link-email"
-import { mail } from "@/lib/resend/mail-service-instance"
+import { mail } from "@/lib/nodemailer"
 import {
   EmailStrategy,
   InvitationEmailParams,
@@ -13,7 +13,7 @@ export class MagicLinkStrategy implements EmailStrategy<MagicLinkParams> {
       prefix: "Magic Link",
       subject: "Your Magic Link",
       to: email,
-      react: MagicLinkMail({ link: url }),
+      component: MagicLinkMail({ link: url }),
     })
     return response
   }
@@ -28,7 +28,7 @@ export class InvitationEmailStrategy
         prefix: "Invitation Link",
         subject: "Your Invitation Link",
         to: email,
-        react: InvitationMail({ link }),
+        component: InvitationMail({ link }),
       }),
     )
 
