@@ -1,12 +1,10 @@
-import type { CreateEmailResponse } from "resend"
-
 export type EmailStrategyConfig = {
   magicLink: MagicLinkParams
   invitationEmail: InvitationEmailParams
 }
 
 export type EmailStrategy<T> = {
-  send(params: T): Promise<CreateEmailResponse[] | CreateEmailResponse>
+  send(params: T): Promise<void>
 }
 
 export type StrategyFactory = {

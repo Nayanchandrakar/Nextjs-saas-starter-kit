@@ -9,13 +9,12 @@ import {
 
 export class MagicLinkStrategy implements EmailStrategy<MagicLinkParams> {
   async send({ email, url }: MagicLinkParams) {
-    const response = await mail.send({
+    await mail.send({
       prefix: "Magic Link",
       subject: "Your Magic Link",
       to: email,
       component: MagicLinkMail({ link: url }),
     })
-    return response
   }
 }
 
@@ -32,6 +31,6 @@ export class InvitationEmailStrategy
       }),
     )
 
-    return await Promise.all(asynRequests)
+    await Promise.all(asynRequests)
   }
 }
