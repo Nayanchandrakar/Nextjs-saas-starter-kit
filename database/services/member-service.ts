@@ -17,7 +17,7 @@ export class MemeberDatabaseService {
     })
   }
 
-  static async isMemberOfWorkspace(userId: string) {
+  static async getUserLatestWorkspace(userId: string) {
     const [workspace] = await dbHttp
       .select({
         id: workspaces.id,
@@ -36,7 +36,7 @@ export class MemeberDatabaseService {
     return workspace
   }
 
-  static async hasUserWorkspaceAccess(userId: string, slug: string) {
+  static async isMemberOfWorskspace(userId: string, slug: string) {
     const [workspace] = await dbHttp
       .select({
         id: workspaces.id,

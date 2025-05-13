@@ -1,7 +1,7 @@
 "use client"
 import { AnimatedGroup } from "@/components/magicui/animated-group"
 import { BorderBeam } from "@/components/magicui/border-beam"
-import Container from "@/components/shared/container"
+import { Container } from "@/components/shared/container"
 import { baseTransition } from "@/lib/motion/transitions"
 import Image from "next/image"
 import { useMediaQuery } from "usehooks-ts"

@@ -1,5 +1,5 @@
 import { Marquee } from "@/components/magicui/marquee"
-import Container from "@/components/shared/container"
+import { Container } from "@/components/shared/container"
 import { BuildData } from "@/lib/constants/build-marquee-data"
 
 export const BuildSection = () => {

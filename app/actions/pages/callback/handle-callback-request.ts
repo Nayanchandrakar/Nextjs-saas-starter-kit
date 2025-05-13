@@ -8,7 +8,7 @@ export async function handleCallbackRequest(fromInvite: boolean) {
   const session = await handleAuthRequest()
 
   const [hasWorkSpace, onboarding] = await Promise.all([
-    MemeberDatabaseService.isMemberOfWorkspace(session.user.id),
+    MemeberDatabaseService.getUserLatestWorkspace(session.user.id),
     OnboardingDatabaseService.getOnboardingData(session.user.id),
   ])
 
