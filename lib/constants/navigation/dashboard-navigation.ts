@@ -11,7 +11,7 @@ export const DASHBOARD_NAV_MAIN = [
 export const DASHBOARD_NAV_FOOTER = [
   {
     name: "Settings",
-    url: "settings/workspace",
+    url: "workspace",
     icon: Settings2,
   },
   {
@@ -22,10 +22,10 @@ export const DASHBOARD_NAV_FOOTER = [
 ]
 
 export const WORKSPACE_SWITCH_OPTIONS = [
-  { label: "Workspace settings", Icon: Settings2, href: "/settings/workspace" },
+  { label: "Workspace settings", Icon: Settings2, href: "workspace" },
   {
     label: "Invite and manage members",
     Icon: Users,
-    href: "/settings/members",
+    href: "members",
   },
 ]

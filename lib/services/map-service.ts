@@ -38,4 +38,14 @@ export class MapService {
     }
     return undefined
   }
+
+  static getBreadcrumbs(pathname: string) {
+    return pathname
+      .split("/")
+      .filter((path) => path !== "")
+      .map((path, index, array) => ({
+        label: path,
+        href: `/${array.slice(0, index + 1).join("/")}`,
+      }))
+  }
 }

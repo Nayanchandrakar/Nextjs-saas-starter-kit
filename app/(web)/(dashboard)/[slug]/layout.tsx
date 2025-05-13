@@ -3,8 +3,8 @@ import type { SearchParams } from "nuqs/server"
 
 import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
 import { handleAuthRequest } from "@/app/actions/utils"
-import { TopNavigation } from "@/components/sidebars/dashboard/components/top-navigation"
 import { DashboardSidebar } from "@/components/sidebars/dashboard/dashboard-sidebar"
+import { TopNavigation } from "@/components/sidebars/dashboard/top-navigation"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { MapService } from "@/lib/services/map-service"
@@ -32,9 +32,9 @@ export default async function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <DashboardSidebar workspaces={formatWorkspaces} slug={slug} />
+      <DashboardSidebar workspaces={formatWorkspaces} user={user} slug={slug} />
       <SidebarInset>
-        <TopNavigation slug={slug} />
+        <TopNavigation />
         {children}
       </SidebarInset>
     </SidebarProvider>

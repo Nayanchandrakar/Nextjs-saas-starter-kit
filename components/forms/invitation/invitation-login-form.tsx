@@ -97,7 +97,7 @@ export const InvitationLoginForm = ({
       <MotionCard className="mx-auto max-w-lg w-full md:w-[400px]">
         <CardHeader>
           <CardTitle className="font-bold text-xl">
-            Join {StringService.capitalizeFirstLetter(workspace.name)}
+            Join <span className="capitalize">{workspace.name}</span>
           </CardTitle>
           <CardDescription>
             Collaborate with your team and start building faster.

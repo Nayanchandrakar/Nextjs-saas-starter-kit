@@ -1,8 +1,10 @@
 import { loadDashboardParams } from "@/lib/nuqs/search-params"
 import type { SearchParams } from "nuqs/server"
 
-import { TopNavigation } from "@/components/sidebars/dashboard/components/top-navigation"
-import { DashboardSidebar } from "@/components/sidebars/dashboard/dashboard-sidebar"
+import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
+import { handleAuthRequest } from "@/app/actions/utils"
+import { TopNavigation } from "@/components/sidebars/dashboard/top-navigation"
+import { SettingsDashboard } from "@/components/sidebars/settings/settings-sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 type SettingLayoutProps = {
@@ -14,13 +16,18 @@ export default async function SettingsLayout({
   children,
   params,
 }: SettingLayoutProps) {
-  const { slug } = await loadDashboardParams(params)
+  const [{ user }, { slug }] = await Promise.all([
+    handleAuthRequest(),
+    loadDashboardParams(params),
+  ])
+
+  await handleDashboardRequest(user.id, slug)
 
   return (
     <SidebarProvider>
-      {/* <DashboardSidebar slug={slug} /> */}
+      <SettingsDashboard slug={slug} user={user} />
       <SidebarInset>
-        <TopNavigation slug={slug} />
+        <TopNavigation />
         {children}
       </SidebarInset>
     </SidebarProvider>
