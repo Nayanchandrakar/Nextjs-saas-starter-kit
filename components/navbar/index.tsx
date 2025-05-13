@@ -1,6 +1,6 @@
 import { ActionMenu } from "@/components/navbar/action-menu"
 import { Logo } from "@/components/navbar/logo"
-import Container from "@/components/shared/container"
+import { Container } from "@/components/shared/container"
 
 export const Navbar = () => {
   return (
