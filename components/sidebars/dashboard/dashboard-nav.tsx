@@ -20,11 +20,11 @@ type DashboardNavProps = {
 
 export function DashboardNav({ data, slug }: DashboardNavProps) {
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <SidebarMenu>
         {data.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild tooltip={item.name}>
               <Link href={createRoute(`${slug}/${item.url}`)}>
                 <item.icon />
                 <span>{item.name}</span>

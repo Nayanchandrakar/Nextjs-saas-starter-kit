@@ -46,16 +46,16 @@ export function Switcher({ workspaces, slug }: SwitcherProps) {
   const { isMobile } = useSidebar()
   const [open, setOpen] = useState(false)
 
-  const defaultWorkspace = (MapService.findWorkspaceBySlug(workspaces, slug) ??
-    workspaces[0].workspaces[0]) as WorkspaceType
+  const index = (workspaces[0].workspaces.length > 0 ? 0 : 1) as number
 
-  const [activeWorkspace, setActiveWorkspace] = useState(defaultWorkspace)
+  const activeWorkspace = (MapService.findWorkspaceBySlug(workspaces, slug) ??
+    workspaces[index].workspaces[0]) as WorkspaceType
+
   if (!activeWorkspace) return null
 
   const onSelect = (workspace: WorkspaceType) => {
     if (workspace.slug === slug) return
 
-    setActiveWorkspace(workspace)
     setOpen(false)
     router.push(createRoute(`${workspace.slug}/dashboard`))
   }
@@ -72,11 +72,12 @@ export function Switcher({ workspaces, slug }: SwitcherProps) {
               size="lg"
               aria-label="Select a workspace"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
+              tooltip={`Workspace: ${activeWorkspace.name}`}
             >
               <WorkspaceLogoRenderer logoSrc={activeWorkspace.logo!} />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {StringService.capitalizeFirstLetter(activeWorkspace.name)}
+                <span className="truncate font-semibold capitalize">
+                  {activeWorkspace.name}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -107,9 +108,7 @@ export function Switcher({ workspaces, slug }: SwitcherProps) {
                               logoSrc={workspace.logo!}
                               className="size-5"
                             />
-                            {StringService.capitalizeFirstLetter(
-                              workspace.name,
-                            )}
+                            <span className="capitalize">{workspace.name}</span>
                             <CircleCheck
                               className={cn(
                                 "ml-auto",
@@ -178,9 +177,9 @@ const WorkspaceLogoRenderer = ({
 
 export const WorkspaceSwitcher = dynamic(
   async () => {
-    return import(
-      "@/components/sidebars/dashboard/components/workspace-switcher"
-    ).then((module) => module.Switcher)
+    return import("@/components/sidebars/dashboard/workspace-switcher").then(
+      (module) => module.Switcher,
+    )
   },
   {
     ssr: false,
