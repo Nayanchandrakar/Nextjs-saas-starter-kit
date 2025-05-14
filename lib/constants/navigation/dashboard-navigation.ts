@@ -1,4 +1,11 @@
-import { LayoutDashboardIcon, Send, Settings2, Users } from "lucide-react"
+import {
+  CircleUser,
+  CreditCard,
+  LayoutDashboardIcon,
+  Send,
+  Settings2,
+  Users,
+} from "lucide-react"
 
 export const DASHBOARD_NAV_MAIN = [
   {
@@ -27,5 +34,18 @@ export const WORKSPACE_SWITCH_OPTIONS = [
     label: "Invite and manage members",
     Icon: Users,
     href: "members",
+  },
+]
+
+export const USER_SETTINGS = [
+  {
+    label: "Profile",
+    href: "profile",
+    Icon: CircleUser,
+  },
+  {
+    label: "Billing",
+    href: "billing",
+    Icon: CreditCard,
   },
 ]

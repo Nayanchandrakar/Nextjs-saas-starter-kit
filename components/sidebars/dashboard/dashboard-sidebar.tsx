@@ -41,7 +41,7 @@ export function DashboardSidebar({
       </SidebarContent>
       <SidebarFooter className="p-0">
         <DashboardNav data={DASHBOARD_NAV_FOOTER} slug={slug} />
-        <DashboardUser user={user} />
+        <DashboardUser user={user} slug={slug} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

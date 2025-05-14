@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -25,14 +18,26 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { authClient } from "@/lib/authentication/auth-client"
+import { USER_SETTINGS } from "@/lib/constants/navigation/dashboard-navigation"
 import type { User } from "better-auth"
+import Link from "next/link"
+import { useTransition } from "react"
 
 type DashboardUserProps = {
   user: User
+  slug: string
 }
 
-export function DashboardUser({ user }: DashboardUserProps) {
+export function DashboardUser({ user, slug }: DashboardUserProps) {
   const { isMobile } = useSidebar()
+  const [isPending, startTransition] = useTransition()
+
+  const onSignOut = () => {
+    startTransition(async () => {
+      await authClient.signOut()
+    })
+  }
 
   return (
     <SidebarMenu className="p-2">
@@ -78,31 +83,20 @@ export function DashboardUser({ user }: DashboardUserProps) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              {USER_SETTINGS.map(({ href, Icon, label }) => (
+                <DropdownMenuItem key={href} asChild>
+                  <Link href={`/${slug}/${href}`}>
+                    <Icon />
+                    {label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem onClick={onSignOut} disabled={isPending}>
+                <LogOut />
+                Log out
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
