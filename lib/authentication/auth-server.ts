@@ -5,12 +5,13 @@ import {
   databaseHooks,
 } from "@/lib/authentication/better-auth-configurations"
 import { configuration } from "@/lib/config"
+import { StringService } from "@/lib/services/string-service"
 import { magicLinkService } from "@/lib/strategies/email-strategy"
 import { serverEnv } from "@/lib/utilities/server-env"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
-import { magicLink, multiSession } from "better-auth/plugins"
+import { customSession, magicLink, multiSession } from "better-auth/plugins"
 
 export const authServer = betterAuth({
   appName: configuration.site.name,
@@ -66,6 +67,20 @@ export const authServer = betterAuth({
   },
 
   plugins: [
+    customSession(async ({ user, session }) => {
+      const { name, ...props } = user
+      const extracts = StringService.extractName(name)
+
+      return {
+        user: {
+          ...props,
+          ...extracts,
+          image: StringService.getUserImageSrc(user.image),
+          fullName: name,
+        },
+        session,
+      }
+    }),
     magicLink({
       async sendMagicLink({ email, url }) {
         await magicLinkService.send({ email, url })

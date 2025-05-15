@@ -1,13 +1,6 @@
 "use client"
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { ChevronsUpDown, LogOut } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -25,14 +18,26 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import type { User } from "better-auth"
+import { authClient } from "@/lib/authentication/auth-client"
+import { USER_SETTINGS } from "@/lib/constants/navigation/dashboard-navigation"
+import { User } from "@/types/authentication/client-types"
+import Link from "next/link"
+import { useTransition } from "react"
 
 type DashboardUserProps = {
   user: User
+  slug: string
 }
 
-export function DashboardUser({ user }: DashboardUserProps) {
+export function DashboardUser({ user, slug }: DashboardUserProps) {
   const { isMobile } = useSidebar()
+  const [isPending, startTransition] = useTransition()
+
+  const onSignOut = () => {
+    startTransition(async () => {
+      await authClient.signOut()
+    })
+  }
 
   return (
     <SidebarMenu className="p-2">
@@ -44,13 +49,13 @@ export function DashboardUser({ user }: DashboardUserProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.image!} alt={user.name} />
+                <AvatarImage src={user.image!} alt={user.fullName} />
                 <AvatarFallback className="rounded-lg uppercase">
-                  {user.name.slice(0, 2)}
+                  {user.fullName.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
+                <span className="truncate font-semibold">{user.fullName}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -65,44 +70,35 @@ export function DashboardUser({ user }: DashboardUserProps) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image!} alt={user.name} />
+                  <AvatarImage src={user.image!} alt={user.fullName} />
                   <AvatarFallback className="rounded-lg uppercase">
-                    {user.name.slice(0, 2)}
+                    {user.fullName.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">
+                    {user.fullName}
+                  </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+              {USER_SETTINGS.map(({ href, Icon, label }) => (
+                <DropdownMenuItem key={href} asChild>
+                  <Link href={`/${slug}/${href}`}>
+                    <Icon />
+                    {label}
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuItem onClick={onSignOut} disabled={isPending}>
+                <LogOut />
+                Log out
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

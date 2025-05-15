@@ -16,7 +16,11 @@ export function SettingsHeader({ slug }: SettingsHeaderProps) {
     <SidebarHeader>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip="Back to dashboard">
+          <SidebarMenuButton
+            className="truncate"
+            asChild
+            tooltip="Back to dashboard"
+          >
             <Link href={`/${slug}/dashboard`}>
               <ArrowLeft className="size-4" />
               Back to dashboard

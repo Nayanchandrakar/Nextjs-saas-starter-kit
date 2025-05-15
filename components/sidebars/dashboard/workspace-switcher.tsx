@@ -1,7 +1,6 @@
 "use client"
 
 import { ChevronsUpDown, CircleCheck, PlusCircle } from "lucide-react"
-import { useState } from "react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -22,18 +21,14 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useWorkspaceSwitch } from "@/hooks/client/use-workspace-switch"
 import { WORKSPACE_SWITCH_OPTIONS } from "@/lib/constants/navigation/dashboard-navigation"
-import { MapService } from "@/lib/services/map-service"
-import { StringService } from "@/lib/services/string-service"
 import { cn, createRoute } from "@/lib/utils"
 import { FormattedWorkspace } from "@/types"
-import { WorkspaceType } from "@/types/database"
 import dynamic from "next/dynamic"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 type SwitcherProps = {
@@ -42,23 +37,8 @@ type SwitcherProps = {
 }
 
 export function Switcher({ workspaces, slug }: SwitcherProps) {
-  const router = useRouter()
-  const { isMobile } = useSidebar()
-  const [open, setOpen] = useState(false)
-
-  const index = (workspaces[0].workspaces.length > 0 ? 0 : 1) as number
-
-  const activeWorkspace = (MapService.findWorkspaceBySlug(workspaces, slug) ??
-    workspaces[index].workspaces[0]) as WorkspaceType
-
-  if (!activeWorkspace) return null
-
-  const onSelect = (workspace: WorkspaceType) => {
-    if (workspace.slug === slug) return
-
-    setOpen(false)
-    router.push(createRoute(`${workspace.slug}/dashboard`))
-  }
+  const { activeWorkspace, isMobile, onSelect, open, setOpen } =
+    useWorkspaceSwitch({ workspaces, slug })
 
   return (
     <SidebarMenu className="z-[100]">

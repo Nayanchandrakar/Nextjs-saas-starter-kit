@@ -17,7 +17,7 @@ import {
   DASHBOARD_NAV_MAIN,
 } from "@/lib/constants/navigation/dashboard-navigation"
 import { FormattedWorkspace } from "@/types"
-import type { User } from "better-auth"
+import { User } from "@/types/authentication/client-types"
 
 type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
   slug: string
@@ -41,7 +41,7 @@ export function DashboardSidebar({
       </SidebarContent>
       <SidebarFooter className="p-0">
         <DashboardNav data={DASHBOARD_NAV_FOOTER} slug={slug} />
-        <DashboardUser user={user} />
+        <DashboardUser user={user} slug={slug} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,5 +1,9 @@
-import { magicLinkClient } from "better-auth/client/plugins"
-import { multiSessionClient } from "better-auth/client/plugins"
+import type { authServerType } from "@/types/authentication/server-types"
+import {
+  customSessionClient,
+  magicLinkClient,
+  multiSessionClient,
+} from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
@@ -12,5 +16,9 @@ export const authClient = createAuthClient({
       }
     },
   },
-  plugins: [multiSessionClient(), magicLinkClient()],
+  plugins: [
+    customSessionClient<authServerType>(),
+    multiSessionClient(),
+    magicLinkClient(),
+  ],
 })

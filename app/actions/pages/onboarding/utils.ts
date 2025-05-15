@@ -30,5 +30,5 @@ export async function restrictOnboardingStep(requiredStep: OnboardingStep) {
     redirectToRoute(`onboarding/${onboardingStep}`)
   }
 
-  return { onboarding, session }
+  return { onboarding, user: session.user }
 }

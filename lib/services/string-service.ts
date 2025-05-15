@@ -2,7 +2,7 @@ import {
   OnboardingStatus,
   OnboardingStep,
 } from "@/app/actions/pages/onboarding/utils"
-import { getCloudfrontFile } from "@/lib/utilities/s3-utils"
+import { getCloudfrontFile, isCloudfrontFile } from "@/lib/utilities/s3-utils"
 
 export class StringService {
   static isFromInvite(from: string) {
@@ -24,5 +24,20 @@ export class StringService {
   static getPlaceholderImage(src: string | null, name: string) {
     if (src) return getCloudfrontFile(src)
     return `https://avatar.vercel.sh/${name}.svg`
+  }
+
+  static extractName(name: string) {
+    const [firstName, lastName] = name.split(" ").filter(Boolean)
+    return { firstName, lastName: lastName ?? "" }
+  }
+
+  static getUserImageSrc(src: string | null | undefined) {
+    let imageSrc = src ?? ""
+
+    if (src && isCloudfrontFile(src)) {
+      imageSrc = getCloudfrontFile(src)
+    }
+
+    return imageSrc
   }
 }
