@@ -1,7 +1,12 @@
-import { ProfileEditForm } from "@/components/forms/slug/profile/profile-edit-form"
+import { ManageProfile } from "@/components/forms/slug/profile/manage-profile"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { User } from "@/types/authentication/client-types"
 
-export function ProfileCard() {
+type ProfileCardProps = {
+  user: User
+}
+
+export function ProfileCard({ user }: ProfileCardProps) {
   return (
     <Card className="max-w-3xl">
       <CardHeader>
@@ -10,7 +15,7 @@ export function ProfileCard() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <ProfileEditForm />
+        <ManageProfile user={user} />
       </CardContent>
     </Card>
   )

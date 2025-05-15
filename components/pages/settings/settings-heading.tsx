@@ -16,7 +16,7 @@ export function SettingsHeading({
   ...props
 }: SettingsHeadingProps) {
   return (
-    <div className={cn("grid gap-y-2 px-8 pt-8", className)} {...props}>
+    <div className={cn("grid gap-y-2 mt-8", className)} {...props}>
       <h1 className={cn("text-sm font-semibold", titleClassName)}>{title}</h1>
       <p className={cn("text-muted-foreground text-sm", descriptionClassName)}>
         {description}

@@ -17,7 +17,7 @@ import {
   DASHBOARD_NAV_MAIN,
 } from "@/lib/constants/navigation/dashboard-navigation"
 import { FormattedWorkspace } from "@/types"
-import type { User } from "better-auth"
+import { User } from "@/types/authentication/client-types"
 
 type DashboardSidebarProps = React.ComponentProps<typeof Sidebar> & {
   slug: string

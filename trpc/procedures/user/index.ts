@@ -8,7 +8,7 @@ import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
 import { after } from "next/server"
 
-export const update = protectedProcedure
+export const onboardUser = protectedProcedure
   .input(profileOnboardingSchema)
   .mutation(async ({ input, ctx }) => {
     const { firstName, lastName, image, fromInvite } = input
@@ -43,5 +43,8 @@ export const update = protectedProcedure
       await Promise.all(asyncOperations)
     })
 
-    return { success: true, message: "Profile updated succefully" }
+    return {
+      success: true,
+      message: "Profile onbaroding completed successfully",
+    }
   })

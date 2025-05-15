@@ -14,13 +14,17 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <MemberProvider slug={slug}>
-      <SidebarContainer>
-        <SettingsHeading
-          title="Profile"
-          description="Manage your profile settings"
-        />
-        <ProfileCard />
-      </SidebarContainer>
+      {({ user }) => {
+        return (
+          <SidebarContainer>
+            <SettingsHeading
+              title="Profile"
+              description="Manage your profile settings"
+            />
+            <ProfileCard user={user} />
+          </SidebarContainer>
+        )
+      }}
     </MemberProvider>
   )
 }

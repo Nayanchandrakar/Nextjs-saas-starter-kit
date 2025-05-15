@@ -1,94 +1,61 @@
 "use client"
 
-import { getPreSignedUrl } from "@/app/actions/lib/aws/get-signed-url"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-  type FileWithPreview,
-  formatBytes,
-  useFileUpload,
-} from "@/hooks/client/use-file-upload"
-import messageJson from "@/lib/constants/message.json"
-import axios from "axios"
+import { formatBytes } from "@/hooks/client/use-file-upload"
+import { useSingleFileUpload } from "@/hooks/client/use-single-file-upload"
 import { Loader, Upload } from "lucide-react"
-import { useEffect, useMemo, useState, useTransition } from "react"
-import { toast } from "sonner"
 
-interface ProfilePicComponentProps {
-  maxSize: number
+interface ImageUploadProps {
+  maxSizeMB: number
   accept: string
   fileSrc: string
   title: string
   disabled: boolean
-  onSuccess?: (imageSrc: string) => void
+  onUploadSuccess?: (imageSrc: string) => void
   onRemove?: () => void
 }
 
-export const ProfilePicComponent = ({
+export const ImageUpload = ({
   accept,
-  maxSize,
-  onSuccess,
+  maxSizeMB,
+  onUploadSuccess,
   onRemove,
   fileSrc,
   title,
   disabled,
-}: ProfilePicComponentProps) => {
-  const [imageSrc, setImageSrc] = useState(fileSrc)
-  const [isPending, startTransition] = useTransition()
-  const maxFileSize = useMemo(() => formatBytes(maxSize), [maxSize])
-
-  const onFilesAdded = (addedFiles: FileWithPreview[]) => {
-    const { file } = addedFiles[0]
-    if (!(file instanceof File)) return
-
-    startTransition(async () => {
-      try {
-        const { url, imageUrl } = await getPreSignedUrl({
-          fileName: file.name,
-          fileType: file.type,
-        })
-
-        setImageSrc(imageUrl)
-        onSuccess?.(imageUrl)
-        await axios.put(url, file, { headers: { "Content-Type": file.type } })
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : messageJson.generalError,
-        )
-      }
-    })
-  }
-
-  const [
-    { files, isDragging, errors },
-    {
-      removeFile,
-      openFileDialog,
-      getInputProps,
-      handleDragEnter,
-      handleDragLeave,
-      handleDragOver,
-      handleDrop,
-    },
-  ] = useFileUpload({
-    accept,
+}: ImageUploadProps) => {
+  const {
+    uploadedFileUrl,
+    file,
+    isUploading,
     maxSize,
-    onFilesAdded,
+    isDragging,
+    handleDrop,
+    removeFile,
+    getInputProps,
+    handleDragOver,
+    openFileDialog,
+    handleDragEnter,
+    handleDragLeave,
+    setUploadedFileUrl,
+  } = useSingleFileUpload({
+    acceptedTypes: accept,
+    maxSizeMB,
+    defaultUploadedUrl: fileSrc,
+    onUploadSuccess,
   })
 
-  useEffect(() => {
-    errors.forEach((error) => toast.error(error))
-  }, [errors])
-
   const handleFileRemove = () => {
-    removeFile(files[0]?.id)
-    setImageSrc("")
+    setUploadedFileUrl("")
+    removeFile(file.id)
     onRemove?.()
   }
 
-  const isLoading = useMemo(() => isPending || disabled, [isPending, disabled])
-  const fileName = useMemo(() => files[0]?.file.name ?? null, [files])
+  const isLoading = !!(isUploading || disabled)
+  const maxFileSize = formatBytes(maxSize)
+  const fileName = file?.file.name
 
   return (
     <div className="inline-flex items-center gap-4 align-top">
@@ -102,16 +69,16 @@ export const ProfilePicComponent = ({
         onDrop={handleDrop}
         data-dragging={isDragging}
       >
-        {isPending ? (
+        {isUploading ? (
           <div aria-hidden="true">
             <Loader className="size-5 animate-spin" />
           </div>
-        ) : imageSrc ? (
+        ) : uploadedFileUrl ? (
           <Avatar className="size-full rounded-none">
             <AvatarImage
               width={64}
               height={64}
-              src={imageSrc!}
+              src={uploadedFileUrl!}
               alt="profile-image"
               className="size-full object-cover"
             />
@@ -150,7 +117,7 @@ export const ProfilePicComponent = ({
             size="sm"
             variant="destructive"
             onClick={handleFileRemove}
-            disabled={(!fileName && !imageSrc) || isLoading}
+            disabled={(!fileName && !uploadedFileUrl) || isLoading}
           >
             Remove
           </Button>

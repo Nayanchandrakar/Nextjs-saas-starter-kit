@@ -1,3 +1,5 @@
+import { authServer } from "@/lib/authentication/auth-server"
+
 export type getSessionContext = {
   query?: {
     disableCookieCache?: boolean
@@ -12,3 +14,5 @@ export type updateUserRequestBody = {
     image: string | null
   }>
 }
+
+export type authServerType = typeof authServer

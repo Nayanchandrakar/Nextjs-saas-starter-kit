@@ -11,6 +11,7 @@ const alertVariants = cva(
         success: "bg-green-500/10 text-green-600",
         error: "bg-red-500/10 text-red-600",
         warning: "bg-yellow-500/10 text-yellow-600",
+        info: "border border-yellow-500/80 bg-yellow-600/10 text-yellow-600 dark:text-yellow-400",
       },
     },
     defaultVariants: {
@@ -35,6 +36,7 @@ export const FormAlert = ({
     success: CheckCircle2,
     error: AlertCircle,
     warning: Info,
+    info: Info,
   }[variant || "success"]
 
   return (

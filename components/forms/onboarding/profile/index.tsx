@@ -1,6 +1,6 @@
 "use client"
 
-import { ProfilePicComponent } from "@/components/shared/file/profile-pic-component"
+import { ImageUpload } from "@/components/shared/file/image-upload"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardHeader } from "@/components/ui/card"
 import {
@@ -13,40 +13,32 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { MotionCard } from "@/components/ui/motion-card"
-import { useUpdateUserHook } from "@/hooks/trpc/users"
+import { useOnboardUserHook } from "@/hooks/trpc/users"
 import { formSetting } from "@/lib/constants/form-settings"
 import {
   profileOnboardingSchema,
   profileOnboardingSchemaType,
 } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
+import { User } from "@/types/authentication/client-types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
 interface ProfileOnboardingFormProps {
-  email: string
-  firstName: string
-  lastName: string
-  image: string
+  user: User
   fromInvite: boolean
 }
 
 export const ProfileOnboardingForm = ({
-  email,
-  firstName,
-  lastName,
-  image,
+  user,
   fromInvite,
 }: ProfileOnboardingFormProps) => {
-  const { mutateAsync, isPending } = useUpdateUserHook()
+  const { mutateAsync, isPending } = useOnboardUserHook()
 
   const form = useForm<profileOnboardingSchemaType>({
     resolver: zodResolver(profileOnboardingSchema),
     defaultValues: {
+      ...user,
       fromInvite,
-      image: image,
-      firstName,
-      lastName,
-      email,
     },
     shouldFocusError: true,
     shouldUseNativeValidation: true,
@@ -55,14 +47,14 @@ export const ProfileOnboardingForm = ({
   return (
     <MotionCard className="w-full max-w-lg">
       <CardHeader>
-        <ProfilePicComponent
-          maxSize={2 * 1024 * 1024}
+        <ImageUpload
+          maxSizeMB={2}
           title="Profile Image"
           fileSrc={form.getValues("image")!}
           accept="image/png,image/jpeg,image/jpg"
           disabled={isPending}
           onRemove={() => form.setValue("image", "", formSetting)}
-          onSuccess={(imageSrc: string) => {
+          onUploadSuccess={(imageSrc: string) => {
             form.setValue("image", imageSrc, formSetting)
           }}
         />

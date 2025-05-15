@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/sidebar"
 import { authClient } from "@/lib/authentication/auth-client"
 import { USER_SETTINGS } from "@/lib/constants/navigation/dashboard-navigation"
-import type { User } from "better-auth"
+import { User } from "@/types/authentication/client-types"
 import Link from "next/link"
 import { useTransition } from "react"
 
@@ -49,13 +49,13 @@ export function DashboardUser({ user, slug }: DashboardUserProps) {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.image!} alt={user.name} />
+                <AvatarImage src={user.image!} alt={user.fullName} />
                 <AvatarFallback className="rounded-lg uppercase">
-                  {user.name.slice(0, 2)}
+                  {user.fullName.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
+                <span className="truncate font-semibold">{user.fullName}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -70,13 +70,15 @@ export function DashboardUser({ user, slug }: DashboardUserProps) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image!} alt={user.name} />
+                  <AvatarImage src={user.image!} alt={user.fullName} />
                   <AvatarFallback className="rounded-lg uppercase">
-                    {user.name.slice(0, 2)}
+                    {user.fullName.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate font-semibold">
+                    {user.fullName}
+                  </span>
                   <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>

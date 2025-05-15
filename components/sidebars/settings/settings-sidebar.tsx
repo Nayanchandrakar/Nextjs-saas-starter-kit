@@ -9,7 +9,7 @@ import {
   ACCOUNT_SETTINGS,
   WORKSPACE_SETTINGS,
 } from "@/lib/constants/navigation/settings-navigation"
-import type { User } from "better-auth"
+import { User } from "@/types/authentication/client-types"
 
 type SettingsDashboardProps = React.ComponentProps<typeof Sidebar> & {
   slug: string

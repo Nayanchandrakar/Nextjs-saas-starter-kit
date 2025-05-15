@@ -1,6 +1,6 @@
 "use client"
 
-import { ProfilePicComponent } from "@/components/shared/file/profile-pic-component"
+import { ImageUpload } from "@/components/shared/file/image-upload"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardHeader } from "@/components/ui/card"
 import {
@@ -42,14 +42,14 @@ export const WorkSpaceOnboardingForm = ({}: WorkSpaceOnboardingFormProps) => {
   return (
     <MotionCard className="w-full max-w-lg">
       <CardHeader>
-        <ProfilePicComponent
-          maxSize={2 * 1024 * 1024}
+        <ImageUpload
           title="Image"
+          maxSizeMB={2}
           fileSrc={form.getValues("logo")!}
           accept="image/png,image/jpeg,image/jpg"
           disabled={isPending}
           onRemove={() => form.setValue("logo", "", formSetting)}
-          onSuccess={(imageSrc: string) => {
+          onUploadSuccess={(imageSrc: string) => {
             form.setValue("logo", imageSrc, formSetting)
           }}
         />

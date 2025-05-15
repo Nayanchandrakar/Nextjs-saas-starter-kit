@@ -40,7 +40,7 @@ export const SidebarContainer = ({
   return (
     <Comp
       className={cn(
-        "mx-auto flex size-full max-w-7xl flex-col gap-y-4 px-4 py-2",
+        "mx-auto flex size-full max-w-7xl flex-col gap-y-4 px-6 py-2",
         className,
       )}
       {...props}

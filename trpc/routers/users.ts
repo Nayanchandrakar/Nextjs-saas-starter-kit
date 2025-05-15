@@ -1,6 +1,12 @@
 import { createTRPCRouter } from "@/trpc/init"
-import { update } from "@/trpc/procedures/user"
+import { onboardUser } from "@/trpc/procedures/user"
+import {
+  editProfileImage,
+  manageProfile,
+} from "@/trpc/procedures/user/manage-profile"
 
 export const usersRouter = createTRPCRouter({
-  update,
+  onboardUser,
+  manageProfile,
+  editProfileImage,
 })

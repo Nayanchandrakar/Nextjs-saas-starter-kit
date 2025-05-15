@@ -1,7 +1,7 @@
 import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
 import { handleAuthRequest } from "@/app/actions/utils"
 import NotFound from "@/app/not-found"
-import type { User } from "better-auth"
+import { User } from "@/types/authentication/client-types"
 
 type DataType = {
   user: User

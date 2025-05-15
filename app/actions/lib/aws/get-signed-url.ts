@@ -35,9 +35,9 @@ export const getPreSignedUrl = async (request: preSignedSchemaType) => {
       CacheControl: "max-age=63072000",
     })
 
-    const imageUrl = getCloudfrontFile(generatedFilename)
+    const fileSource = getCloudfrontFile(generatedFilename)
 
-    return { url: endpoint, imageUrl }
+    return { url: endpoint, fileSource }
   } catch (error) {
     if (error instanceof Error) {
       throw error
