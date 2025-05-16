@@ -42,17 +42,12 @@ export const useManageProfileHook = ({
   )
 }
 
-export const useEditProfileImage = ({
-  onSuccess,
-}: {
-  onSuccess?: (imageSrc: string) => void
-}) => {
+export const useEditProfileImage = () => {
   const trpc = useTRPC()
 
   return useMutation(
     trpc.users.editProfileImage.mutationOptions({
-      onSuccess: (data, input) => {
-        onSuccess?.(input.image!)
+      onSuccess: (data) => {
         toast.success(data.message)
       },
       onError: (error) => toast.error(error.message ?? generalError),

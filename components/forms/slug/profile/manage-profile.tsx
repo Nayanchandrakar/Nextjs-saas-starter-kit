@@ -31,6 +31,7 @@ import {
 import { User } from "@/types/authentication/client-types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { SquarePen } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
@@ -39,38 +40,47 @@ interface ManageProfileProps {
 }
 
 export function ManageProfile({ user }: ManageProfileProps) {
+  const router = useRouter()
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const { isPending: isProfilePending, mutateAsync } = useManageProfileHook({
-    onSuccess: () => setIsDialogOpen(false),
+    onSuccess: () => {
+      router.refresh()
+      setIsDialogOpen(false)
+    },
   })
 
   const { isPending: isImageUpdating, mutateAsync: updateProfileImage } =
-    useEditProfileImage({
-      onSuccess: () => {},
-    })
+    useEditProfileImage()
 
   const form = useForm<manageProfileSchemaType>({
     resolver: zodResolver(manageProfileSchema),
     defaultValues: user,
   })
 
-  const { isUploading, getInputProps, openFileDialog } = useSingleFileUpload({
-    maxSizeMB: 2,
-    defaultUploadedUrl: user.image,
-    acceptedTypes: "image/png,image/jpeg,image/jpg",
-    onUploadSuccess: (imageSrc: string) => {
-      updateProfileImage({ image: imageSrc })
-    },
-  })
+  const { isUploading, getInputProps, openFileDialog, uploadedFileUrl } =
+    useSingleFileUpload({
+      maxSizeMB: 2,
+      defaultUploadedUrl: user.image,
+      acceptedTypes: "image/png,image/jpeg,image/jpg",
+      onUploadSuccess: (image: string) => {
+        updateProfileImage({ image })
+      },
+    })
 
   const isLoading = isUploading || isProfilePending || isImageUpdating
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4 w-full">
-        <Avatar className="ring-2 ring-green-500 ring-offset-3 ring-offset-background relative size-9">
-          <AvatarImage src={user.image} alt={`${user.fullName}'s profile`} />
+        <Avatar
+          key={uploadedFileUrl}
+          className="ring-2 ring-green-500 ring-offset-3 ring-offset-background relative size-9"
+        >
+          <AvatarImage
+            src={uploadedFileUrl}
+            alt={`${user.fullName}'s profile`}
+          />
           <AvatarFallback className="uppercase">
             {user.fullName.slice(0, 2)}
           </AvatarFallback>

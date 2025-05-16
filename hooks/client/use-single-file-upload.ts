@@ -37,10 +37,11 @@ export const useSingleFileUpload = ({
           fileType: file.type,
         })
 
+        // Upload file to S3
+        await axios.put(url, file, { headers: { "Content-Type": file.type } })
+
         setUploadedFileUrl(fileSource)
         onUploadSuccess?.(fileSource)
-
-        await axios.put(url, file, { headers: { "Content-Type": file.type } })
       } catch (error) {
         const errorMessage =
           error instanceof AxiosError
