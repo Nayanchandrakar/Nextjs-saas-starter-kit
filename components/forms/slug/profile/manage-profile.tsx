@@ -102,7 +102,7 @@ export function ManageProfile({ user }: ManageProfileProps) {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogTrigger asChild>
           <Button disabled={isUploading} variant="outline">
-            <SquarePen className="size-4 mr-2" aria-hidden="true" />
+            <SquarePen className="size-4" aria-hidden="true" />
             Edit Profile
           </Button>
         </DialogTrigger>
@@ -128,7 +128,11 @@ export function ManageProfile({ user }: ManageProfileProps) {
                   <FormItem>
                     <FormLabel>First Name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Enter first name" />
+                      <Input
+                        {...field}
+                        disabled={isProfilePending}
+                        placeholder="Enter first name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -142,7 +146,11 @@ export function ManageProfile({ user }: ManageProfileProps) {
                   <FormItem>
                     <FormLabel>Last Name</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Enter last name" />
+                      <Input
+                        {...field}
+                        disabled={isProfilePending}
+                        placeholder="Enter last name"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -177,7 +185,7 @@ export function ManageProfile({ user }: ManageProfileProps) {
               disabled={isLoading || !form.formState.isDirty}
               className="w-full sm:w-auto"
             >
-              Save Changes
+              Save changes
             </Button>
           </DialogFooter>
         </DialogContent>
