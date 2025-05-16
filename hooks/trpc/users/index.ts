@@ -1,6 +1,8 @@
 "use client"
 
+import { authClient } from "@/lib/authentication/auth-client"
 import { generalError } from "@/lib/constants/message.json"
+import { createRoute } from "@/lib/utils"
 import { useTRPC } from "@/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -49,6 +51,32 @@ export const useEditProfileImage = () => {
     trpc.users.editProfileImage.mutationOptions({
       onSuccess: (data) => {
         toast.success(data.message)
+      },
+      onError: (error) => toast.error(error.message ?? generalError),
+    }),
+  )
+}
+
+export const useDeleteAccount = ({
+  onSuccess,
+}: {
+  onSuccess?: () => void
+}) => {
+  const trpc = useTRPC()
+  const router = useRouter()
+
+  return useMutation(
+    trpc.users.deleteAccount.mutationOptions({
+      onSuccess: async (data) => {
+        await authClient.revokeSessions({
+          fetchOptions: {
+            onSuccess: () => {
+              onSuccess?.()
+              toast.success(data.message)
+              router.push(createRoute("sign-in"))
+            },
+          },
+        })
       },
       onError: (error) => toast.error(error.message ?? generalError),
     }),

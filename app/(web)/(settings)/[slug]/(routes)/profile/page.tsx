@@ -1,4 +1,5 @@
 import { SettingsHeading } from "@/components/pages/settings/settings-heading"
+import { DeleteAccountCard } from "@/components/pages/slug/profile/delete-profile-card"
 import { ProfileCard } from "@/components/pages/slug/profile/profile-card"
 import { MemberProvider } from "@/components/providers/member-provider"
 import { SidebarContainer } from "@/components/shared/container"
@@ -27,6 +28,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               description="Manage your profile settings"
             />
             <ProfileCard sessions={formattedSession} user={user} />
+            <DeleteAccountCard user={user} />
           </SidebarContainer>
         )
       }}
