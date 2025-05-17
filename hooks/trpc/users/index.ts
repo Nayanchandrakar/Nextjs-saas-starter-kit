@@ -68,7 +68,7 @@ export const useDeleteAccount = ({
   return useMutation(
     trpc.users.deleteAccount.mutationOptions({
       onSuccess: async (data) => {
-        await authClient.revokeSessions({
+        await authClient.signOut({
           fetchOptions: {
             onSuccess: () => {
               onSuccess?.()

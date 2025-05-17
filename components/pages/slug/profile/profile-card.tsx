@@ -14,7 +14,7 @@ import { User } from "@/types/authentication/client-types"
 
 type ProfileCardProps = {
   user: User
-  sessions: formattedSessionsType
+  sessions: formattedSessionsType[]
 }
 
 export function ProfileCard({ user, sessions }: ProfileCardProps) {

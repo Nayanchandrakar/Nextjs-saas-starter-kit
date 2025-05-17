@@ -28,7 +28,7 @@ export function DeleteAccountButton() {
   return (
     <AlertDialog open={isAlertOpen} onOpenChange={setAlertOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive">
+        <Button disabled={isPending} variant="destructive">
           <Trash className="size-4 -me-1" />
           Delete account
         </Button>

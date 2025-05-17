@@ -19,4 +19,4 @@ export type formattedSessionsType = {
   userAgent: ReturnType<typeof userAgentFromString>
   token: string
   userId: string
-}[]
+}
