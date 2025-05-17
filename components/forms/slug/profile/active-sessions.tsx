@@ -19,7 +19,7 @@ export function ActiveSessions({
       <p className="text-xs text-muted-foreground">Active Sessions</p>
       <ListComponent
         data={sessions}
-        className="py-2"
+        className="py-2 gap-3 flex flex-col"
         renderItem={({ token, userAgent, userId }) => (
           <SessionCard
             key={token}
