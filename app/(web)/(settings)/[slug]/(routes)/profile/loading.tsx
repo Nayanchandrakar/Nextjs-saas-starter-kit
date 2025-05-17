@@ -82,10 +82,10 @@ export default function Loading() {
         <CardContent>
           <div className="flex flex-col gap-y-2">
             <ParaSkeleton className="w-32" />
-            <p className="text-muted-foreground text-xs flex items-center gap-2">
+            <div className="text-muted-foreground text-xs flex items-center gap-2">
               Account created on
               <Skeleton className="w-24 h-3" />
-            </p>
+            </div>
           </div>
         </CardContent>
 
