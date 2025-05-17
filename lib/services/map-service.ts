@@ -1,7 +1,9 @@
 import { PERMISSIONS } from "@/lib/constants/rbac/permissions"
 import { StringService } from "@/lib/services/string-service"
 import { FormattedWorkspace } from "@/types"
+import { ActiveSessionsType } from "@/types/authentication/client-types"
 import { WorkspaceType } from "@/types/database"
+import { userAgentFromString } from "next/server"
 
 export class MapService {
   static formattedPermissions() {
@@ -47,5 +49,15 @@ export class MapService {
         label: path,
         href: `/${array.slice(0, index + 1).join("/")}`,
       }))
+  }
+
+  static formattedActiveSessions(sessions: ActiveSessionsType) {
+    return sessions?.map(({ session }) => {
+      return {
+        userAgent: userAgentFromString(session.userAgent!),
+        token: session.token,
+        userId: session.userId,
+      }
+    })
   }
 }

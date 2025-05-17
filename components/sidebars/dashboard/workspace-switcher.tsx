@@ -147,7 +147,7 @@ const WorkspaceLogoRenderer = ({
   logoSrc,
   className,
 }: { logoSrc: string; className?: string }) => (
-  <Avatar className={cn("rounded-sm", className)}>
+  <Avatar className={cn("rounded-md", className)}>
     <AvatarImage src={logoSrc} />
     <AvatarFallback className="rounded-none">
       <Skeleton className="size-full" />

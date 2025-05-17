@@ -27,7 +27,6 @@ export const manageProfile = protectedProcedure
     ]
 
     await Promise.all(asyncOperations)
-
     return { success: true, message: "Profile changes saved successfully" }
   })
 

@@ -11,4 +11,8 @@ export class UserDatabaseService {
       .limit(1)
     return data
   }
+
+  static async deleteUser(userId: string) {
+    await dbHttp.delete(users).where(eq(users.id, userId))
+  }
 }

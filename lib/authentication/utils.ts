@@ -13,6 +13,12 @@ export async function auth({ asResponse, query }: getSessionContext = {}) {
   })
 }
 
+export async function activeSessions() {
+  return await authServer.api.listDeviceSessions({
+    headers: await headers(),
+  })
+}
+
 export async function updateUser({ body }: updateUserRequestBody) {
   return await authServer.api.updateUser({
     headers: await headers(),

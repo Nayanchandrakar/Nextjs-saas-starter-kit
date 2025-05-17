@@ -18,11 +18,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { authClient } from "@/lib/authentication/auth-client"
+import { useSignOut } from "@/hooks/client/use-sign-out"
 import { USER_SETTINGS } from "@/lib/constants/navigation/dashboard-navigation"
 import { User } from "@/types/authentication/client-types"
 import Link from "next/link"
-import { useTransition } from "react"
 
 type DashboardUserProps = {
   user: User
@@ -31,13 +30,7 @@ type DashboardUserProps = {
 
 export function DashboardUser({ user, slug }: DashboardUserProps) {
   const { isMobile } = useSidebar()
-  const [isPending, startTransition] = useTransition()
-
-  const onSignOut = () => {
-    startTransition(async () => {
-      await authClient.signOut()
-    })
-  }
+  const { isPending, onSignOut } = useSignOut({})
 
   return (
     <SidebarMenu className="p-2">

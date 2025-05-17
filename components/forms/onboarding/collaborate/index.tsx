@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { MotionCard } from "@/components/ui/motion-card"
 import { Separator } from "@/components/ui/separator"
-import { useInviteMembersHook } from "@/hooks/trpc/invitations"
+import { useInviteMembers, useSkipInvitation } from "@/hooks/trpc/invitations"
 import {
   collaborationOnboardingSchema,
   collaborationOnboardingSchemaType,
@@ -31,7 +31,8 @@ interface CollabrationOnboardingFormProps {}
 
 export const CollabrationOnboardingForm =
   ({}: CollabrationOnboardingFormProps) => {
-    const { isPending, mutateAsync } = useInviteMembersHook()
+    const { isPending, mutateAsync } = useInviteMembers()
+    const { isSkipping, mutateSkipping } = useSkipInvitation()
 
     const form = useForm<collaborationOnboardingSchemaType>({
       resolver: zodResolver(collaborationOnboardingSchema),
@@ -62,6 +63,8 @@ export const CollabrationOnboardingForm =
       }
     }
 
+    const isSomethingPending = !!(isPending || isSkipping)
+
     return (
       <MotionCard className="w-full max-w-lg">
         <CardHeader>
@@ -89,7 +92,7 @@ export const CollabrationOnboardingForm =
                       <FormControl>
                         <div className="flex rounded-md shadow-xs">
                           <Input
-                            disabled={isPending}
+                            disabled={isSomethingPending}
                             className="-me-px flex-1 rounded-e-none shadow-none focus-visible:z-10"
                             placeholder="example@gmail.com"
                             {...field}
@@ -99,7 +102,7 @@ export const CollabrationOnboardingForm =
                               className="border-input bg-background text-foreground hover:bg-accent hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 inline-flex items-center rounded-e-md border px-3 text-sm font-medium transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
                               type="button"
                               onClick={() => handleFieldRemove(index)}
-                              disabled={isPending}
+                              disabled={isSomethingPending}
                             >
                               <Minus className="size-4" />
                             </button>
@@ -118,7 +121,7 @@ export const CollabrationOnboardingForm =
         <CardFooter className="flex flex-col gap-y-3">
           <Button
             variant="ghost"
-            disabled={isPending || !isMaxLimitReached}
+            disabled={isSomethingPending || !isMaxLimitReached}
             type="button"
             onClick={handleFieldAdd}
             className="w-full text-muted-foreground"
@@ -128,7 +131,7 @@ export const CollabrationOnboardingForm =
           </Button>
 
           <Button
-            disabled={isPending || !form.formState.isValid}
+            disabled={isSomethingPending || !form.formState.isValid}
             type="submit"
             className="w-full"
             form="collaboration-form"
@@ -139,8 +142,8 @@ export const CollabrationOnboardingForm =
 
           <Button
             variant="ghost"
-            disabled={isPending}
-            onClick={() => mutateAsync({ emails: [] })}
+            disabled={isSomethingPending}
+            onClick={() => mutateSkipping({ emails: [] })}
             type="button"
             className="w-full text-muted-foreground"
           >

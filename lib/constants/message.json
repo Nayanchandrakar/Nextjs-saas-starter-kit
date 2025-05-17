@@ -7,5 +7,9 @@
   "tooManyRequests": "Too many requests. Please wait and try again.",
   "invitationCreate": "Invitations sent successfully",
   "invitationSkipMessage": "Your onbaording is successfull",
-  "pendingInvitations": "Invitation already exists and is pending"
+  "pendingInvitations": "Invitation already exists and is pending",
+  "accountDeleteMessage": "Your account has been successfully deleted",
+  "accountDeleteDescription": "We're sorry to see you go. You will be redirected to the sign-in page shortly. If you change your mind, you're always welcome to create a new account.",
+  "onboardingSkipMessage": "Onboarding completed",
+  "onboardingSkipDescription": "You will be redirected to your Dashboard shortly."
 }

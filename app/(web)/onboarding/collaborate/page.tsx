@@ -19,7 +19,7 @@ export default async function CollaborationOnboardingPage() {
         >
           <ChevronLeft className="size-4" />
         </Link>
-        <p className="text-xl font-semibold">Create your workspace</p>
+        <p className="text-xl font-semibold">Collaborate with other's</p>
       </div>
       <CollabrationOnboardingForm />
     </div>

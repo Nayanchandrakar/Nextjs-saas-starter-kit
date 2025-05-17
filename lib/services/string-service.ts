@@ -21,6 +21,10 @@ export class StringService {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
+  static isCurrentUser(userId: string, currentUserId: string) {
+    return userId === currentUserId
+  }
+
   static getPlaceholderImage(src: string | null, name: string) {
     if (src) return getCloudfrontFile(src)
     return `https://avatar.vercel.sh/${name}.svg`
