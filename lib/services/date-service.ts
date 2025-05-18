@@ -15,4 +15,8 @@ export class DateService {
   static getSubscriptionExpiry() {
     return new Date(Date.now() + DateService.SUBSCRIPTION_EXPIRY)
   }
+
+  static isSubscriptionExpired(currentPeriodEnd: Date) {
+    return currentPeriodEnd?.getTime() + 86_400_000 > Date.now()
+  }
 }

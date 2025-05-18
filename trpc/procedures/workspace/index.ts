@@ -14,8 +14,8 @@ export const create = protectedProcedure
     const slug = input.slug.toLowerCase()
 
     await Promise.all([
-      await WorkspaceService.isSlugExist(userId, slug),
-      await WorkspaceService.createWorkspace(
+      WorkspaceService.isSlugExist(userId, slug),
+      WorkspaceService.createWorkspace(
         userId,
         input.name,
         slug,
