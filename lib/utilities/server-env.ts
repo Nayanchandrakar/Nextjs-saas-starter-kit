@@ -7,8 +7,6 @@ export const serverEnv = createEnv({
       .enum(["development", "production", "test"])
       .default("development"),
 
-    ENCRYPTION_KEY: z.string(),
-
     DATABASE_URL: z.string({
       required_error: "DATABASE_URL is required in environment variables",
     }),

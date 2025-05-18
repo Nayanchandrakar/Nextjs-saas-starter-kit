@@ -3,7 +3,6 @@ import { workSpaceOnboardingSchema } from "@/lib/schema/pages/onboarding/workspa
 import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
 import { WorkspaceService } from "@/trpc/services/workspace-service"
-import { after } from "next/server"
 
 export const create = protectedProcedure
   .input(workSpaceOnboardingSchema)
@@ -13,16 +12,16 @@ export const create = protectedProcedure
     await WorkspaceService.handleOnboarding(onboarding)
 
     const slug = input.slug.toLowerCase()
-    await WorkspaceService.isSlugExist(userId, slug)
 
-    after(async () => {
+    await Promise.all([
+      await WorkspaceService.isSlugExist(userId, slug),
       await WorkspaceService.createWorkspace(
         userId,
         input.name,
         slug,
         getCloudfrontKey(input.logo),
-      )
-    })
+      ),
+    ])
 
     return { success: true, message: "Workspace created successfully" }
   })
