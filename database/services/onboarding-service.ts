@@ -20,18 +20,6 @@ export class OnboardingDatabaseService {
     return data
   }
 
-  static async createOnboardingData(userId: string) {
-    const [data] = await dbHttp
-      .insert(userOnboarding)
-      .values({ userId })
-      .returning({
-        onboardingStatus: userOnboarding.onboardingStatus,
-        onboardingStep: userOnboarding.onboardingStep,
-      })
-
-    return data
-  }
-
   static async updateOnboardingData(
     onboardingStatus: OnboardingStatus,
     onboardingStep: OnboardingStep,

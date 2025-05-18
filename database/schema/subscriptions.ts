@@ -14,14 +14,14 @@ export const subscriptions = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     status: text("status").notNull(),
     priceId: text("price_id").notNull(),
-    planId: text("plan_id").notNull(),
-    currentPeriodStart: timestamp("current_period_start").notNull(),
-    currentPeriodEnd: timestamp("current_period_end").notNull(),
-    cancelAt: timestamp("cancel_at"),
-    canceledAt: timestamp("canceled_at"),
+    customerId: text("customer_id").unique(),
+    subscriptionId: text("subscription_id").unique(),
+    currentPeriodEnd: timestamp("current_period_end", {
+      mode: "date",
+    }).notNull(),
     ...dateCreation,
   },
   (t) => ({
-    userIdIndex: index("subscription_user_id_index").on(t.userId),
+    userIdIndex: index("sub_user_id_index").on(t.userId),
   }),
 )
