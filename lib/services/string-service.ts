@@ -13,6 +13,10 @@ export class StringService {
     return status === "pending"
   }
 
+  static isSubscriptionActive(status: string) {
+    return status === "active"
+  }
+
   static isProfileOnboardingStep(step: OnboardingStep) {
     return step === "profile"
   }

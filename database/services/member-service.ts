@@ -40,6 +40,7 @@ export class MemeberDatabaseService {
     const [workspace] = await dbHttp
       .select({
         id: workspaces.id,
+        ownerId: workspaces.ownerId,
       })
       .from(workspaces)
       .innerJoin(

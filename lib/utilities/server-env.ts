@@ -7,8 +7,6 @@ export const serverEnv = createEnv({
       .enum(["development", "production", "test"])
       .default("development"),
 
-    ENCRYPTION_KEY: z.string(),
-
     DATABASE_URL: z.string({
       required_error: "DATABASE_URL is required in environment variables",
     }),
@@ -80,12 +78,29 @@ export const serverEnv = createEnv({
       required_error: "STRIPE_WEBHOOK is required in environment variables",
     }),
 
-    STRIPE_STARTER_PRICE_ID: z.string({
-      required_error: "STRIPE_WEBHOOK is required in environment variables",
+    STRIPE_FREE_MONTHLY_PLAN_ID: z.string({
+      required_error:
+        "STRIPE_FREE_MONTHLY_PLAN_ID is required in environment variables",
     }),
 
-    STRIPE_PRO_PRICE_ID: z.string({
-      required_error: "STRIPE_WEBHOOK is required in environment variables",
+    STRIPE_STARTER_MONTHLY_PLAN_ID: z.string({
+      required_error:
+        "STRIPE_STARTER_MONTHLY_PLAN_ID is required in environment variables",
+    }),
+
+    STRIPE_STARTER_YEARLY_PLAN_ID: z.string({
+      required_error:
+        "STRIPE_STARTER_YEARLY_PLAN_ID is required in environment variables",
+    }),
+
+    STRIPE_PRO_MONTHLY_PLAN_ID: z.string({
+      required_error:
+        "STRIPE_PRO_MONTHLY_PLAN_ID is required in environment variables",
+    }),
+
+    STRIPE_PRO_YEARLY_PLAN_ID: z.string({
+      required_error:
+        "STRIPE_PRO_YEARLY_PLAN_ID is required in environment variables",
     }),
   },
 
