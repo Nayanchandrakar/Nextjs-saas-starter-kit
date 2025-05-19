@@ -48,4 +48,8 @@ export class StringService {
 
     return imageSrc
   }
+
+  static createFullName(firstName: string, lastName?: string) {
+    return [firstName, lastName].filter(Boolean).join(" ").trim()
+  }
 }

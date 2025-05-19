@@ -1,4 +1,5 @@
 import { serverEnv } from "@/lib/utilities/server-env"
+import { Transaction } from "@/types/database"
 import { Pool, type PoolConfig, neon } from "@neondatabase/serverless"
 import type { CacheConfig } from "drizzle-orm/cache/core/types"
 import { upstashCache } from "drizzle-orm/cache/upstash"
@@ -91,6 +92,7 @@ const database = Database.getInstance({
 
 export const dbHttp = database.getHttpConnection()
 export const dbServerless = database.getWsConnection()
+export const dbTransaction = (tx?: Transaction) => tx ?? dbHttp
 export const closeDatabaseConnections = async () => {
   await database.closeConnections()
 }

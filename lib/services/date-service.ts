@@ -19,4 +19,16 @@ export class DateService {
   static isSubscriptionExpired(currentPeriodEnd: Date) {
     return currentPeriodEnd?.getTime() + 86_400_000 > Date.now()
   }
+
+  static formatDate(
+    date: Date | string | number,
+    options: Intl.DateTimeFormatOptions = {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    },
+  ) {
+    const d = new Date(date)
+    return new Intl.DateTimeFormat("en-US", options).format(d)
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "id": "aa1a42a7-120e-4b79-a8d9-6f223b976aa1",
+  "id": "386c609b-161f-48d2-b5ed-4e0e84c62b5b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -251,7 +251,7 @@
           "tableTo": "roles",
           "columnsFrom": ["role_id"],
           "columnsTo": ["id"],
-          "onDelete": "cascade",
+          "onDelete": "no action",
           "onUpdate": "no action"
         }
       },

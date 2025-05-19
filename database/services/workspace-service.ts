@@ -103,4 +103,31 @@ export class WorkSpaceDatabaseService {
 
     return workspace
   }
+
+  /**
+   * Retrieves all workspaces created by a specific user, sorted by creation date in descending order.
+   * @param userId - The unique identifier of the user whose workspaces are to be retrieved.
+   * @returns A promise that resolves to an array of workspace objects owned by the specified user.
+   * @async
+   */
+  static async getUserCreatedWorkspaces(userId: string) {
+    const workspace = await dbHttp
+      .select()
+      .from(workspaces)
+      .where(eq(workspaces.ownerId, userId))
+      .orderBy(desc(workspaces.createdAt))
+
+    return workspace
+  }
+
+  static async deleteWorkspace(userId: string, workspaceId: string) {
+    const [workspace] = await dbHttp
+      .delete(workspaces)
+      .where(
+        and(eq(workspaces.ownerId, userId), eq(workspaces.id, workspaceId)),
+      )
+      .returning({ logo: workspaces.logo, slug: workspaces.slug })
+
+    return workspace
+  }
 }

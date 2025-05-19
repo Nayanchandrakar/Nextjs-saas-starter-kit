@@ -1,4 +1,4 @@
-import { dbHttp } from "@/database"
+import { dbServerless } from "@/database"
 import { workspaces } from "@/database/schema"
 import { MemeberDatabaseService } from "@/database/services/member-service"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
@@ -8,7 +8,7 @@ import { StringService } from "@/lib/services/string-service"
 import { OnboardingType } from "@/types/database"
 import { TRPCError } from "@trpc/server"
 
-export class WorkspaceService {
+export class WorkspaceController {
   constructor() {}
 
   static async handleOnboarding({
@@ -46,8 +46,8 @@ export class WorkspaceService {
     slug: string,
     logo: string | null | undefined,
   ) {
-    const [[workspace]] = await Promise.all([
-      dbHttp
+    await dbServerless.transaction(async (tx) => {
+      const [workspace] = await tx
         .insert(workspaces)
         .values({
           name,
@@ -55,21 +55,39 @@ export class WorkspaceService {
           slug,
           logo: logo ?? null,
         })
-        .returning({ id: workspaces.id }),
+        .returning({ id: workspaces.id })
 
-      OnboardingDatabaseService.updateOnboardingData(
+      await OnboardingDatabaseService.updateOnboardingData(
         "pending",
         "collaborate",
         ownerId,
-      ),
-    ])
+        tx,
+      )
 
-    await MemeberDatabaseService.createMember(
-      (await RBACService.getRoleByName("owner")).id,
-      ownerId,
-      workspace.id,
+      const role = await RBACService.getRoleByName("owner", tx)
+      await MemeberDatabaseService.createMember(
+        role.id,
+        ownerId,
+        workspace.id,
+        tx,
+      )
+    })
+  }
+
+  static async handleWorkspaceDelete(userId: string, workspaceId: string) {
+    const hasPermission = await RBACService.hasPermission(
+      userId,
+      workspaceId,
+      "delete:workspace",
     )
 
-    return workspace
+    if (!hasPermission) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "You do not have permission to delete this workspace.",
+      })
+    }
+
+    return hasPermission
   }
 }

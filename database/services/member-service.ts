@@ -1,5 +1,6 @@
-import { dbHttp } from "@/database"
+import { dbHttp, dbTransaction } from "@/database"
 import { workspaceMembers, workspaces } from "@/database/schema"
+import type { Transaction } from "@/types/database"
 import { and, desc, eq, or } from "drizzle-orm"
 
 export class MemeberDatabaseService {
@@ -9,8 +10,9 @@ export class MemeberDatabaseService {
     roleId: string,
     userId: string,
     workspaceId: string,
+    tx?: Transaction,
   ) {
-    await dbHttp.insert(workspaceMembers).values({
+    await dbTransaction(tx).insert(workspaceMembers).values({
       roleId,
       userId,
       workspaceId,

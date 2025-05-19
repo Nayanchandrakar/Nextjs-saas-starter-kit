@@ -1,5 +1,5 @@
 import { RoleType } from "@/app/actions/pages/invitation/handle-invitation-request"
-import { dbHttp, dbServerless } from "@/database"
+import { dbHttp, dbServerless, dbTransaction } from "@/database"
 import {
   permissions as permissionTable,
   rolePermissions,
@@ -10,6 +10,7 @@ import {
 import { PermissionType } from "@/lib/constants/rbac/permissions"
 import { DEFAULT_ROLES } from "@/lib/constants/rbac/roles"
 import { MapService } from "@/lib/services/map-service"
+import type { Transaction } from "@/types/database"
 import { and, eq, inArray } from "drizzle-orm"
 
 export class RBACService {
@@ -57,7 +58,7 @@ export class RBACService {
       })
       .from(workspaceMembers)
       .innerJoin(roles, eq(workspaceMembers.roleId, roles.id))
-      .innerJoin(permissionTable, eq(roles.id, rolePermissions.roleId))
+      .innerJoin(rolePermissions, eq(roles.id, rolePermissions.roleId))
       .innerJoin(
         permissionTable,
         eq(rolePermissions.permissionId, permissionTable.id),
@@ -106,8 +107,8 @@ export class RBACService {
     return permissions.every((perm) => granted.has(perm))
   }
 
-  static async getRoleByName(role: RoleType) {
-    const [data] = await dbHttp
+  static async getRoleByName(role: RoleType, tx?: Transaction) {
+    const [data] = await dbTransaction(tx)
       .select({ id: roleTable.id })
       .from(roleTable)
       .where(eq(roleTable.name, role))

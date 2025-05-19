@@ -5,20 +5,21 @@ import messageJson from "@/lib/constants/message.json"
 import { DateService } from "@/lib/services/date-service"
 import { clientEnv } from "@/lib/utilities/client-env"
 import { createRoute } from "@/lib/utils"
+import { TrpcResponseHandler } from "@/trpc/lib/handlers/response-handler"
 import { TRPCError } from "@trpc/server"
 
-export class InvitationService {
+export class InvitationController {
   static async handleEmptyInput(userId: string, workspaceId: string) {
     await OnboardingDatabaseService.updateOnboardingData(
       "completed",
       "collaborate",
       userId,
     )
-    return {
-      success: true,
-      message: messageJson.invitationCreate,
-      redirect: createRoute(`${workspaceId}/dashboard`),
-    }
+
+    return TrpcResponseHandler({
+      message: "invitationCreate",
+      redirect: `${workspaceId}/dashboard`,
+    })
   }
 
   static async validateInput(

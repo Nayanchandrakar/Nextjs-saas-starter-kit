@@ -11,5 +11,10 @@
   "accountDeleteMessage": "Your account has been successfully deleted",
   "accountDeleteDescription": "We're sorry to see you go. You will be redirected to the sign-in page shortly. If you change your mind, you're always welcome to create a new account.",
   "onboardingSkipMessage": "Onboarding completed",
-  "onboardingSkipDescription": "You will be redirected to your Dashboard shortly."
+  "onboardingSkipDescription": "You will be redirected to your Dashboard shortly.",
+  "profileOnboardingSuccess": "Profile onboaroding completed successfully",
+  "profileUpdateMessage": "Profile changes saved successfully",
+  "profileImageUpdteMessage": "Profile Image updated Successfully",
+  "workspaceCreateMessage": "Workspace created successfully",
+  "workspaceDeleteMessage": "Worskspace deleted successfully"
 }
