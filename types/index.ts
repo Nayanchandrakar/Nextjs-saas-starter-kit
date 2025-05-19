@@ -20,3 +20,11 @@ export type formattedSessionsType = {
   token: string
   userId: string
 }
+
+export type UserSubscription = {
+  id: string
+  priceId: string
+  status: string
+  currentPeriodEnd: Date
+  isSubscribed: boolean
+}

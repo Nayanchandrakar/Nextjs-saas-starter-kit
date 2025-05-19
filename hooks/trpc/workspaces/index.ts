@@ -23,3 +23,16 @@ export const useCreateWorkspaceHook = () => {
     }),
   )
 }
+
+export const useDeleteWorkspace = () => {
+  const trpc = useTRPC()
+  return useMutation(
+    trpc.workSpaces.deleteWorkspace.mutationOptions({
+      onSuccess: (data) => {
+        toast.success(data.message)
+      },
+      onError: (error) =>
+        toast.error(error.message ?? messageJson.generalError),
+    }),
+  )
+}

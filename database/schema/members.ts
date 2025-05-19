@@ -14,7 +14,7 @@ export const workspaceMembers = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     roleId: text("role_id")
       .notNull()
-      .references(() => roles.id, { onDelete: "cascade" }),
+      .references(() => roles.id),
     ...dateCreation,
   },
   (t) => ({

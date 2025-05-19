@@ -2,57 +2,42 @@ import { OnboardingDatabaseService } from "@/database/services/onboarding-servic
 import { UserDatabaseService } from "@/database/services/user-service"
 import { updateUser } from "@/lib/authentication/utils"
 import { s3Service } from "@/lib/aws/s3-service"
-import {
-  accountDeleteDescription,
-  accountDeleteMessage,
-} from "@/lib/constants/message.json"
 import { profileOnboardingSchema } from "@/lib/schema/pages/onboarding/profile/profile-onboarding-scheme"
 import { StringService } from "@/lib/services/string-service"
-import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
+import { UserController } from "@/trpc/controller/user-controller"
+import { TrpcResponseHandler } from "@/trpc/lib/handlers/response-handler"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
-import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
 import { after } from "next/server"
 
-export const onboardUser = protectedProcedure
+export const createOnboardingProfile = protectedProcedure
   .input(profileOnboardingSchema)
-  .mutation(async ({ input, ctx }) => {
-    const { firstName, lastName, image, fromInvite } = input
-    const { user } = ctx
-
-    const fullName = buildFullName(firstName, lastName)
-
-    const updateData = {
-      name: fullName,
-      image: getCloudfrontKey(image),
-    }
-
+  .mutation(async (props) => {
+    const { id: userId, image: userImage } = props.ctx.user
+    const { name, imageSrc, inputImageSrc, fromInvite } =
+      UserController.processOnboardingInput(props.input)
     const { onboardingStep } =
-      await OnboardingDatabaseService.getOnboardingData(user.id)
+      await OnboardingDatabaseService.getOnboardingData(userId)
 
     const asyncOperations = [
-      deleteOldProfileImage(user.image, image),
-      updateUser({ body: updateData }),
+      deleteOldProfileImage(userImage, inputImageSrc),
+      updateUser({ body: { name, image: imageSrc } }),
     ]
 
     if (StringService.isProfileOnboardingStep(onboardingStep)) {
+      const { onboardingStatus, onboardingStep } =
+        UserController.processProfileOnboardingStep(fromInvite)
       asyncOperations.push(
         OnboardingDatabaseService.updateOnboardingData(
-          fromInvite ? "completed" : "pending",
-          fromInvite ? "collaborate" : "workspace",
-          user.id,
+          onboardingStatus,
+          onboardingStep,
+          userId,
         ),
       )
     }
 
-    after(async () => {
-      await Promise.all(asyncOperations)
-    })
-
-    return {
-      success: true,
-      message: "Profile onbaroding completed successfully",
-    }
+    await Promise.all(asyncOperations)
+    return TrpcResponseHandler({ message: "profileOnboardingSuccess" })
   })
 
 export const deleteAccount = protectedProcedure.mutation(async ({ ctx }) => {
@@ -63,9 +48,8 @@ export const deleteAccount = protectedProcedure.mutation(async ({ ctx }) => {
     ])
   })
 
-  return {
-    success: true,
-    message: accountDeleteMessage,
-    description: accountDeleteDescription,
-  }
+  return TrpcResponseHandler({
+    message: "accountDeleteMessage",
+    description: "accountDeleteDescription",
+  })
 })

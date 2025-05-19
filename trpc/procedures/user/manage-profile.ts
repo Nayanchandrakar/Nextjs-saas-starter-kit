@@ -4,45 +4,39 @@ import {
   updateProfileImageSchema,
 } from "@/lib/schema/pages/profile/manage-profile-schemea"
 import { getCloudfrontKey } from "@/lib/utilities/s3-utils"
+import { ProfileController } from "@/trpc/controller/profile-controller"
+import { TrpcResponseHandler } from "@/trpc/lib/handlers/response-handler"
 import { deleteOldProfileImage } from "@/trpc/lib/helpers/user-helpers"
-import { buildFullName } from "@/trpc/lib/utils"
 import { protectedProcedure } from "@/trpc/procedures/root"
 
-export const manageProfile = protectedProcedure
+export const updateProfile = protectedProcedure
   .input(manageProfileSchema)
-  .mutation(async ({ input, ctx }) => {
-    const { firstName, lastName, image } = input
-    const { user } = ctx
-
-    const fullName = buildFullName(firstName, lastName)
-
-    const updateData = {
-      name: fullName,
-      image: getCloudfrontKey(image),
-    }
+  .mutation(async (props) => {
+    const { imageSrc, inputImage, name } =
+      ProfileController.processProfileUpgradeInput(props.input)
 
     const asyncOperations = [
-      deleteOldProfileImage(user.image, image),
-      updateUser({ body: updateData }),
+      deleteOldProfileImage(props.ctx.user.image, inputImage),
+      updateUser({
+        body: {
+          name,
+          image: imageSrc,
+        },
+      }),
     ]
 
     await Promise.all(asyncOperations)
-    return { success: true, message: "Profile changes saved successfully" }
+    return TrpcResponseHandler({ message: "profileUpdateMessage" })
   })
 
-export const editProfileImage = protectedProcedure
+export const updateProfileImage = protectedProcedure
   .input(updateProfileImageSchema)
   .mutation(async ({ input, ctx }) => {
-    const updateData = {
-      image: getCloudfrontKey(input.image),
-    }
-
     const asyncOperations = [
       deleteOldProfileImage(ctx.user.image, input.image),
-      updateUser({ body: updateData }),
+      updateUser({ body: { image: getCloudfrontKey(input.image) } }),
     ]
 
     await Promise.all(asyncOperations)
-
-    return { success: true, message: "Profile Image updated Successfully" }
+    return TrpcResponseHandler({ message: "profileImageUpdteMessage" })
   })

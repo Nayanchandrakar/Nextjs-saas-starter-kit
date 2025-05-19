@@ -3,6 +3,7 @@ import { handleAuthRequest } from "@/app/actions/utils"
 import NotFound from "@/app/not-found"
 import { NoActiveSubscription } from "@/components/pages/invitation/no-active-subscription"
 import { SubscriptionDBService } from "@/database/services/subscription-service"
+import { UserSubscription } from "@/types"
 import { User } from "@/types/authentication/client-types"
 
 type DataType = {
@@ -10,7 +11,7 @@ type DataType = {
   workspace: {
     id: string
   }
-  isSubscribed: boolean
+  subscription: UserSubscription
 }
 
 type MemberProviderProps = {
@@ -19,10 +20,13 @@ type MemberProviderProps = {
 }
 
 /**
- * MemberProvider ensures authenticated access to a workspace and provides user/workspace data to children
- * @param props - Component props containing slug and children
- * @returns Rendered children with user/workspace data or NotFound component
- * @throws Error if authentication or workspace fetch fails
+ * Ensures authenticated access to a workspace, verifies active subscription, and provides user, workspace, and subscription data to children.
+ * Renders NotFound if the workspace is invalid or NoActiveSubscription if the subscription is inactive.
+ * @param props - The component props.
+ * @param props.slug - The slug identifying the workspace.
+ * @param props.children - A render prop function or React node to render with user, workspace, and subscription data.
+ * @returns The rendered children with data, NotFound if the workspace is not found, or NoActiveSubscription if the subscription is inactive.
+ * @throws Error if authentication, workspace retrieval, or subscription status check fails.
  */
 export async function MemberProvider({ children, slug }: MemberProviderProps) {
   const session = await handleAuthRequest()
@@ -32,16 +36,16 @@ export async function MemberProvider({ children, slug }: MemberProviderProps) {
     return NotFound()
   }
 
-  const isSubscribed = await SubscriptionDBService.hasActiveSubscription(
+  const subscription = await SubscriptionDBService.getUserSubscriptionStatus(
     workspace.ownerId,
   )
 
-  if (!isSubscribed) {
+  if (!subscription.isSubscribed) {
     return NoActiveSubscription()
   }
 
   if (typeof children === "function") {
-    return children({ user: session.user, workspace, isSubscribed })
+    return children({ user: session.user, workspace, subscription })
   }
 
   return children

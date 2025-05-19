@@ -2,8 +2,9 @@ import {
   OnboardingStatus,
   OnboardingStep,
 } from "@/app/actions/pages/onboarding/utils"
-import { dbHttp } from "@/database"
+import { dbHttp, dbTransaction } from "@/database"
 import { userOnboarding } from "@/database/schema"
+import { Transaction } from "@/types/database"
 import { eq } from "drizzle-orm"
 
 export class OnboardingDatabaseService {
@@ -24,8 +25,9 @@ export class OnboardingDatabaseService {
     onboardingStatus: OnboardingStatus,
     onboardingStep: OnboardingStep,
     userId: string,
+    tx?: Transaction,
   ) {
-    await dbHttp
+    await dbTransaction(tx)
       .update(userOnboarding)
       .set({ onboardingStep, onboardingStatus })
       .where(eq(userOnboarding.userId, userId))

@@ -13,7 +13,7 @@ export const useOnboardUserHook = () => {
   const router = useRouter()
 
   return useMutation(
-    trpc.users.onboardUser.mutationOptions({
+    trpc.users.createOnboardingProfile.mutationOptions({
       onSuccess: (data, input) => {
         toast.success(data.message, {
           description: "Hang tight redirecting you shortly...",
@@ -34,7 +34,7 @@ export const useManageProfileHook = ({
   const trpc = useTRPC()
 
   return useMutation(
-    trpc.users.manageProfile.mutationOptions({
+    trpc.users.updateProfile.mutationOptions({
       onSuccess: (data) => {
         onSuccess?.()
         toast.success(data.message)
@@ -48,7 +48,7 @@ export const useEditProfileImage = () => {
   const trpc = useTRPC()
 
   return useMutation(
-    trpc.users.editProfileImage.mutationOptions({
+    trpc.users.updateProfileImage.mutationOptions({
       onSuccess: (data) => {
         toast.success(data.message)
       },
