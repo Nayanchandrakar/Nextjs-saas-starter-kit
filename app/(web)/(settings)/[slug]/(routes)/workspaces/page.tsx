@@ -1,9 +1,10 @@
+import { getCategorizedUserWorkspaces } from "@/app/actions/pages/workspaces/get-workspaces"
 import { SettingsHeading } from "@/components/pages/settings/settings-heading"
 import { MyWorkspacesCard } from "@/components/pages/slug/workspaces/my-worskapaces-card"
+import { SharedWorkspacesCard } from "@/components/pages/slug/workspaces/shared-workspaces-card"
 import { WorkspaceSubscriptionUsage } from "@/components/pages/slug/workspaces/workspace-subscription-usage"
 import { MemberProvider } from "@/components/providers/member-provider"
 import { SidebarContainer } from "@/components/shared/container"
-import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { loadDashboardParams } from "@/lib/nuqs/search-params"
 import { SearchParams } from "nuqs/server"
 
@@ -19,8 +20,8 @@ export default async function WorkspacesSettingsPage({
   return (
     <MemberProvider slug={slug}>
       {async ({ subscription, user }) => {
-        const workspaces =
-          await WorkSpaceDatabaseService.getUserCreatedWorkspaces(user.id)
+        const { ownedWorkspaces, sharedWorkspaces, workspaceCount } =
+          await getCategorizedUserWorkspaces(user.id)
         return (
           <SidebarContainer>
             <SettingsHeading
@@ -29,9 +30,13 @@ export default async function WorkspacesSettingsPage({
             />
             <WorkspaceSubscriptionUsage
               subscription={subscription}
-              noOfCreatedWorkspaces={workspaces.length ?? 0}
+              noOfCreatedWorkspaces={workspaceCount}
             />
-            <MyWorkspacesCard workspaces={workspaces} slug={slug} />
+            <MyWorkspacesCard workspaces={ownedWorkspaces} slug={slug} />
+            <SharedWorkspacesCard
+              sharedWorkspaces={sharedWorkspaces}
+              slug={slug}
+            />
           </SidebarContainer>
         )
       }}

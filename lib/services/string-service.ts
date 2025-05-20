@@ -29,6 +29,10 @@ export class StringService {
     return userId === currentUserId
   }
 
+  static isUserWorkspaceOwner(ownerId: string, userId: string) {
+    return ownerId === userId
+  }
+
   static getPlaceholderImage(src: string | null, name: string) {
     if (src) return getCloudfrontFile(src)
     return `https://avatar.vercel.sh/${name}.svg`
