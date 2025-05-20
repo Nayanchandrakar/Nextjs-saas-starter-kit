@@ -1,3 +1,4 @@
+import type { subscriptionPlans, subscriptionStatus } from "@/database/utils"
 import { authServer } from "@/lib/authentication/auth-server"
 
 export type getSessionContext = {
@@ -16,3 +17,5 @@ export type updateUserRequestBody = {
 }
 
 export type authServerType = typeof authServer
+export type PlanType = (typeof subscriptionPlans)[number]
+export type StatusType = (typeof subscriptionStatus)[number]

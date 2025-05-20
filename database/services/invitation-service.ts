@@ -1,6 +1,7 @@
 import { dbHttp } from "@/database"
 import { invitations } from "@/database/schema"
-import { and, eq, inArray } from "drizzle-orm"
+import { InvitationInsertType } from "@/types/database"
+import { and, eq, gt, inArray } from "drizzle-orm"
 
 export class InvitationDatabaseService {
   static async getExistingInvitations(workspaceId: string, emails: string[]) {
@@ -12,7 +13,9 @@ export class InvitationDatabaseService {
       .where(
         and(
           eq(invitations.workspaceId, workspaceId),
+          eq(invitations.invitationStatus, "pending"),
           inArray(invitations.email, emails),
+          gt(invitations.expiresAt, new Date()),
         ),
       )
 
@@ -39,5 +42,11 @@ export class InvitationDatabaseService {
         invitationStatus: "accepted",
       })
       .where(eq(invitations.id, invitationId))
+  }
+
+  static async createBulkInvitation(values: InvitationInsertType[]) {
+    const response = await dbHttp.insert(invitations).values(values).returning()
+
+    return response
   }
 }

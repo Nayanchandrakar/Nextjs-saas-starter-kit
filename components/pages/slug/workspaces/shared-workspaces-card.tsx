@@ -3,26 +3,30 @@ import { WorkspaceActionsCard } from "@/components/pages/slug/workspaces/workspa
 import { ListComponent } from "@/components/shared/list-component"
 import { WorkspaceType } from "@/types/database"
 
-type MyWorkspacesCardProps = {
-  workspaces: WorkspaceType[]
+type SharedWorkspacesCardProps = {
+  sharedWorkspaces: WorkspaceType[]
   slug: string
 }
 
-export function MyWorkspacesCard({ workspaces, slug }: MyWorkspacesCardProps) {
+export function SharedWorkspacesCard({
+  sharedWorkspaces,
+  slug,
+}: SharedWorkspacesCardProps) {
   return (
     <div className="flex flex-col gap-4 max-w-3xl">
       <SettingsHeading
-        title="Workspaces"
-        description="Manage your workspaces"
+        title="Member workspaces"
+        description="Workspaces you are a member of"
       />
 
-      {workspaces.length > 0 && (
+      {sharedWorkspaces.length > 0 && (
         <div className="border-border/80 rounded-xl border shadow-xs">
           <ListComponent
-            data={workspaces}
+            data={sharedWorkspaces}
             className="flex flex-col divide-y"
             renderItem={(data) => (
               <WorkspaceActionsCard
+                isMemberCard
                 key={data.id}
                 workspace={data}
                 slug={slug}

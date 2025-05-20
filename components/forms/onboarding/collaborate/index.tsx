@@ -142,6 +142,7 @@ export const CollabrationOnboardingForm =
 
           <Button
             variant="ghost"
+            loading={isSkipping}
             disabled={isSomethingPending}
             onClick={() => mutateSkipping({ emails: [] })}
             type="button"

@@ -1,29 +1,33 @@
-import { dbHttp } from "@/database"
-import { subscriptions } from "@/database/schema"
+import { dbHttp, dbTransaction } from "@/database"
+import { subscriptions, workspaces } from "@/database/schema"
+import { PRICE_IDS } from "@/lib/constants/subscription-limits"
 import { DateService } from "@/lib/services/date-service"
 import { StringService } from "@/lib/services/string-service"
-import type { UserSubscription } from "@/types"
+import type { WorkspaceSubscription } from "@/types"
+import { Transaction } from "@/types/database"
 import { eq } from "drizzle-orm"
 
 export class SubscriptionDBService {
   private constructor() {}
 
-  static async getUserSubscriptionStatus(userId: string) {
+  static async getWorkspaceSubscriptionStatus(workspaceId: string) {
     const [subscription] = await dbHttp
       .select({
         id: subscriptions.id,
-        priceId: subscriptions.priceId,
+        plan: subscriptions.plan,
         status: subscriptions.status,
+        priceId: subscriptions.priceId,
         currentPeriodEnd: subscriptions.currentPeriodEnd,
       })
       .from(subscriptions)
-      .where(eq(subscriptions.userId, userId))
+      .where(eq(subscriptions.workspaceId, workspaceId))
       .limit(1)
 
-    const defaultSubscription: UserSubscription = {
-      id: "",
-      priceId: "",
-      status: "",
+    const defaultSubscription: WorkspaceSubscription = {
+      id: "subscription_id",
+      plan: "free",
+      priceId: "price_id",
+      status: "inactive",
       currentPeriodEnd: new Date(0),
       isSubscribed: false,
     }
@@ -43,5 +47,35 @@ export class SubscriptionDBService {
       ...subscription,
       isSubscribed,
     }
+  }
+
+  static async getUserSubscription(userId: string) {
+    const [subscription] = await dbHttp
+      .select({ plan: subscriptions.plan })
+      .from(subscriptions)
+      .innerJoin(workspaces, eq(subscriptions.workspaceId, workspaces.id))
+      .where(eq(workspaces.ownerId, userId))
+      .limit(1)
+
+    const defaultSubscription: Pick<WorkspaceSubscription, "plan"> = {
+      plan: "free",
+    }
+
+    if (!subscription) {
+      return defaultSubscription
+    }
+
+    return subscription
+  }
+
+  static async createFreeWorkspaceSubscription(
+    workspaceId: string,
+    tx?: Transaction,
+  ) {
+    await dbTransaction(tx).insert(subscriptions).values({
+      workspaceId,
+      currentPeriodEnd: DateService.getSubscriptionExpiry(),
+      priceId: PRICE_IDS["free"].monthly,
+    })
   }
 }

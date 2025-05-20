@@ -20,6 +20,7 @@ export const create = protectedProcedure
     await WorkspaceController.handleOnboarding(onboarding)
     const slug = input.slug.toLowerCase()
     await WorkspaceController.isSlugExist(userId, slug)
+    await WorkspaceController.checkWorkspaceSubscription(userId)
     await WorkspaceController.createWorkspace(
       userId,
       input.name,

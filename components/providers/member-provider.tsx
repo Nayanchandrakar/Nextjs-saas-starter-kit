@@ -1,9 +1,6 @@
 import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
 import { handleAuthRequest } from "@/app/actions/utils"
 import NotFound from "@/app/not-found"
-import { NoActiveSubscription } from "@/components/pages/invitation/no-active-subscription"
-import { SubscriptionDBService } from "@/database/services/subscription-service"
-import { UserSubscription } from "@/types"
 import { User } from "@/types/authentication/client-types"
 
 type DataType = {
@@ -11,7 +8,6 @@ type DataType = {
   workspace: {
     id: string
   }
-  subscription: UserSubscription
 }
 
 type MemberProviderProps = {
@@ -36,16 +32,8 @@ export async function MemberProvider({ children, slug }: MemberProviderProps) {
     return NotFound()
   }
 
-  const subscription = await SubscriptionDBService.getUserSubscriptionStatus(
-    workspace.ownerId,
-  )
-
-  if (!subscription.isSubscribed) {
-    return NoActiveSubscription()
-  }
-
   if (typeof children === "function") {
-    return children({ user: session.user, workspace, subscription })
+    return children({ user: session.user, workspace })
   }
 
   return children

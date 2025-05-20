@@ -3,7 +3,9 @@ import { workspaces } from "@/database/schema"
 import { MemeberDatabaseService } from "@/database/services/member-service"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { RBACService } from "@/database/services/rbac-service"
+import { SubscriptionDBService } from "@/database/services/subscription-service"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
+import { ServerFilters } from "@/lib/services/server-filters"
 import { StringService } from "@/lib/services/string-service"
 import { OnboardingType } from "@/types/database"
 import { TRPCError } from "@trpc/server"
@@ -40,6 +42,23 @@ export class WorkspaceController {
     }
   }
 
+  static async checkWorkspaceSubscription(userId: string) {
+    const [subscription, workspaceCount] = await Promise.all([
+      SubscriptionDBService.getUserSubscription(userId),
+      WorkSpaceDatabaseService.getWorkspaceCount(userId),
+    ])
+
+    if (
+      workspaceCount.count >=
+      ServerFilters.getPlanLimits(subscription.plan).maxWorkspaces
+    ) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: `Workspace limit reached for ${subscription.plan} plan`,
+      })
+    }
+  }
+
   static async createWorkspace(
     ownerId: string,
     name: string,
@@ -68,6 +87,11 @@ export class WorkspaceController {
       await MemeberDatabaseService.createMember(
         role.id,
         ownerId,
+        workspace.id,
+        tx,
+      )
+
+      await SubscriptionDBService.createFreeWorkspaceSubscription(
         workspace.id,
         tx,
       )

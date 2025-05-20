@@ -18,7 +18,7 @@ export function TrpcResponseHandler({
 }: TrpcResponseHandlerProps) {
   return {
     success,
-    message,
+    message: Messages[message],
     ...(description && { description }),
     ...(redirect && { redirect: createRoute(redirect) }),
   }

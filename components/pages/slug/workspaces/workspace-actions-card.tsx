@@ -21,11 +21,13 @@ import Link from "next/link"
 type WorkspaceActionsCardProps = {
   workspace: WorkspaceType
   slug: string
+  isMemberCard?: boolean
 }
 
 export function WorkspaceActionsCard({
   workspace,
   slug,
+  isMemberCard = false,
 }: WorkspaceActionsCardProps) {
   const { isPending, mutateAsync } = useDeleteWorkspace()
   const logoSrc = StringService.getPlaceholderImage(
@@ -55,30 +57,32 @@ export function WorkspaceActionsCard({
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                href={createRoute(`${workspace.slug}/workspace`)}
-                className={buttonVariants({ size: "sm", variant: "ghost" })}
-              >
-                <SquarePen className="size-4" />
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent>Edit</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      {!isMemberCard && (
+        <div className="flex items-center gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={createRoute(`${workspace.slug}/workspace`)}
+                  className={buttonVariants({ size: "sm", variant: "ghost" })}
+                >
+                  <SquarePen className="size-4" />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-        <Button
-          size="sm"
-          onClick={() => mutateAsync({ id: workspace.id })}
-          disabled={isPending}
-          loading={isPending}
-        >
-          Delete
-        </Button>
-      </div>
+          <Button
+            size="sm"
+            onClick={() => mutateAsync({ id: workspace.id })}
+            disabled={isPending}
+            loading={isPending}
+          >
+            Delete
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
