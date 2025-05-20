@@ -1,9 +1,6 @@
 "use client"
 
-import messageJson, {
-  onboardingSkipDescription,
-  onboardingSkipMessage,
-} from "@/lib/constants/message.json"
+import MessageJson from "@/lib/constants/message.json"
 import { useTRPC } from "@/trpc/client"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
@@ -17,10 +14,10 @@ export const useInviteMembers = () => {
     trpc.invitations.createBulk.mutationOptions({
       onSuccess: (data) => {
         toast.success(data.message)
-        router.push(data.redirect)
+        router.push(data.redirect!)
       },
       onError: (error) =>
-        toast.error(error.message ?? messageJson.generalError),
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
 }
@@ -36,13 +33,13 @@ export const useSkipInvitation = () => {
   } = useMutation(
     trpc.invitations.createBulk.mutationOptions({
       onSuccess: (data) => {
-        toast.success(onboardingSkipMessage, {
-          description: onboardingSkipDescription,
+        toast.success(MessageJson.onboardingSkipMessage, {
+          description: MessageJson.onboardingSkipDescription,
         })
-        router.push(data.redirect)
+        router.push(data.redirect!)
       },
       onError: (error) =>
-        toast.error(error.message ?? messageJson.generalError),
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
   return { isSkipping, mutateSkipping, ...props }

@@ -1,5 +1,7 @@
+"use client"
+
 import { getPreSignedUrl } from "@/app/actions/lib/aws/get-signed-url"
-import { generalError } from "@/lib/constants/message.json"
+import MessageJson from "@/lib/constants/message.json"
 import axios, { AxiosError } from "axios"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -48,7 +50,7 @@ export const useSingleFileUpload = ({
             ? error.response?.data?.message || error.message
             : error instanceof Error
               ? error.message
-              : generalError
+              : MessageJson.generalError
         toast.error(errorMessage)
         throw error
       }
