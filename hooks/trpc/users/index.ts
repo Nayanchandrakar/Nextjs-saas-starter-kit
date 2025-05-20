@@ -1,7 +1,7 @@
 "use client"
 
 import { authClient } from "@/lib/authentication/auth-client"
-import { generalError } from "@/lib/constants/message.json"
+import MessageJson from "@/lib/constants/message.json"
 import { createRoute } from "@/lib/utils"
 import { useTRPC } from "@/trpc/client"
 import { useMutation } from "@tanstack/react-query"
@@ -21,7 +21,8 @@ export const useOnboardUserHook = () => {
 
         router.push(input.fromInvite ? "/callback" : "/onboarding/workspace")
       },
-      onError: (error) => toast.error(error.message ?? generalError),
+      onError: (error) =>
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
 }
@@ -39,7 +40,8 @@ export const useManageProfileHook = ({
         onSuccess?.()
         toast.success(data.message)
       },
-      onError: (error) => toast.error(error.message ?? generalError),
+      onError: (error) =>
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
 }
@@ -52,7 +54,8 @@ export const useEditProfileImage = () => {
       onSuccess: (data) => {
         toast.success(data.message)
       },
-      onError: (error) => toast.error(error.message ?? generalError),
+      onError: (error) =>
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
 }
@@ -78,7 +81,8 @@ export const useDeleteAccount = ({
           },
         })
       },
-      onError: (error) => toast.error(error.message ?? generalError),
+      onError: (error) =>
+        toast.error(error.message ?? MessageJson.generalError),
     }),
   )
 }
