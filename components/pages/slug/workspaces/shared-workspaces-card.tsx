@@ -26,6 +26,7 @@ export function SharedWorkspacesCard({
             className="flex flex-col divide-y"
             renderItem={(data) => (
               <WorkspaceActionsCard
+                isMemberCard
                 key={data.id}
                 workspace={data}
                 slug={slug}

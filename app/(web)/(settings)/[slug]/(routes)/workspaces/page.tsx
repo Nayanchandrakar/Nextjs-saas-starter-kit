@@ -20,7 +20,7 @@ export default async function WorkspacesSettingsPage({
   return (
     <MemberProvider slug={slug}>
       {async ({ subscription, user }) => {
-        const { ownedWorkspaces, sharedWorkspaces, workspaceCount } =
+        const { ownedWorkspaces, sharedWorkspaces, ownedWorkspaceCount } =
           await getCategorizedUserWorkspaces(user.id)
         return (
           <SidebarContainer>
@@ -30,7 +30,7 @@ export default async function WorkspacesSettingsPage({
             />
             <WorkspaceSubscriptionUsage
               subscription={subscription}
-              noOfCreatedWorkspaces={workspaceCount}
+              noOfCreatedWorkspaces={ownedWorkspaceCount}
             />
             <MyWorkspacesCard workspaces={ownedWorkspaces} slug={slug} />
             <SharedWorkspacesCard

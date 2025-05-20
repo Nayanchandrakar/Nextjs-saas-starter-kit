@@ -1,51 +1,39 @@
-import { dbHttp } from "@/database"
-import { invitations } from "@/database/schema"
-import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { InvitationDatabaseService } from "@/database/services/invitation-service"
 import { inviteBulkMembersSchema } from "@/lib/schema/pages/invitation"
-import { invitationLinkService } from "@/lib/strategies/email-strategy"
-import { InvitationController } from "@/trpc/controller/invitation-service"
+import { InvitationController } from "@/trpc/controller/invitation-controller"
 import { TrpcResponseHandler } from "@/trpc/lib/handlers/response-handler"
 import { protectedProcedure } from "@/trpc/procedures/root"
 
 export const createBulkInvitation = protectedProcedure
   .input(inviteBulkMembersSchema)
   .mutation(async (props) => {
-    const { id: userId, email: userEmail } = props.ctx.user
     const { emails } = props.input
+    const { id: userId, email: userEmail } = props.ctx.user
 
-    const workspace = await InvitationController.getWorkspace(userId)
-    if (emails.length === 0) {
-      await InvitationController.handleEmptyInput(userId, workspace.id)
-    }
-
-    await InvitationController.validateInput(props.input, userEmail)
-    await InvitationController.checkExistingInvitations(workspace.id, emails)
+    const workspaceId = (await InvitationController.getWorkspace(userId)).id
+    await InvitationController.handleInvitationSkip(userId, workspaceId, emails)
+    await InvitationController.checkWorkspaceMemberShip(
+      userId,
+      workspaceId,
+      emails.length,
+    )
+    await InvitationController.validateInput(emails, userEmail)
+    await InvitationController.checkExistingInvitations(workspaceId, emails)
     const invitationValues = InvitationController.createInvitationValues(
       emails,
-      workspace.id,
+      workspaceId,
       userId,
     )
 
-    if (emails.length > 0) {
-      const response = await dbHttp
-        .insert(invitations)
-        .values(invitationValues)
-        .returning()
-      const formattedResponse =
-        InvitationController.formatInvitationResponse(response)
-
-      await Promise.all([
-        invitationLinkService.send({ data: formattedResponse }),
-        OnboardingDatabaseService.updateOnboardingData(
-          "completed",
-          "collaborate",
-          userId,
-        ),
-      ])
-    }
+    const invitations =
+      await InvitationDatabaseService.createBulkInvitation(invitationValues)
+    await InvitationController.updateOnboardingAndSendEmails(
+      invitations,
+      userId,
+    )
 
     return TrpcResponseHandler({
       message: "invitationCreate",
-      redirect: `${workspace.id}/dashboard`,
+      redirect: `${workspaceId}/dashboard`,
     })
   })

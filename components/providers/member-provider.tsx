@@ -3,7 +3,7 @@ import { handleAuthRequest } from "@/app/actions/utils"
 import NotFound from "@/app/not-found"
 import { NoActiveSubscription } from "@/components/pages/invitation/no-active-subscription"
 import { SubscriptionDBService } from "@/database/services/subscription-service"
-import { UserSubscription } from "@/types"
+import { WorkspaceSubscription } from "@/types"
 import { User } from "@/types/authentication/client-types"
 
 type DataType = {
@@ -11,7 +11,7 @@ type DataType = {
   workspace: {
     id: string
   }
-  subscription: UserSubscription
+  subscription: WorkspaceSubscription
 }
 
 type MemberProviderProps = {
@@ -36,9 +36,8 @@ export async function MemberProvider({ children, slug }: MemberProviderProps) {
     return NotFound()
   }
 
-  const subscription = await SubscriptionDBService.getUserSubscriptionStatus(
-    workspace.ownerId,
-  )
+  const subscription =
+    await SubscriptionDBService.getWorkspaceSubscriptionStatus(workspace.id)
 
   if (!subscription.isSubscribed) {
     return NoActiveSubscription()

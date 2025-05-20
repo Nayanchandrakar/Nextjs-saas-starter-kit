@@ -8,6 +8,10 @@ import { Transaction } from "@/types/database"
 import { eq } from "drizzle-orm"
 
 export class OnboardingDatabaseService {
+  static async createOnboardingData(userId: string) {
+    await dbHttp.insert(userOnboarding).values({ userId })
+  }
+
   static async getOnboardingData(userId: string) {
     const [data] = await dbHttp
       .select({

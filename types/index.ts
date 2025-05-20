@@ -1,5 +1,6 @@
+import type { PlanType, StatusType } from "@/types/authentication/server-types"
+import { WorkspaceType } from "@/types/database"
 import { userAgentFromString } from "next/server"
-import { WorkspaceType } from "./database"
 
 export type RouteParams = Record<string, string | number | boolean>
 export type OauthProviderType = "google" | "github"
@@ -21,10 +22,11 @@ export type formattedSessionsType = {
   userId: string
 }
 
-export type UserSubscription = {
+export type WorkspaceSubscription = {
   id: string
+  plan: PlanType
   priceId: string
-  status: string
+  status: StatusType
   currentPeriodEnd: Date
   isSubscribed: boolean
 }

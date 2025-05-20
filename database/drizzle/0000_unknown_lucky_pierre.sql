@@ -1,5 +1,7 @@
 CREATE TYPE "public"."invitation_status" AS ENUM('pending', 'expired', 'accepted');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('admin', 'member', 'owner');--> statement-breakpoint
+CREATE TYPE "public"."plan" AS ENUM('free', 'starter', 'pro');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('active', 'inactive', 'canceled');--> statement-breakpoint
 CREATE TYPE "public"."onboarding_status" AS ENUM('pending', 'completed');--> statement-breakpoint
 CREATE TYPE "public"."onboarding_step" AS ENUM('profile', 'workspace', 'collaborate');--> statement-breakpoint
 CREATE TABLE "invitation" (
@@ -51,8 +53,9 @@ CREATE TABLE "roles" (
 --> statement-breakpoint
 CREATE TABLE "subscription" (
 	"id" text PRIMARY KEY NOT NULL,
-	"user_id" text NOT NULL,
-	"status" text NOT NULL,
+	"workspace_id" text NOT NULL,
+	"plan" "plan" DEFAULT 'free' NOT NULL,
+	"status" "status" DEFAULT 'active' NOT NULL,
 	"price_id" text NOT NULL,
 	"customer_id" text,
 	"subscription_id" text,
@@ -128,7 +131,7 @@ ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_user_id_user_i
 ALTER TABLE "workspace_members" ADD CONSTRAINT "workspace_members_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_permission_id_permissions_id_fk" FOREIGN KEY ("permission_id") REFERENCES "public"."permissions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "subscription" ADD CONSTRAINT "subscription_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscription" ADD CONSTRAINT "subscription_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "public"."workspace"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_onboarding" ADD CONSTRAINT "user_onboarding_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspace" ADD CONSTRAINT "workspace_owner_id_user_id_fk" FOREIGN KEY ("owner_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -142,7 +145,7 @@ CREATE UNIQUE INDEX "permissions_name_unique_index" ON "permissions" USING btree
 CREATE INDEX "role_permission_role_id_index" ON "role_permissions" USING btree ("role_id");--> statement-breakpoint
 CREATE INDEX "role_permission_permission_id_index" ON "role_permissions" USING btree ("permission_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "roles_name_unique_index" ON "roles" USING btree ("name");--> statement-breakpoint
-CREATE INDEX "sub_user_id_index" ON "subscription" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "sub_workspace_id_index" ON "subscription" USING btree ("workspace_id");--> statement-breakpoint
 CREATE INDEX "account_user_id_index" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "account_id_indedx" ON "account" USING btree ("account_id");--> statement-breakpoint
 CREATE INDEX "account_provider_id_index" ON "account" USING btree ("provider_id");--> statement-breakpoint

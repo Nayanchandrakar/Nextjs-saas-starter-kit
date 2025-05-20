@@ -1,4 +1,4 @@
-import { AuthDBService } from "@/database/services/auth-service"
+import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
 import { redis } from "@/lib/redis"
 import type { SecondaryStorage, User } from "better-auth"
 
@@ -25,7 +25,7 @@ export const databaseHooks = {
   user: {
     create: {
       after: async (user: User) => {
-        await AuthDBService.initializeAccount(user.id)
+        await OnboardingDatabaseService.createOnboardingData(user.id)
       },
     },
   },

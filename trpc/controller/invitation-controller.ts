@@ -1,32 +1,43 @@
 import { InvitationDatabaseService } from "@/database/services/invitation-service"
+import { MemeberDatabaseService } from "@/database/services/member-service"
 import { OnboardingDatabaseService } from "@/database/services/onboarding-service"
+import { SubscriptionDBService } from "@/database/services/subscription-service"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import messageJson from "@/lib/constants/message.json"
 import { DateService } from "@/lib/services/date-service"
+import { ServerFilters } from "@/lib/services/server-filters"
+import { invitationLinkService } from "@/lib/strategies/email-strategy"
 import { clientEnv } from "@/lib/utilities/client-env"
 import { createRoute } from "@/lib/utils"
 import { TrpcResponseHandler } from "@/trpc/lib/handlers/response-handler"
+import { InvitationInsertType } from "@/types/database"
 import { TRPCError } from "@trpc/server"
 
 export class InvitationController {
-  static async handleEmptyInput(userId: string, workspaceId: string) {
-    await OnboardingDatabaseService.updateOnboardingData(
-      "completed",
-      "collaborate",
-      userId,
-    )
+  static async handleInvitationSkip(
+    userId: string,
+    workspaceId: string,
+    emails: string[],
+  ) {
+    if (emails.length <= 0) {
+      await OnboardingDatabaseService.updateOnboardingData(
+        "completed",
+        "collaborate",
+        userId,
+      )
 
-    return TrpcResponseHandler({
-      message: "invitationCreate",
-      redirect: `${workspaceId}/dashboard`,
-    })
+      return TrpcResponseHandler({
+        message: "invitationCreate",
+        redirect: `${workspaceId}/dashboard`,
+      })
+    }
   }
 
   static async validateInput(
-    input: { emails: string[] },
+    emails: string[],
     userEmail: string,
   ): Promise<void> {
-    if (input.emails.includes(userEmail)) {
+    if (emails.includes(userEmail)) {
       throw new TRPCError({
         code: "CONFLICT",
         message: `${userEmail} is already a member`,
@@ -63,6 +74,27 @@ export class InvitationController {
     }
   }
 
+  static async checkWorkspaceMemberShip(
+    userId: string,
+    workspaceId: string,
+    lengthOfEmails: number,
+  ) {
+    const [subscription, memberCount] = await Promise.all([
+      SubscriptionDBService.getUserSubscription(userId),
+      MemeberDatabaseService.getMembersCount(workspaceId),
+    ])
+
+    if (
+      memberCount.count + lengthOfEmails >=
+      ServerFilters.getPlanLimits(subscription.plan).maxMembers
+    ) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: `Workspace limit reached for ${subscription.plan} plan`,
+      })
+    }
+  }
+
   static createInvitationValues(
     emails: string[],
     workspaceId: string,
@@ -76,12 +108,26 @@ export class InvitationController {
     }))
   }
 
-  static formatInvitationResponse(
-    invitations: { email: string; id: string }[],
-  ) {
+  static formatInvitationResponse(invitations: InvitationInsertType[]) {
     return invitations.map(({ email, id }) => ({
       email,
       link: `${clientEnv.NEXT_PUBLIC_APP_URL}${createRoute(`invite/${id}`, { from: "invitation" })}`,
     }))
+  }
+
+  static async updateOnboardingAndSendEmails(
+    invitations: InvitationInsertType[],
+    userId: string,
+  ) {
+    await Promise.all([
+      invitationLinkService.send({
+        data: InvitationController.formatInvitationResponse(invitations),
+      }),
+      OnboardingDatabaseService.updateOnboardingData(
+        "completed",
+        "collaborate",
+        userId,
+      ),
+    ])
   }
 }

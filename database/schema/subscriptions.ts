@@ -1,5 +1,9 @@
-import { users } from "@/database/schema"
-import { dateCreation } from "@/database/utils"
+import { workspaces } from "@/database/schema"
+import {
+  dateCreation,
+  subscriptionPlanEnum,
+  subscriptionStatusEnum,
+} from "@/database/utils"
 import { createId } from "@paralleldrive/cuid2"
 import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core"
 
@@ -9,10 +13,11 @@ export const subscriptions = pgTable(
     id: text("id")
       .primaryKey()
       .$defaultFn(() => createId()),
-    userId: text("user_id")
+    workspaceId: text("workspace_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    status: text("status").notNull(),
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    plan: subscriptionPlanEnum("plan").default("free").notNull(),
+    status: subscriptionStatusEnum("status").default("active").notNull(),
     priceId: text("price_id").notNull(),
     customerId: text("customer_id").unique(),
     subscriptionId: text("subscription_id").unique(),
@@ -22,6 +27,8 @@ export const subscriptions = pgTable(
     ...dateCreation,
   },
   (t) => ({
-    userIdIndex: index("sub_user_id_index").on(t.userId),
+    workspaceIdIndex: index("sub_workspace_id_index").on(t.workspaceId),
   }),
 )
+
+export { subscriptionPlanEnum, subscriptionStatusEnum }

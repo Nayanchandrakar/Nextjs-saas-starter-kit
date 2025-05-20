@@ -1,6 +1,6 @@
 import { dbHttp } from "@/database"
 import { workspaceMembers, workspaces } from "@/database/schema"
-import { and, desc, eq } from "drizzle-orm"
+import { and, count, desc, eq } from "drizzle-orm"
 
 export class WorkSpaceDatabaseService {
   /**
@@ -16,6 +16,16 @@ export class WorkSpaceDatabaseService {
       .where(eq(workspaces.ownerId, ownerId))
       .limit(1)
     return data
+  }
+
+  static async getWorkspaceCount(ownerId: string) {
+    const [workspaceCount] = await dbHttp
+      .select({ count: count() })
+      .from(workspaces)
+      .where(eq(workspaces.ownerId, ownerId))
+      .limit(1)
+
+    return workspaceCount
   }
 
   /**

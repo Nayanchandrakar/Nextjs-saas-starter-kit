@@ -1,5 +1,5 @@
 {
-  "id": "386c609b-161f-48d2-b5ed-4e0e84c62b5b",
+  "id": "488a8132-32f5-4439-b79b-a6ebe60ad249",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -504,17 +504,27 @@
           "primaryKey": true,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "workspace_id": {
+          "name": "workspace_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
+        "plan": {
+          "name": "plan",
+          "type": "plan",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'free'"
+        },
         "status": {
           "name": "status",
-          "type": "text",
+          "type": "status",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'active'"
         },
         "price_id": {
           "name": "price_id",
@@ -556,11 +566,11 @@
         }
       },
       "indexes": {
-        "sub_user_id_index": {
-          "name": "sub_user_id_index",
+        "sub_workspace_id_index": {
+          "name": "sub_workspace_id_index",
           "columns": [
             {
-              "expression": "user_id",
+              "expression": "workspace_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -573,11 +583,11 @@
         }
       },
       "foreignKeys": {
-        "subscription_user_id_user_id_fk": {
-          "name": "subscription_user_id_user_id_fk",
+        "subscription_workspace_id_workspace_id_fk": {
+          "name": "subscription_workspace_id_workspace_id_fk",
           "tableFrom": "subscription",
-          "tableTo": "user",
-          "columnsFrom": ["user_id"],
+          "tableTo": "workspace",
+          "columnsFrom": ["workspace_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -1054,6 +1064,16 @@
       "name": "role",
       "schema": "public",
       "values": ["admin", "member", "owner"]
+    },
+    "public.plan": {
+      "name": "plan",
+      "schema": "public",
+      "values": ["free", "starter", "pro"]
+    },
+    "public.status": {
+      "name": "status",
+      "schema": "public",
+      "values": ["active", "inactive", "canceled"]
     },
     "public.onboarding_status": {
       "name": "onboarding_status",

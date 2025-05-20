@@ -5,7 +5,7 @@ import { WorkspaceType } from "@/types/database"
 interface CategorizedWorkspaces {
   ownedWorkspaces: WorkspaceType[]
   sharedWorkspaces: WorkspaceType[]
-  workspaceCount: number
+  ownedWorkspaceCount: number
 }
 
 /**
@@ -32,6 +32,6 @@ export async function getCategorizedUserWorkspaces(
   return {
     ownedWorkspaces,
     sharedWorkspaces,
-    workspaceCount: workspaces?.length ?? 0,
+    ownedWorkspaceCount: ownedWorkspaces?.length ?? 0,
   }
 }

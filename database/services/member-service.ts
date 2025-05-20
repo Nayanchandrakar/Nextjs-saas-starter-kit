@@ -1,7 +1,7 @@
 import { dbHttp, dbTransaction } from "@/database"
 import { workspaceMembers, workspaces } from "@/database/schema"
 import type { Transaction } from "@/types/database"
-import { and, desc, eq, or } from "drizzle-orm"
+import { and, count, desc, eq, or } from "drizzle-orm"
 
 export class MemeberDatabaseService {
   constructor() {}
@@ -17,6 +17,16 @@ export class MemeberDatabaseService {
       userId,
       workspaceId,
     })
+  }
+
+  static async getMembersCount(workspaceId: string) {
+    const [membersCount] = await dbHttp
+      .select({ count: count() })
+      .from(workspaceMembers)
+      .where(eq(workspaceMembers.workspaceId, workspaceId))
+      .limit(1)
+
+    return membersCount
   }
 
   static async getUserLatestWorkspace(userId: string) {
@@ -42,7 +52,6 @@ export class MemeberDatabaseService {
     const [workspace] = await dbHttp
       .select({
         id: workspaces.id,
-        ownerId: workspaces.ownerId,
       })
       .from(workspaces)
       .innerJoin(
