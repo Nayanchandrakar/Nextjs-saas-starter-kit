@@ -1,5 +1,8 @@
 import { serverEnv } from "@/lib/utilities/server-env"
 
+type PricePlan = { readonly monthly: string; readonly yearly?: string }
+type PriceIds = { readonly [key: string]: PricePlan }
+
 const {
   STRIPE_FREE_MONTHLY_PLAN_ID,
   STRIPE_PRO_MONTHLY_PLAN_ID,
@@ -8,7 +11,7 @@ const {
   STRIPE_STARTER_YEARLY_PLAN_ID,
 } = serverEnv
 
-export const PRICE_IDS = {
+export const PRICE_IDS: PriceIds = {
   free: {
     monthly: STRIPE_FREE_MONTHLY_PLAN_ID,
   },

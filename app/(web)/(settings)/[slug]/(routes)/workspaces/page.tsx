@@ -4,6 +4,7 @@ import { MyWorkspacesCard } from "@/components/pages/slug/workspaces/my-worskapa
 import { SharedWorkspacesCard } from "@/components/pages/slug/workspaces/shared-workspaces-card"
 import { WorkspaceSubscriptionUsage } from "@/components/pages/slug/workspaces/workspace-subscription-usage"
 import { MemberProvider } from "@/components/providers/member-provider"
+import { SubscriptionProvider } from "@/components/providers/subscription-provider"
 import { SidebarContainer } from "@/components/shared/container"
 import { loadDashboardParams } from "@/lib/nuqs/search-params"
 import { SearchParams } from "nuqs/server"
@@ -19,27 +20,31 @@ export default async function WorkspacesSettingsPage({
 
   return (
     <MemberProvider slug={slug}>
-      {async ({ subscription, user }) => {
-        const { ownedWorkspaces, sharedWorkspaces, ownedWorkspaceCount } =
-          await getCategorizedUserWorkspaces(user.id)
-        return (
-          <SidebarContainer>
-            <SettingsHeading
-              title="Workspaces"
-              description="Manage your workspaces"
-            />
-            <WorkspaceSubscriptionUsage
-              subscription={subscription}
-              noOfCreatedWorkspaces={ownedWorkspaceCount}
-            />
-            <MyWorkspacesCard workspaces={ownedWorkspaces} slug={slug} />
-            <SharedWorkspacesCard
-              sharedWorkspaces={sharedWorkspaces}
-              slug={slug}
-            />
-          </SidebarContainer>
-        )
-      }}
+      {({ workspace, user }) => (
+        <SubscriptionProvider workspaceId={workspace.id}>
+          {async ({ subscription }) => {
+            const { ownedWorkspaces, sharedWorkspaces, ownedWorkspaceCount } =
+              await getCategorizedUserWorkspaces(user.id)
+            return (
+              <SidebarContainer>
+                <SettingsHeading
+                  title="Workspaces"
+                  description="Manage your workspaces"
+                />
+                <WorkspaceSubscriptionUsage
+                  subscription={subscription}
+                  noOfCreatedWorkspaces={ownedWorkspaceCount}
+                />
+                <MyWorkspacesCard workspaces={ownedWorkspaces} slug={slug} />
+                <SharedWorkspacesCard
+                  sharedWorkspaces={sharedWorkspaces}
+                  slug={slug}
+                />
+              </SidebarContainer>
+            )
+          }}
+        </SubscriptionProvider>
+      )}
     </MemberProvider>
   )
 }
