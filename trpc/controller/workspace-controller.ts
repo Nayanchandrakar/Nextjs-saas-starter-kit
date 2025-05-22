@@ -43,18 +43,15 @@ export class WorkspaceController {
   }
 
   static async checkWorkspaceSubscription(userId: string) {
-    const [subscription, workspaceCount] = await Promise.all([
-      SubscriptionDBService.getUserSubscription(userId),
-      WorkSpaceDatabaseService.getWorkspaceCount(userId),
-    ])
+    const workspaceCount =
+      await WorkSpaceDatabaseService.getWorkspaceCount(userId)
 
     if (
-      workspaceCount.count >=
-      ServerFilters.getPlanLimits(subscription.plan).maxWorkspaces
+      workspaceCount.count >= ServerFilters.getPlanLimits("free").maxWorkspaces
     ) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: `Workspace limit reached for ${subscription.plan} plan`,
+        message: `Workspace limit reached for ${"subscription.plan"} plan`,
       })
     }
   }

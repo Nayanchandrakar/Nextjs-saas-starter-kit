@@ -16,6 +16,15 @@ export type updateUserRequestBody = {
   }>
 }
 
+export type initialPricingPlan = {
+  planType: PlanType
+  planName: string
+  duration: string
+  price: number
+  priceId: string
+  features: string[]
+}
+
 export type authServerType = typeof authServer
 export type PlanType = (typeof subscriptionPlans)[number]
 export type StatusType = (typeof subscriptionStatus)[number]

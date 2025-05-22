@@ -75,14 +75,21 @@ export class InvitationController {
   }
 
   static async checkWorkspaceMemberShip(
-    userId: string,
     workspaceId: string,
     lengthOfEmails: number,
   ) {
     const [subscription, memberCount] = await Promise.all([
-      SubscriptionDBService.getUserSubscription(userId),
+      SubscriptionDBService.getWorkspaceSubscriptionStatus(workspaceId),
       MemeberDatabaseService.getMembersCount(workspaceId),
     ])
+
+    if (!subscription.isSubscribed) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message:
+          "Your subscription is inactive or has expired. Please update your plan to continue.",
+      })
+    }
 
     if (
       memberCount.count + lengthOfEmails >=
@@ -90,7 +97,7 @@ export class InvitationController {
     ) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: `Workspace limit reached for ${subscription.plan} plan`,
+        message: `Member limit reached for the ${subscription.plan} plan.`,
       })
     }
   }

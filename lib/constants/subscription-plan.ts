@@ -1,57 +1,56 @@
-import { serverEnv } from "@/lib/utilities/server-env"
+import { clientEnv } from "@/lib/utilities/client-env"
 
-export const SUBSCRIPTION_PLANS = [
-  {
-    type: "free",
+export const COMMON_BENEFITS = ["Better capacity", "More functionality"]
+
+export const SUBSCRIPTION_PLANS = {
+  free: {
     name: "Free",
-    price: {
-      monthly: {
-        amount: 0,
-        priceIds: {
-          test: "",
-          production: serverEnv.STRIPE_FREE_MONTHLY_PLAN_ID,
-        },
+    type: "free",
+    description: "Basic access with limited features",
+    features: ["Basic analytics", "1 user", "100 API calls/month"],
+    billing: {
+      month: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_FREE_MONTHLY_PLAN_ID,
+        price: 0.0,
+      },
+      year: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_FREE_MONTHLY_PLAN_ID,
+        price: 0.0,
       },
     },
   },
-  {
-    type: "starter",
+
+  starter: {
     name: "Starter",
-    price: {
-      monthly: {
-        amount: 20,
-        priceIds: {
-          test: "",
-          production: serverEnv.STRIPE_STARTER_MONTHLY_PLAN_ID,
-        },
+    type: "starter",
+    description: "For small teams with growing needs",
+    features: ["Advanced analytics", "5 users", "1000 API calls/month"],
+    billing: {
+      month: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PLAN_ID,
+        price: 9.99,
       },
-      yearly: {
-        amount: 200,
-        priceIds: {
-          test: "",
-          production: serverEnv.STRIPE_STARTER_YEARLY_PLAN_ID,
-        },
+      year: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_STARTER_YEARLY_PLAN_ID,
+        price: 99.99,
       },
     },
   },
-  {
-    type: "pro",
+
+  pro: {
     name: "Pro",
-    price: {
-      monthly: {
-        amount: 40,
-        priceIds: {
-          test: "",
-          production: serverEnv.STRIPE_PRO_MONTHLY_PLAN_ID,
-        },
+    type: "pro",
+    description: "For businesses with advanced requirements",
+    features: ["Full analytics", "Unlimited users", "10000 API calls/month"],
+    billing: {
+      month: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID,
+        price: 19.99,
       },
-      yearly: {
-        amount: 400,
-        priceIds: {
-          test: "",
-          production: serverEnv.STRIPE_PRO_YEARLY_PLAN_ID,
-        },
+      year: {
+        priceId: clientEnv.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID,
+        price: 199.99,
       },
     },
   },
-]
+}

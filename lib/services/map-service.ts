@@ -1,8 +1,10 @@
 import { PERMISSIONS } from "@/lib/constants/rbac/permissions"
+import { SUBSCRIPTION_PLANS } from "@/lib/constants/subscription-plan"
 import { StringService } from "@/lib/services/string-service"
 import { FormattedWorkspace } from "@/types"
 import { ActiveSessionsType } from "@/types/authentication/client-types"
-import { WorkspaceType } from "@/types/database"
+import type { PlanType } from "@/types/authentication/server-types"
+import type { WorkspaceType } from "@/types/database"
 import { userAgentFromString } from "next/server"
 
 export class MapService {
@@ -59,5 +61,21 @@ export class MapService {
         userId: session.userId,
       }
     })
+  }
+
+  static getSubscriptionDetails(priceId: string, plan: PlanType) {
+    const selectedPlan = SUBSCRIPTION_PLANS[plan]
+    for (const [duration, billing] of Object.entries(selectedPlan.billing)) {
+      if (billing.priceId === priceId) {
+        return {
+          planType: plan,
+          planName: selectedPlan.name,
+          duration,
+          price: billing.price,
+          features: selectedPlan.features,
+          priceId,
+        }
+      }
+    }
   }
 }

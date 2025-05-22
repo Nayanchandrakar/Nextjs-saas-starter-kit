@@ -1,6 +1,6 @@
 import { dbHttp, dbTransaction } from "@/database"
-import { subscriptions, workspaces } from "@/database/schema"
-import { PRICE_IDS } from "@/lib/constants/subscription-limits"
+import { subscriptions } from "@/database/schema"
+import { SUBSCRIPTION_PLANS } from "@/lib/constants/subscription-plan"
 import { DateService } from "@/lib/services/date-service"
 import { StringService } from "@/lib/services/string-service"
 import type { WorkspaceSubscription } from "@/types"
@@ -49,25 +49,6 @@ export class SubscriptionDBService {
     }
   }
 
-  static async getUserSubscription(userId: string) {
-    const [subscription] = await dbHttp
-      .select({ plan: subscriptions.plan })
-      .from(subscriptions)
-      .innerJoin(workspaces, eq(subscriptions.workspaceId, workspaces.id))
-      .where(eq(workspaces.ownerId, userId))
-      .limit(1)
-
-    const defaultSubscription: Pick<WorkspaceSubscription, "plan"> = {
-      plan: "free",
-    }
-
-    if (!subscription) {
-      return defaultSubscription
-    }
-
-    return subscription
-  }
-
   static async createFreeWorkspaceSubscription(
     workspaceId: string,
     tx?: Transaction,
@@ -75,7 +56,7 @@ export class SubscriptionDBService {
     await dbTransaction(tx).insert(subscriptions).values({
       workspaceId,
       currentPeriodEnd: DateService.getSubscriptionExpiry(),
-      priceId: PRICE_IDS["free"].monthly,
+      priceId: SUBSCRIPTION_PLANS.free.billing.month.priceId,
     })
   }
 }
