@@ -1,8 +1,10 @@
 import { loadDashboardParams } from "@/lib/nuqs/search-params"
 import type { SearchParams } from "nuqs/server"
+import { Fragment } from "react"
 
 import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
 import { handleAuthRequest } from "@/app/actions/utils"
+import { SettingsModalProvider } from "@/components/providers/settings-modal-provider"
 import { TopNavigation } from "@/components/sidebars/dashboard/top-navigation"
 import { SettingsDashboard } from "@/components/sidebars/settings/settings-sidebar"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -21,15 +23,18 @@ export default async function SettingsLayout({
     loadDashboardParams(params),
   ])
 
-  await handleDashboardRequest(user.id, slug)
+  const workspace = await handleDashboardRequest(user.id, slug)
 
   return (
-    <SidebarProvider>
-      <SettingsDashboard slug={slug} user={user} />
-      <SidebarInset>
-        <TopNavigation />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <Fragment>
+      <SettingsModalProvider workspace={workspace} />
+      <SidebarProvider>
+        <SettingsDashboard slug={slug} user={user} />
+        <SidebarInset>
+          <TopNavigation />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </Fragment>
   )
 }

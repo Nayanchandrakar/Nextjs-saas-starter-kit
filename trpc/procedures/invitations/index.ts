@@ -13,7 +13,6 @@ export const createBulkInvitation = protectedProcedure
     const workspaceId = (await InvitationController.getWorkspace(userId)).id
     await InvitationController.handleInvitationSkip(userId, workspaceId, emails)
     await InvitationController.checkWorkspaceMemberShip(
-      userId,
       workspaceId,
       emails.length,
     )

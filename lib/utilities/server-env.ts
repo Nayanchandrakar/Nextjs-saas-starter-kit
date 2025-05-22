@@ -77,32 +77,6 @@ export const serverEnv = createEnv({
     STRIPE_WEBHOOK: z.string({
       required_error: "STRIPE_WEBHOOK is required in environment variables",
     }),
-
-    STRIPE_FREE_MONTHLY_PLAN_ID: z.string({
-      required_error:
-        "STRIPE_FREE_MONTHLY_PLAN_ID is required in environment variables",
-    }),
-
-    STRIPE_STARTER_MONTHLY_PLAN_ID: z.string({
-      required_error:
-        "STRIPE_STARTER_MONTHLY_PLAN_ID is required in environment variables",
-    }),
-
-    STRIPE_STARTER_YEARLY_PLAN_ID: z.string({
-      required_error:
-        "STRIPE_STARTER_YEARLY_PLAN_ID is required in environment variables",
-    }),
-
-    STRIPE_PRO_MONTHLY_PLAN_ID: z.string({
-      required_error:
-        "STRIPE_PRO_MONTHLY_PLAN_ID is required in environment variables",
-    }),
-
-    STRIPE_PRO_YEARLY_PLAN_ID: z.string({
-      required_error:
-        "STRIPE_PRO_YEARLY_PLAN_ID is required in environment variables",
-    }),
   },
-
   experimental__runtimeEnv: process.env,
 })

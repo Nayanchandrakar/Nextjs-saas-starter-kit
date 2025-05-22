@@ -3,11 +3,13 @@ import type { SearchParams } from "nuqs/server"
 
 import { handleDashboardRequest } from "@/app/actions/pages/(dashboard)/handle-dashboard-request"
 import { handleAuthRequest } from "@/app/actions/utils"
+import { DashboardModalProvider } from "@/components/providers/dashboard-modal-provider"
 import { DashboardSidebar } from "@/components/sidebars/dashboard/dashboard-sidebar"
 import { TopNavigation } from "@/components/sidebars/dashboard/top-navigation"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { WorkSpaceDatabaseService } from "@/database/services/workspace-service"
 import { MapService } from "@/lib/services/map-service"
+import { Fragment } from "react"
 
 type DashboardLayoutProps = {
   children: React.ReactNode
@@ -23,7 +25,7 @@ export default async function DashboardLayout({
     loadDashboardParams(params),
   ])
 
-  const [_, workspaces] = await Promise.all([
+  const [workspace, workspaces] = await Promise.all([
     handleDashboardRequest(user.id, slug),
     WorkSpaceDatabaseService.getAllUserWorkspaces(user.id),
   ])
@@ -31,12 +33,19 @@ export default async function DashboardLayout({
   const formatWorkspaces = MapService.formatWorkspaces(workspaces, user.id)
 
   return (
-    <SidebarProvider>
-      <DashboardSidebar workspaces={formatWorkspaces} user={user} slug={slug} />
-      <SidebarInset>
-        <TopNavigation />
-        {children}
-      </SidebarInset>
-    </SidebarProvider>
+    <Fragment>
+      <DashboardModalProvider workspace={workspace} />
+      <SidebarProvider>
+        <DashboardSidebar
+          workspaces={formatWorkspaces}
+          user={user}
+          slug={slug}
+        />
+        <SidebarInset>
+          <TopNavigation />
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </Fragment>
   )
 }

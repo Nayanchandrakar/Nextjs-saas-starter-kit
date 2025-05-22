@@ -21,12 +21,24 @@ export class StringService {
     return step === "profile"
   }
 
+  static isSelectedPlan(plan: string, type: string) {
+    return plan === type
+  }
+
   static capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
   static isCurrentUser(userId: string, currentUserId: string) {
     return userId === currentUserId
+  }
+
+  static isYearlySubscription(duration: string) {
+    return duration === "yearly"
+  }
+
+  static getSubscripionDuration(isYearly: boolean) {
+    return isYearly ? "year" : "month"
   }
 
   static isUserWorkspaceOwner(ownerId: string, userId: string) {
@@ -51,6 +63,18 @@ export class StringService {
     }
 
     return imageSrc
+  }
+
+  static formatCurrency(
+    num: number,
+    options: Intl.NumberFormatOptions = {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    },
+  ) {
+    return new Intl.NumberFormat("en-US", options).format(num)
   }
 
   static createFullName(firstName: string, lastName?: string) {
