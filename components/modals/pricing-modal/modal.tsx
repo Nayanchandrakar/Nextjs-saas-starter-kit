@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
+import { useCreateSubscription } from "@/hooks/trpc/subscriptions"
 import {
   COMMON_BENEFITS,
   SUBSCRIPTION_PLANS,
@@ -33,9 +34,11 @@ interface CurrentPurchase {
 
 interface ModalProps {
   initialPlan: initialPricingPlan
+  workspaceId: string
 }
 
-export function Modal({ initialPlan }: ModalProps) {
+export function Modal({ initialPlan, workspaceId }: ModalProps) {
+  const { isPending, mutateAsync } = useCreateSubscription()
   const [currentPurchase, setCurrentPurchase] = useState<CurrentPurchase>({
     type: initialPlan.planType,
     priceId: initialPlan.priceId,
@@ -76,7 +79,7 @@ export function Modal({ initialPlan }: ModalProps) {
             className="flex flex-col gap-2 mt-3 mb-1"
             renderItem={(label: string) => (
               <span key={label} className="flex items-center gap-2">
-                <Check className="size-4 text-rose-500" />
+                <Check className="size-4 text-green-500" />
                 <span className="text-muted-foreground text-sm">{label}</span>
               </span>
             )}
@@ -96,7 +99,7 @@ export function Modal({ initialPlan }: ModalProps) {
                 className={cn(
                   "flex items-center justify-between px-4 py-3 rounded-lg border-2 transition duration-300 cursor-pointer bg-card",
                   StringService.isSelectedPlan(currentPurchase.type, type)
-                    ? "border-rose-500 bg-rose-500/10"
+                    ? "border-green-500 bg-green-500/10"
                     : "hover:bg-accent",
                 )}
                 role="button"
@@ -105,7 +108,7 @@ export function Modal({ initialPlan }: ModalProps) {
                 <div className="flex items-center gap-2.5">
                   <span className="text-sm font-medium capitalize">{type}</span>
                   {StringService.isSelectedPlan(initialPlan.planType, type) && (
-                    <Badge className="dark:bg-rose-800/40 bg-rose-200/50 text-rose-500">
+                    <Badge className="dark:bg-green-800/40 bg-green-200/50 text-green-500">
                       Current
                     </Badge>
                   )}
@@ -129,7 +132,7 @@ export function Modal({ initialPlan }: ModalProps) {
             <Switch
               checked={isYearlyPlan}
               onCheckedChange={handleBillingToggle}
-              className="h-5 w-8 [&_span]:size-4 data-[state=checked]:[&_span]:translate-x-3 data-[state=checked]:[&_span]:rtl:-translate-x-3 data-[state=checked]:bg-rose-500"
+              className="h-5 w-8 [&_span]:size-4 data-[state=checked]:[&_span]:translate-x-3 data-[state=checked]:[&_span]:rtl:-translate-x-3 data-[state=checked]:bg-green-500"
             />
           </div>
           <p className="text-xs text-muted-foreground">
@@ -139,9 +142,12 @@ export function Modal({ initialPlan }: ModalProps) {
 
         <DialogFooter>
           <Button
-            disabled={isCurrentPlan}
+            disabled={isCurrentPlan || isPending}
             onClick={() => {
-              console.log("Selected plan:", currentPurchase)
+              mutateAsync({
+                stripePriceId: currentPurchase.priceId,
+                workspaceId,
+              })
             }}
             className="w-full"
           >

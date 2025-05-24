@@ -2,6 +2,7 @@ import {
   OnboardingStatus,
   OnboardingStep,
 } from "@/app/actions/pages/onboarding/utils"
+import { clientEnv } from "@/lib/utilities/client-env"
 import { getCloudfrontFile, isCloudfrontFile } from "@/lib/utilities/s3-utils"
 
 export class StringService {
@@ -34,7 +35,7 @@ export class StringService {
   }
 
   static isYearlySubscription(duration: string) {
-    return duration === "yearly"
+    return duration === "year"
   }
 
   static getSubscripionDuration(isYearly: boolean) {
@@ -79,5 +80,9 @@ export class StringService {
 
   static createFullName(firstName: string, lastName?: string) {
     return [firstName, lastName].filter(Boolean).join(" ").trim()
+  }
+
+  static createAbsoluteUrl(path: string) {
+    return `${clientEnv.NEXT_PUBLIC_APP_URL}${path}`
   }
 }

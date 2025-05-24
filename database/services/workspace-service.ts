@@ -73,7 +73,7 @@ export class WorkSpaceDatabaseService {
    * @returns The workspace with the given ID, or `undefined` if not found.
    */
   static async getWorkspaceById(workspaceId: string) {
-    const [data] = await dbHttp
+    const [workspace] = await dbHttp
       .select({
         id: workspaces.id,
         name: workspaces.name,
@@ -82,7 +82,7 @@ export class WorkSpaceDatabaseService {
       .from(workspaces)
       .where(eq(workspaces.id, workspaceId))
       .limit(1)
-    return data
+    return workspace
   }
 
   /**

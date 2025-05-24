@@ -49,6 +49,16 @@ export class SubscriptionDBService {
     }
   }
 
+  static async getWorkspaceSubscription(workspaceId: string) {
+    const [subscription] = await dbHttp
+      .select()
+      .from(subscriptions)
+      .where(eq(subscriptions.workspaceId, workspaceId))
+      .limit(1)
+
+    return subscription
+  }
+
   static async createFreeWorkspaceSubscription(
     workspaceId: string,
     tx?: Transaction,
