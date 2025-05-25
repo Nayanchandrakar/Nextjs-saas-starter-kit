@@ -4,7 +4,6 @@ import { DateService } from "@/lib/services/date-service"
 import { StringService } from "@/lib/services/string-service"
 import { SubscriptionController } from "@/trpc/controller/subscription-controller"
 import { protectedProcedure } from "@/trpc/procedures/root"
-import { redirect } from "next/navigation"
 
 export const createSubscription = protectedProcedure
   .input(createSubscriptionSchema)
@@ -24,7 +23,8 @@ export const createSubscription = protectedProcedure
     if (
       priceId &&
       DateService.isSubscriptionExpired(currentPeriodEnd) &&
-      customerId
+      customerId &&
+      !input.stripePriceId
     ) {
       redirectUrl = await SubscriptionController.createBillingSession(
         customerId,
@@ -39,6 +39,5 @@ export const createSubscription = protectedProcedure
         workspaceId,
       )
     }
-    // redirect(redirectUrl)
-    console.log(redirectUrl)
+    return { redirectUrl }
   })

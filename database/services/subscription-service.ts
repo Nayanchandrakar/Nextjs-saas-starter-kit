@@ -17,6 +17,7 @@ export class SubscriptionDBService {
         plan: subscriptions.plan,
         status: subscriptions.status,
         priceId: subscriptions.priceId,
+        customerId: subscriptions.customerId,
         currentPeriodEnd: subscriptions.currentPeriodEnd,
       })
       .from(subscriptions)
@@ -27,7 +28,7 @@ export class SubscriptionDBService {
       id: "subscription_id",
       plan: "free",
       priceId: "price_id",
-      status: "inactive",
+      status: "incomplete",
       currentPeriodEnd: new Date(0),
       isSubscribed: false,
     }

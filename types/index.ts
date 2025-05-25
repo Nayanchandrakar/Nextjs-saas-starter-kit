@@ -27,6 +27,7 @@ export type WorkspaceSubscription = {
   plan: PlanType
   priceId: string
   status: StatusType
+  customerId: string
   currentPeriodEnd: Date
   isSubscribed: boolean
 }

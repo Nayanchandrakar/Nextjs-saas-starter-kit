@@ -15,9 +15,12 @@ import { LayoutGrid } from "lucide-react"
 
 interface BillingCardProps {
   subscription: WorkspaceSubscription
+  slug: string
 }
 
-export function BillingCard({ subscription }: BillingCardProps) {
+export function BillingCard({ subscription, slug }: BillingCardProps) {
+  const isPaid = !!(subscription.isSubscribed && subscription.customerId)
+
   return (
     <Card className="max-w-3xl">
       <CardHeader>
@@ -47,7 +50,11 @@ export function BillingCard({ subscription }: BillingCardProps) {
         </div>
       </CardContent>
       <CardFooter className="justify-end">
-        <BillingActionButton />
+        <BillingActionButton
+          isPaid={isPaid}
+          customerId={subscription?.customerId ?? ""}
+          slug={slug}
+        />
       </CardFooter>
     </Card>
   )

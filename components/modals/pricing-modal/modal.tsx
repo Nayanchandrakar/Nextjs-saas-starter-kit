@@ -142,7 +142,8 @@ export function Modal({ initialPlan, workspaceId }: ModalProps) {
 
         <DialogFooter>
           <Button
-            disabled={isCurrentPlan || isPending}
+            loading={isPending}
+            disabled={isCurrentPlan}
             onClick={() => {
               mutateAsync({
                 stripePriceId: currentPurchase.priceId,

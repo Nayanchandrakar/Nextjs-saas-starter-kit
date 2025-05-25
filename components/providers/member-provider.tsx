@@ -17,7 +17,7 @@ type MemberProviderProps = {
 
 /**
  * Ensures authenticated access to a workspace, verifies active subscription, and provides user, workspace, and subscription data to children.
- * Renders NotFound if the workspace is invalid or NoActiveSubscription if the subscription is inactive.
+ * Renders NotFound if the workspace is invalid or NoActiveSubscription if the subscription is incomplete.
  * @param props - The component props.
  * @param props.slug - The slug identifying the workspace.
  * @param props.children - A render prop function or React node to render with user, workspace, and subscription data.
