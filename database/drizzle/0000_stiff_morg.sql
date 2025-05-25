@@ -1,7 +1,7 @@
 CREATE TYPE "public"."invitation_status" AS ENUM('pending', 'expired', 'accepted');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('admin', 'member', 'owner');--> statement-breakpoint
 CREATE TYPE "public"."plan" AS ENUM('free', 'starter', 'pro');--> statement-breakpoint
-CREATE TYPE "public"."status" AS ENUM('active', 'inactive', 'canceled');--> statement-breakpoint
+CREATE TYPE "public"."status" AS ENUM('active', 'incomplete', 'incomplete_expired', 'trialing', 'past_due', 'canceled', 'unpaid', 'paused');--> statement-breakpoint
 CREATE TYPE "public"."onboarding_status" AS ENUM('pending', 'completed');--> statement-breakpoint
 CREATE TYPE "public"."onboarding_step" AS ENUM('profile', 'workspace', 'collaborate');--> statement-breakpoint
 CREATE TABLE "invitation" (

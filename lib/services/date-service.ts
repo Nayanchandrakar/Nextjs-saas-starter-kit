@@ -12,6 +12,10 @@ export class DateService {
     return new Date() > expiryDate
   }
 
+  static getStripeCurrentPeriodEnd(currentPeriodEnd: number) {
+    return new Date(currentPeriodEnd * 1000)
+  }
+
   static getSubscriptionExpiry() {
     return new Date(Date.now() + DateService.SUBSCRIPTION_EXPIRY)
   }

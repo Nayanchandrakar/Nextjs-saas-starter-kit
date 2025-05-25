@@ -16,7 +16,7 @@ export async function PricingModal({
   )
 
   if (initialPlan) {
-    return <Modal initialPlan={initialPlan!} />
+    return <Modal initialPlan={initialPlan!} workspaceId={workspaceId} />
   }
 
   return null

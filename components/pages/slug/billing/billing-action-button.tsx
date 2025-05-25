@@ -1,14 +1,41 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
+import { Button, buttonVariants } from "@/components/ui/button"
+import { useOpenCustomerPortal } from "@/hooks/trpc/subscriptions"
+import { createRoute } from "@/lib/utils"
+import Link from "next/link"
 
-export function BillingActionButton() {
-  const router = useRouter()
+interface BillingActionButtonProps {
+  isPaid: boolean
+  customerId: string
+  slug: string
+}
 
-  const handleOnClick = () => {
-    router.push("?upgrade=true")
+export function BillingActionButton({
+  customerId,
+  isPaid,
+  slug,
+}: BillingActionButtonProps) {
+  const { isPending, mutateAsync } = useOpenCustomerPortal()
+
+  const handleCustomerPortal = () => {
+    mutateAsync({
+      customerId,
+      redirectEndpoint: createRoute(`${slug}/billing`),
+    })
   }
 
-  return <Button onClick={handleOnClick}>Upgrade plan</Button>
+  if (isPaid) {
+    return (
+      <Button loading={isPending} onClick={handleCustomerPortal}>
+        Manage Subscription
+      </Button>
+    )
+  }
+
+  return (
+    <Link href="?upgrade=true" className={buttonVariants()}>
+      Upgrade plan
+    </Link>
+  )
 }

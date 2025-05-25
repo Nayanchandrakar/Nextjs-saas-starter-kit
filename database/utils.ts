@@ -28,6 +28,15 @@ export const invitationStatusEnum = pgEnum(
 
 // Subscription utils
 export const subscriptionPlans = ["free", "starter", "pro"] as const
-export const subscriptionStatus = ["active", "inactive", "canceled"] as const
+export const subscriptionStatus = [
+  "active",
+  "incomplete",
+  "incomplete_expired",
+  "trialing",
+  "past_due",
+  "canceled",
+  "unpaid",
+  "paused",
+] as const
 export const subscriptionPlanEnum = pgEnum("plan", subscriptionPlans)
 export const subscriptionStatusEnum = pgEnum("status", subscriptionStatus)

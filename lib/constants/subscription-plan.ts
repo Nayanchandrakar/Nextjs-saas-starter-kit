@@ -54,3 +54,26 @@ export const SUBSCRIPTION_PLANS = {
     },
   },
 }
+
+export const PRICE_ID_TO_PLAN = {
+  [clientEnv.NEXT_PUBLIC_STRIPE_FREE_MONTHLY_PLAN_ID]: {
+    plan: "free",
+    interval: "month",
+  },
+  [clientEnv.NEXT_PUBLIC_STRIPE_STARTER_MONTHLY_PLAN_ID]: {
+    plan: "starter",
+    interval: "month",
+  },
+  [clientEnv.NEXT_PUBLIC_STRIPE_STARTER_YEARLY_PLAN_ID]: {
+    plan: "starter",
+    interval: "year",
+  },
+  [clientEnv.NEXT_PUBLIC_STRIPE_PRO_MONTHLY_PLAN_ID]: {
+    plan: "pro",
+    interval: "year",
+  },
+  [clientEnv.NEXT_PUBLIC_STRIPE_PRO_YEARLY_PLAN_ID]: {
+    plan: "pro",
+    interval: "year",
+  },
+} as const

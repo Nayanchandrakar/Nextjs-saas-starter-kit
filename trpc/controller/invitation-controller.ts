@@ -87,7 +87,7 @@ export class InvitationController {
       throw new TRPCError({
         code: "FORBIDDEN",
         message:
-          "Your subscription is inactive or has expired. Please update your plan to continue.",
+          "Your subscription is incomplete or has expired. Please update your plan to continue.",
       })
     }
 

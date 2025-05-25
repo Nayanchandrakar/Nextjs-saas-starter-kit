@@ -1,5 +1,5 @@
-import "dotenv/config"
 import { serverEnv } from "@/lib/utilities/server-env"
+import "dotenv/config"
 import { defineConfig } from "drizzle-kit"
 
 export default defineConfig({
@@ -9,4 +9,5 @@ export default defineConfig({
   dbCredentials: {
     url: serverEnv.DATABASE_URL,
   },
+  strict: true,
 })

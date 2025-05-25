@@ -16,5 +16,6 @@
   "profileUpdateMessage": "Profile changes saved successfully",
   "profileImageUpdteMessage": "Profile Image updated Successfully",
   "workspaceCreateMessage": "Workspace created successfully",
-  "workspaceDeleteMessage": "Worskspace deleted successfully"
+  "workspaceDeleteMessage": "Worskspace deleted successfully",
+  "stripeCheckoutSuccess": "Your payment was in processing."
 }

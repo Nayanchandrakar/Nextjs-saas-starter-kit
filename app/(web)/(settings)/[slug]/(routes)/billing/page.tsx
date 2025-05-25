@@ -24,7 +24,7 @@ export default async function BillingPage({ params }: BillingPageProps) {
                   title="Billing"
                   description="Manage your billing information"
                 />
-                <BillingCard subscription={subscription} />
+                <BillingCard subscription={subscription} slug={slug} />
               </SidebarContainer>
             )
           }}
