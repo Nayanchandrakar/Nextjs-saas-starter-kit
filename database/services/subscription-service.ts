@@ -29,6 +29,7 @@ export class SubscriptionDBService {
       plan: "free",
       priceId: "price_id",
       status: "incomplete",
+      customerId: "customer_id",
       currentPeriodEnd: new Date(0),
       isSubscribed: false,
     }
