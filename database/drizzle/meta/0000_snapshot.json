@@ -1,5 +1,5 @@
 {
-  "id": "488a8132-32f5-4439-b79b-a6ebe60ad249",
+  "id": "c275aac2-abdf-486a-a2b1-238daa04f7e6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1073,7 +1073,16 @@
     "public.status": {
       "name": "status",
       "schema": "public",
-      "values": ["active", "inactive", "canceled"]
+      "values": [
+        "active",
+        "incomplete",
+        "incomplete_expired",
+        "trialing",
+        "past_due",
+        "canceled",
+        "unpaid",
+        "paused"
+      ]
     },
     "public.onboarding_status": {
       "name": "onboarding_status",
