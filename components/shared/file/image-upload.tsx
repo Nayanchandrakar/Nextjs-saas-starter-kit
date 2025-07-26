@@ -49,7 +49,7 @@ export const ImageUpload = ({
 
   const handleFileRemove = () => {
     setUploadedFileUrl("")
-    removeFile(file.id)
+    removeFile(file?.id)
     onRemove?.()
   }
 
