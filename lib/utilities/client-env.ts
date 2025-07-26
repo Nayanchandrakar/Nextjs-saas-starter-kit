@@ -6,7 +6,7 @@ export const clientEnv = createEnv({
     NEXT_PUBLIC_APP_URL: z.string().default("http://localhost:3000"),
     NEXT_PUBLIC_CLOUDFRONT_URL: z
       .string()
-      .default("https://d33aluc0l6cahu.cloudfront.net"),
+      .default("d3rvavyycy1it6.cloudfront.net"),
 
     NEXT_PUBLIC_STRIPE_FREE_MONTHLY_PLAN_ID: z.string({
       required_error:
